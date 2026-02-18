@@ -35,26 +35,26 @@
 
     .line {
       position: fixed;
-      left: 40px;
       width: 2px;
       background: #1F18C0;
       pointer-events: none;
       z-index: 10;
+      top: 0;
     }
 
     #line1 {
-      height: 120px;
-      left: 30px;
+      height: 150px;
+      left: 40px;
     }
 
     #line2 {
-      height: 80px;
-      left: 80px;
+      height: 100px;
+      left: 90px;
     }
 
     #line3 {
-      height: 200px;
-      left: 140px;
+      height: 250px;
+      left: 150px;
     }
   </style>
 </head>
@@ -66,40 +66,23 @@
   <div class="line" id="line2"></div>
   <div class="line" id="line3"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script>
-    const { animate, onScroll } = anime;
-    const vh = window.innerHeight;
+    const lines = [
+      { el: document.getElementById('line1'), speed: 1.0, offset: 0 },
+      { el: document.getElementById('line2'), speed: -0.6, offset: 200 },
+      { el: document.getElementById('line3'), speed: 0.3, offset: -100 },
+    ];
 
-    // Line 1 — slides down viewport, tight scroll sync
-    animate('#line1', {
-      translateY: [-150, vh + 150],
-      rotate: [0, 180],
-      ease: 'linear',
-      autoplay: onScroll({
-        sync: true,
-      })
+    window.addEventListener('scroll', () => {
+      const scrollY = window.scrollY;
+      lines.forEach(line => {
+        const y = line.offset + scrollY * line.speed;
+        line.el.style.transform = `translateY(${y}px)`;
+      });
     });
 
-    // Line 2 — moves opposite direction, smooth lag
-    animate('#line2', {
-      translateY: [vh + 100, -200],
-      rotate: [0, -90],
-      ease: 'linear',
-      autoplay: onScroll({
-        sync: 0.5,
-      })
-    });
-
-    // Line 3 — slow drift, most lag
-    animate('#line3', {
-      translateY: [-300, vh],
-      scaleY: [1, 0.5, 2, 1],
-      ease: 'linear',
-      autoplay: onScroll({
-        sync: 0.2,
-      })
-    });
+    // trigger once on load
+    window.dispatchEvent(new Event('scroll'));
   </script>
 </body>
 </html>
