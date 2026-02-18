@@ -25,26 +25,20 @@
     }
 
     .header {
-      display: flex;
-      flex-direction: column;
       margin: 0 0 -2px -1px;
       color: #1F18C0;
       font-family: Helvetica, Arial, sans-serif;
       font-size: 64px;
-      font-weight: bold;
       line-height: 1;
     }
 
-    .header p {
-      margin: 0;
+    .header .name {
+      font-weight: bold;
     }
 
-    .header .center {
-      text-align: center;
-    }
-
-    .header .right {
-      text-align: right;
+    .header .sub {
+      font-weight: normal;
+      font-size: 52px;
     }
 
     .line {
@@ -71,9 +65,7 @@
 </head>
 <body>
   <div class="header">
-    <p>hugo andersson</p>
-    <p class="center">PhD student</p>
-    <p class="right">aarhus university</p>
+    <span class="name">hugo andersson</span> <span class="sub">PhD student</span> <span class="sub">aarhus university</span>
   </div>
   <div class="blue-box"></div>
 
