@@ -32,10 +32,62 @@
       font-weight: bold;
       line-height: 1;
     }
+
+    .line {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 80px;
+      background: #1F18C0;
+    }
   </style>
 </head>
 <body>
   <p class="name">hugo andersson</p>
   <div class="blue-box"></div>
+
+  <div class="line" id="line1"></div>
+  <div class="line" id="line2"></div>
+  <div class="line" id="line3"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+  <script>
+    const { animate, onScroll, utils } = anime;
+
+    // Line 1 — moves down the left margin, synced to scroll
+    animate('#line1', {
+      translateY: [0, window.innerHeight * 3],
+      rotate: [0, 720],
+      scaleY: [1, 3, 1],
+      ease: 'linear',
+      autoplay: onScroll({
+        sync: true,
+      })
+    });
+
+    // Line 2 — bounces horizontally in the left margin
+    animate('#line2', {
+      translateX: [20, 170],
+      translateY: [100, window.innerHeight * 3 - 200],
+      rotate: [0, -360],
+      ease: 'linear',
+      autoplay: onScroll({
+        sync: 0.6,
+      })
+    });
+
+    // Line 3 — drifts diagonally, smooth follow
+    animate('#line3', {
+      translateX: [60, 30, 150, 60],
+      translateY: [300, window.innerHeight * 3 - 100],
+      scaleY: [1, 2, 0.5, 1],
+      rotate: [0, 1080],
+      ease: 'linear',
+      autoplay: onScroll({
+        sync: 0.3,
+      })
+    });
+  </script>
 </body>
 </html>
