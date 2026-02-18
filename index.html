@@ -35,11 +35,26 @@
 
     .line {
       position: fixed;
-      left: 0;
-      top: 0;
-      width: 3px;
-      height: 80px;
+      left: 40px;
+      width: 2px;
       background: #1F18C0;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    #line1 {
+      height: 120px;
+      left: 30px;
+    }
+
+    #line2 {
+      height: 80px;
+      left: 80px;
+    }
+
+    #line3 {
+      height: 200px;
+      left: 140px;
     }
   </style>
 </head>
@@ -53,39 +68,36 @@
 
   <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
   <script>
-    const { animate, onScroll, utils } = anime;
+    const { animate, onScroll } = anime;
+    const vh = window.innerHeight;
 
-    // Line 1 — moves down the left margin, synced to scroll
+    // Line 1 — slides down viewport, tight scroll sync
     animate('#line1', {
-      translateY: [0, window.innerHeight * 3],
-      rotate: [0, 720],
-      scaleY: [1, 3, 1],
+      translateY: [-150, vh + 150],
+      rotate: [0, 180],
       ease: 'linear',
       autoplay: onScroll({
         sync: true,
       })
     });
 
-    // Line 2 — bounces horizontally in the left margin
+    // Line 2 — moves opposite direction, smooth lag
     animate('#line2', {
-      translateX: [20, 170],
-      translateY: [100, window.innerHeight * 3 - 200],
-      rotate: [0, -360],
+      translateY: [vh + 100, -200],
+      rotate: [0, -90],
       ease: 'linear',
       autoplay: onScroll({
-        sync: 0.6,
+        sync: 0.5,
       })
     });
 
-    // Line 3 — drifts diagonally, smooth follow
+    // Line 3 — slow drift, most lag
     animate('#line3', {
-      translateX: [60, 30, 150, 60],
-      translateY: [300, window.innerHeight * 3 - 100],
-      scaleY: [1, 2, 0.5, 1],
-      rotate: [0, 1080],
+      translateY: [-300, vh],
+      scaleY: [1, 0.5, 2, 1],
       ease: 'linear',
       autoplay: onScroll({
-        sync: 0.3,
+        sync: 0.2,
       })
     });
   </script>
