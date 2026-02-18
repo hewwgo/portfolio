@@ -24,13 +24,27 @@
       background: #1F18C0;
     }
 
-    .name {
+    .header {
+      display: flex;
+      flex-direction: column;
       margin: 0 0 -2px -1px;
       color: #1F18C0;
       font-family: Helvetica, Arial, sans-serif;
       font-size: 64px;
       font-weight: bold;
       line-height: 1;
+    }
+
+    .header p {
+      margin: 0;
+    }
+
+    .header .center {
+      text-align: center;
+    }
+
+    .header .right {
+      text-align: right;
     }
 
     .line {
@@ -40,12 +54,6 @@
       pointer-events: none;
       z-index: 10;
       top: 0;
-    }
-
-    #line1 {
-      height: 150px;
-      left: 40px;
-      width: 1px;
     }
 
     #line2 {
@@ -62,16 +70,18 @@
   </style>
 </head>
 <body>
-  <p class="name">hugo andersson</p>
+  <div class="header">
+    <p>hugo andersson</p>
+    <p class="center">PhD student</p>
+    <p class="right">aarhus university</p>
+  </div>
   <div class="blue-box"></div>
 
-  <div class="line" id="line1"></div>
   <div class="line" id="line2"></div>
   <div class="line" id="line3"></div>
 
   <script>
     const lines = [
-      { el: document.getElementById('line1'), speed: 1.0, offset: 0 },
       { el: document.getElementById('line2'), speed: -0.6, offset: 200 },
       { el: document.getElementById('line3'), speed: 0.3, offset: -100 },
     ];
