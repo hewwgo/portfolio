@@ -8,286 +8,615 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    * {
+    /* reset */
+    *, *::before, *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    :root {
+      --ink: #1F18C0;
+      --paper: #F8F6F3;
+      --card: #EEEAE5;
+      --dim-70: rgba(31, 24, 192, 0.70);
+      --dim-55: rgba(31, 24, 192, 0.55);
+      --dim-25: rgba(31, 24, 192, 0.25);
+      --dim-12: rgba(31, 24, 192, 0.12);
+      --serif: "Libre Baskerville", Georgia, serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
-      background: #F8F6F3;
-      min-height: 100vh;
-      padding: 90px 18%;
-    }
-
-    .blue-box {
-      position: relative;
-      width: 100%;
-      height: 300vh;
-      background: #F8F6F3;
-    }
-
-    .header {
-      margin: 0 0 -2px 16px;
-      position: relative;
-      top: -15px;
-      color: #1F18C0;
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 48px;
-      line-height: 1;
-      z-index: 20;
-    }
-
-    .header .name {
-      font-weight: bold;
-      user-select: none;
-    }
-
-    .line {
-      position: fixed;
-      width: 2px;
-      background: #1F18C0;
-      pointer-events: none;
-      z-index: 10;
-      top: 0;
-    }
-
-    .top-bar {
-      display: flex;
-      align-items: stretch;
-    }
-
-    .bio-box {
-      background: #1F18C0;
-      padding: 10px 16px;
-      margin: 0;
-      display: inline-flex;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .bio-title {
-      color: #F5F0E8;
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-weight: 200;
-      font-size: 25.5px;
-      line-height: 1;
-      margin: 0;
-      padding: 0;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .tabs {
-      display: flex;
-      flex: 1;
-      margin-left: 0;
-    }
-
-    .tabs {
-      position: relative;
-    }
-
-    .tab-slider {
-      position: absolute;
-      top: 0;
-      height: 100%;
-      background: #1F18C0;
-      transition: left 0.35s ease, width 0.35s ease;
-      z-index: 0;
-    }
-
-    .tab {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      user-select: none;
-      color: #1F18C0;
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-weight: 300;
-      font-size: 18px;
-      cursor: pointer;
-      border-left: none;
-      position: relative;
-      z-index: 1;
-      transition: color 0.35s ease;
-    }
-
-    .tab.active {
-      color: #F5F0E8;
-    }
-
-    .tab-content {
-      color: #1F18C0;
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-weight: 400;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--serif);
       font-size: 16px;
-      padding: 32px 28px;
+      line-height: 1.6;
+      padding: 80px max(56px, 9%);
+      min-height: 100vh;
     }
 
-    .tab-content.hidden {
-      display: none;
-    }
-
-    .card {
-      background: #EEEAE5;
-      padding: 36px 40px;
-      margin-bottom: 24px;
-    }
-
-    .card-venue {
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #1F18C0;
-      opacity: 0.6;
-      margin-bottom: 14px;
-    }
-
-    .card-title {
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 22px;
-      font-weight: 700;
-      line-height: 1.35;
-      color: #1F18C0;
-      margin-bottom: 8px;
-    }
-
-    .card-authors {
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 14px;
-      font-style: italic;
-      font-weight: 400;
-      color: #1F18C0;
-      opacity: 0.7;
-      margin-bottom: 20px;
-    }
-
-    .card-abstract {
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 1.7;
-      color: #1F18C0;
-      opacity: 0.85;
-      margin-bottom: 24px;
-    }
-
-    .card-keywords {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .card-keyword {
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 11px;
-      font-weight: 400;
-      color: #1F18C0;
-      border: 1px solid rgba(31, 24, 192, 0.25);
-      padding: 4px 12px;
-      letter-spacing: 0.03em;
-    }
-
-    .card-link {
-      font-family: "Libre Baskerville", Georgia, serif;
-      font-size: 13px;
-      font-weight: 400;
-      color: #1F18C0;
+    a {
+      color: inherit;
       text-decoration: none;
-      border-bottom: 1px solid rgba(31, 24, 192, 0.3);
+      border-bottom: 1px solid var(--dim-25);
       padding-bottom: 1px;
       transition: border-color 0.2s ease;
     }
 
-    .card-link:hover {
-      border-color: #1F18C0;
+    a:hover {
+      border-bottom-color: var(--ink);
     }
 
-    #line2 {
-      height: 100px;
-      left: 90px;
-      width: 0px;
+    a:focus-visible {
+      outline: 2px solid var(--ink);
+      outline-offset: 3px;
+      border-radius: 2px;
     }
 
-    #line3 {
-      height: 250px;
-      left: 100px;
-      width: 14px;
+    /* ---------- header ---------- */
+    .site-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 32px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid var(--dim-12);
+    }
+
+    .name {
+      font-family: var(--serif);
+      font-size: 56px;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      user-select: none;
+      margin: 0;
+    }
+
+    .header-meta {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--dim-70);
+      border: none;
+      padding: 0;
+    }
+
+    .header-meta:hover {
+      color: var(--ink);
+    }
+
+    /* ---------- hero ---------- */
+    .hero {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 56px;
+      align-items: start;
+      padding: 72px 0 64px;
+    }
+
+    .portrait {
+      width: 240px;
+      height: 300px;
+      background: var(--card);
+      border: 1px solid var(--dim-12);
+      overflow: hidden;
+    }
+
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 300px;
+    }
+
+    .hero-bio {
+      font-size: 22px;
+      line-height: 1.5;
+      color: var(--ink);
+      max-width: 72ch;
+    }
+
+    .hero-bio em {
+      color: var(--dim-70);
+    }
+
+    .link-row {
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--dim-12);
+      font-size: 14px;
+      color: var(--dim-70);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .link-row a {
+      border-bottom: 1px solid var(--dim-25);
+    }
+
+    .link-row .sep {
+      color: var(--dim-25);
+      user-select: none;
+    }
+
+    /* ---------- horizontal metadata strip ---------- */
+    .meta-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      padding: 48px 0 56px;
+      border-top: 1px solid var(--dim-12);
+      border-bottom: 1px solid var(--dim-12);
+    }
+
+    .meta-strip > section {
+      min-width: 0;
+    }
+
+    /* ---------- recent section (full width) ---------- */
+    .recent-section {
+      padding: 56px 0 24px;
+    }
+
+    /* ---------- section headings ---------- */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--serif);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 20px;
+    }
+
+    .section-label::before {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--ink);
+    }
+
+    /* ---------- sidebar content ---------- */
+    .contact-line {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--ink);
+    }
+
+    .contact-line .muted {
+      color: var(--dim-70);
+      font-style: italic;
+    }
+
+    .timeline {
+      list-style: none;
+      font-size: 15px;
+      line-height: 1.9;
+    }
+
+    .timeline li {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 16px;
+      color: var(--ink);
+    }
+
+    .timeline .year {
+      font-style: italic;
+      color: var(--dim-70);
+      font-size: 14px;
+      padding-top: 2px;
+    }
+
+    /* ---------- main column content ---------- */
+    .recent-list {
+      list-style: none;
+      max-width: 72ch;
+    }
+
+    .recent-list li {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--dim-12);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .recent-list li:last-child {
+      border-bottom: none;
+    }
+
+    .recent-list time {
+      font-style: italic;
+      color: var(--dim-70);
+      font-size: 13px;
+      padding-top: 1px;
+    }
+
+    /* ---------- work section ---------- */
+    .work-section {
+      padding: 24px 0 40px;
+      border-top: 1px solid var(--dim-12);
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .work-grid .card:nth-child(3) {
+      grid-column: 1 / -1;
+      max-width: calc(50% - 16px);
+      margin-left: 20%;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 36px 40px;
+      border: 1px solid var(--dim-12);
+    }
+
+    .card-venue {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim-70);
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .card-authors {
+      font-size: 14px;
+      font-style: italic;
+      color: var(--dim-70);
+      margin-bottom: 20px;
+    }
+
+    .card-abstract {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--ink);
+      opacity: 0.9;
+      margin-bottom: 24px;
+    }
+
+    .card-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 13px;
+      color: var(--dim-70);
+    }
+
+    .card-links a {
+      border-bottom: 1px solid var(--dim-25);
+    }
+
+    /* ---------- footer ---------- */
+    .site-footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--dim-12);
+      font-size: 12px;
+      font-style: italic;
+      color: var(--dim-55);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ---------- parallax lines ---------- */
+    .line {
+      position: fixed;
+      background: var(--ink);
+      pointer-events: none;
+      z-index: 10;
+      top: 0;
+      width: 2px;
+    }
+
+    #line-a {
+      height: 140px;
+      left: 56px;
+    }
+
+    #line-b {
+      height: 220px;
+      right: 48px;
+      width: 10px;
+      opacity: 0.9;
+    }
+
+    /* ---------- responsive ---------- */
+    @media (max-width: 1100px) {
+      body {
+        padding: 72px max(40px, 8%);
+      }
+      .meta-strip {
+        gap: 40px;
+      }
+      .work-grid .card:nth-child(3) {
+        margin-left: 10%;
+        max-width: calc(60% - 16px);
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 56px 40px;
+      }
+      .line { display: none; }
+      .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding-bottom: 32px;
+      }
+      .name { font-size: 40px; }
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 48px 0 48px;
+      }
+      .portrait {
+        width: 160px;
+        height: 200px;
+      }
+      .hero-text {
+        min-height: 0;
+      }
+      .hero-bio { font-size: 18px; }
+      .meta-strip {
+        grid-template-columns: 1fr;
+        gap: 44px;
+        padding: 40px 0 48px;
+      }
+      .recent-section { padding: 44px 0 24px; }
+      .work-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .work-grid .card:nth-child(3) {
+        max-width: 100%;
+        margin-left: 0;
+      }
+      .card { padding: 28px 28px; }
+      .card-title { font-size: 20px; }
+      .recent-list li {
+        grid-template-columns: 96px 1fr;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 40px 24px; }
+      .name { font-size: 32px; }
+      .hero-bio { font-size: 17px; }
+      .recent-list li {
+        grid-template-columns: 1fr;
+        gap: 2px;
+      }
+      .timeline li {
+        grid-template-columns: 56px 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .line { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <span class="name">hugo andersson</span>
-  </div>
-  <div class="blue-box">
-    <div class="top-bar">
-      <div class="bio-box">
-        <p class="bio-title">PhD student at aarhus university</p>
-      </div>
-      <div class="tabs">
-        <div class="tab-slider" id="tab-slider"></div>
-        <div class="tab active" data-tab="1">work</div>
-        <div class="tab" data-tab="2">blog</div>
-        <div class="tab" data-tab="3">personal</div>
-      </div>
-    </div>
-    <div class="tab-content" id="content-1"></div>
-    <div class="tab-content hidden" id="content-2">blog</div>
-    <div class="tab-content hidden" id="content-3">personal</div>
-  </div>
 
-  <div class="line" id="line2"></div>
-  <div class="line" id="line3"></div>
+  <header class="site-header">
+    <h1 class="name">hugo andersson</h1>
+    <a class="header-meta" href="#">curriculum vitae →</a>
+  </header>
+
+  <main>
+
+    <section class="hero" aria-label="Introduction">
+      <div class="portrait">
+        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
+      </div>
+      <div class="hero-text">
+        <p class="hero-bio">
+          I am a PhD student at <a href="#">Aarhus University</a>, where I study
+          lorem ipsum dolor sit amet, consectetur adipiscing elit. My research
+          sits at the intersection of <em>lorem ipsum</em>, <em>dolor sit amet</em>,
+          and <em>consectetur adipiscing</em> — I'm broadly curious about how
+          people make sense of complex systems, and how tools can be shaped to
+          support that work without getting in the way. I explore this through
+          ut labore et dolore magna aliqua, reshaped through careful design.
+        </p>
+        <nav class="link-row" aria-label="External profiles">
+          <a href="#">Google Scholar</a>
+          <span class="sep">·</span>
+          <a href="#">GitHub</a>
+          <span class="sep">·</span>
+          <a href="#">ORCID</a>
+          <span class="sep">·</span>
+          <a href="#">Semantic Scholar</a>
+          <span class="sep">·</span>
+          <a href="#">Email</a>
+        </nav>
+      </div>
+    </section>
+
+    <div class="meta-strip">
+
+      <section aria-labelledby="contact-label">
+        <h2 id="contact-label" class="section-label">Contact</h2>
+        <p class="contact-line">
+          <a href="#">hugo.andersson@example.edu</a><br>
+          <span class="muted">
+            Department of Placeholder<br>
+            Aarhus University<br>
+            Building 5000, Office 000
+          </span>
+        </p>
+      </section>
+
+      <section aria-labelledby="bio-label">
+        <h2 id="bio-label" class="section-label">Bio</h2>
+        <ul class="timeline">
+          <li><span class="year">2024–</span><span>PhD · Aarhus University</span></li>
+          <li><span class="year">2022–24</span><span>MSc · Lorem University</span></li>
+          <li><span class="year">2018–22</span><span>BSc · Ipsum Institute</span></li>
+        </ul>
+      </section>
+
+    </div>
+
+    <section class="recent-section" aria-labelledby="recent-label">
+      <h2 id="recent-label" class="section-label">Recent</h2>
+      <ul class="recent-list">
+        <li>
+          <time datetime="2026-03">Mar 2026</time>
+          <span>Placeholder talk at the <a href="#">Lorem Workshop</a>, Copenhagen.</span>
+        </li>
+        <li>
+          <time datetime="2026-01">Jan 2026</time>
+          <span>New preprint: <a href="#">Ipsum Dolor Sit Amet</a> posted on arXiv.</span>
+        </li>
+        <li>
+          <time datetime="2025-11">Nov 2025</time>
+          <span>Visiting <a href="#">Institution Placeholder</a> for a short research stay.</span>
+        </li>
+        <li>
+          <time datetime="2025-09">Sep 2025</time>
+          <span>Started the PhD programme at <a href="#">Aarhus University</a>.</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="work-section" aria-labelledby="work-label">
+      <h2 id="work-label" class="section-label">work</h2>
+
+      <div class="work-grid">
+
+        <article class="card">
+          <p class="card-venue">CHI · 2026 · under review</p>
+          <h3 class="card-title">Lorem Ipsum: Reframing Dolor Through Sit Amet</h3>
+          <p class="card-authors">Hugo Andersson, Lorem Author, Ipsum Author</p>
+          <p class="card-abstract">
+            Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+            labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+            nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.
+          </p>
+          <div class="card-links">
+            <a href="#">PDF</a>
+            <a href="#">Website</a>
+            <a href="#">Video</a>
+            <a href="#">BibTeX</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <p class="card-venue">UIST · 2025</p>
+          <h3 class="card-title">Duis Aute Irure: A System for Reprehenderit Voluptate</h3>
+          <p class="card-authors">Hugo Andersson, Dolor Author, Sit Amet</p>
+          <p class="card-abstract">
+            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
+            officia deserunt mollit anim id est laborum. Sed ut perspiciatis
+            unde omnis iste natus error sit voluptatem.
+          </p>
+          <div class="card-links">
+            <a href="#">PDF</a>
+            <a href="#">DOI</a>
+            <a href="#">Code</a>
+            <a href="#">BibTeX</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <p class="card-venue">Workshop paper · 2024</p>
+          <h3 class="card-title">Nemo Enim: Voluptatem Accusantium Doloremque</h3>
+          <p class="card-authors">Hugo Andersson, Lorem Collaborator</p>
+          <p class="card-abstract">
+            Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis
+            et quasi architecto beatae vitae dicta sunt explicabo.
+          </p>
+          <div class="card-links">
+            <a href="#">PDF</a>
+            <a href="#">BibTeX</a>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>© 2026 Hugo Andersson</span>
+    <span>Last updated — placeholder</span>
+  </footer>
+
+  <div class="line" id="line-a" aria-hidden="true"></div>
+  <div class="line" id="line-b" aria-hidden="true"></div>
 
   <script>
-    const lines = [
-      { el: document.getElementById('line2'), speed: -0.6, offset: 200 },
-      { el: document.getElementById('line3'), speed: 0.3, offset: -100 },
-    ];
+    (function () {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    window.addEventListener('scroll', () => {
-      const scrollY = window.scrollY;
-      lines.forEach(line => {
-        const y = line.offset + scrollY * line.speed;
-        line.el.style.transform = `translateY(${y}px)`;
-      });
-    });
+      const lines = [
+        { el: document.getElementById('line-a'), speed: -0.5, offset: 240 },
+        { el: document.getElementById('line-b'), speed:  0.25, offset: -80 },
+      ];
 
-    // trigger once on load
-    window.dispatchEvent(new Event('scroll'));
+      let ticking = false;
+      function update() {
+        const y = window.scrollY;
+        lines.forEach(line => {
+          const t = line.offset + y * line.speed;
+          line.el.style.transform = 'translateY(' + t + 'px)';
+        });
+        ticking = false;
+      }
 
-    // tab switching with sliding highlight
-    const slider = document.getElementById('tab-slider');
-    const tabs = document.querySelectorAll('.tab');
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(update);
+          ticking = true;
+        }
+      }, { passive: true });
 
-    function moveSlider(tab) {
-      slider.style.left = tab.offsetLeft + 'px';
-      slider.style.width = tab.offsetWidth + 'px';
-    }
-
-    // init slider position
-    moveSlider(document.querySelector('.tab.active'));
-
-    let currentTab = 1;
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        const newTab = parseInt(tab.dataset.tab);
-        if (newTab === currentTab) return;
-
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        moveSlider(tab);
-
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById('content-' + newTab).classList.remove('hidden');
-        currentTab = newTab;
-      });
-    });
+      update();
+    })();
   </script>
 </body>
 </html>
