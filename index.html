@@ -202,27 +202,6 @@
       padding-top: 1px;
     }
 
-    /* ---------- recent ---------- */
-    .recent-list {
-      list-style: none;
-    }
-
-    .recent-list li {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 12px;
-      padding: 6px 0;
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
-    .recent-list time {
-      font-style: italic;
-      color: var(--dim-70);
-      font-size: 11px;
-      padding-top: 1px;
-    }
-
     /* ---------- work section ---------- */
     .work-grid {
       display: grid;
@@ -334,20 +313,12 @@
         gap: 16px;
       }
       .card { padding: 20px 20px; }
-      .recent-list li {
-        grid-template-columns: 72px 1fr;
-        gap: 10px;
-      }
     }
 
     @media (max-width: 480px) {
       body { padding: 32px 18px; }
       .name { font-size: 24px; }
       .hero-bio { font-size: 12px; }
-      .recent-list li {
-        grid-template-columns: 1fr;
-        gap: 2px;
-      }
       .timeline li {
         grid-template-columns: 50px 1fr;
       }
@@ -423,28 +394,6 @@
       </aside>
 
       <div class="main-col">
-        <section aria-labelledby="recent-label">
-          <h2 id="recent-label" class="section-label">Recent</h2>
-          <ul class="recent-list">
-            <li>
-              <time datetime="2026-03">Mar 2026</time>
-              <span>Placeholder talk at the <a href="#">Lorem Workshop</a>, Copenhagen.</span>
-            </li>
-            <li>
-              <time datetime="2026-01">Jan 2026</time>
-              <span>New preprint: <a href="#">Ipsum Dolor Sit Amet</a> posted on arXiv.</span>
-            </li>
-            <li>
-              <time datetime="2025-11">Nov 2025</time>
-              <span>Visiting <a href="#">Institution Placeholder</a> for a short research stay.</span>
-            </li>
-            <li>
-              <time datetime="2025-09">Sep 2025</time>
-              <span>Started the PhD programme at <a href="#">Aarhus University</a>.</span>
-            </li>
-          </ul>
-        </section>
-
         <section aria-labelledby="work-label">
           <h2 id="work-label" class="section-label">Work</h2>
           <div class="work-grid">
