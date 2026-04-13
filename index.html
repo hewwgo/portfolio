@@ -54,25 +54,19 @@
       color: var(--ink);
     }
 
-    /* single column layout */
+    /* page grid: photo column + content column */
     .page-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 0 28px;
       padding-top: 16px;
     }
 
-    /* hero row: photo + bio side by side */
-    .hero-row {
-      display: grid;
-      grid-template-columns: 160px 1fr;
-      gap: 28px;
-      align-items: start;
-    }
-
     .portrait {
-      width: 160px;
-      height: 200px;
+      grid-column: 1;
+      grid-row: 1;
+      width: 150px;
+      height: 188px;
       background: var(--card);
       border-radius: 4px;
       overflow: hidden;
@@ -133,11 +127,17 @@
       padding-top: 1px;
     }
 
+    /* all content blocks in column 2 */
+    .content-block {
+      grid-column: 2;
+    }
+
     /* meta: contact + education side by side */
     .meta-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 32px;
+      margin-top: 20px;
     }
 
     .hero-bio {
@@ -215,11 +215,11 @@
     @media (max-width: 860px) {
       body { padding: 36px 28px; }
       .name { font-size: 28px; }
-      .hero-row {
+      .page-layout {
         grid-template-columns: 1fr;
-        gap: 20px;
       }
-      .portrait { width: 130px; height: 163px; }
+      .content-block { grid-column: 1; }
+      .portrait { width: 120px; height: 150px; }
       .meta-row { grid-template-columns: 1fr; gap: 16px; }
       .work-grid { grid-template-columns: 1fr; gap: 14px; }
     }
@@ -242,12 +242,12 @@
 
   <main class="page-layout">
 
-    <div class="hero-row">
-      <div class="portrait">
-        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
-      </div>
-      <div>
-        <p class="hero-bio">
+    <div class="portrait">
+      <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
+    </div>
+
+    <div class="content-block">
+      <p class="hero-bio">
           I'm a PhD Fellow in Human-Centered Computing at
           <a href="#">Aarhus University</a>, advised by
           <a href="#">Niklas Elmqvist</a>. I build systems where human and
@@ -269,10 +269,9 @@
           <span class="sep">·</span>
           <a href="#">LinkedIn</a>
         </nav>
-      </div>
     </div>
 
-    <div class="meta-row">
+    <div class="content-block meta-row">
       <section aria-labelledby="contact-label">
         <h2 id="contact-label" class="section-label">Contact</h2>
         <p class="contact-line">
@@ -296,7 +295,7 @@
       </section>
     </div>
 
-    <section aria-labelledby="work-label">
+    <section class="content-block" style="margin-top:20px" aria-labelledby="work-label">
         <h2 id="work-label" class="section-label">Work</h2>
         <div class="work-grid">
           <article class="card">
