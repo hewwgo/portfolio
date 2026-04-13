@@ -133,11 +133,11 @@
       padding-top: 1px;
     }
 
-    /* meta: contact + education stacked */
+    /* meta: contact + education side by side */
     .meta-row {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
     }
 
     .hero-bio {
@@ -220,7 +220,7 @@
         gap: 20px;
       }
       .portrait { width: 130px; height: 163px; }
-      .meta-row { gap: 16px; }
+      .meta-row { grid-template-columns: 1fr; gap: 16px; }
       .work-grid { grid-template-columns: 1fr; gap: 14px; }
     }
 
