@@ -27,9 +27,7 @@
       --serif: "Libre Baskerville", Georgia, serif;
     }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       background: var(--paper);
@@ -37,7 +35,7 @@
       font-family: var(--serif);
       font-size: 13px;
       line-height: 1.6;
-      padding: 40px max(36px, 10%);
+      padding: 40px max(36px, 8%);
       min-height: 100vh;
     }
 
@@ -48,12 +46,10 @@
       padding-bottom: 1px;
       transition: color 0.2s ease, border-color 0.2s ease;
     }
-
     a:hover {
       color: var(--ink-hover);
       border-bottom-color: var(--ink-hover);
     }
-
     a:focus-visible {
       outline: 2px solid var(--ink);
       outline-offset: 3px;
@@ -64,7 +60,6 @@
     .site-header {
       padding-bottom: 16px;
     }
-
     .name {
       font-size: 32px;
       font-weight: 700;
@@ -73,23 +68,22 @@
       color: var(--ink);
     }
 
-    /* ---------- hero ---------- */
-    .hero {
+    /* ---------- page grid ---------- */
+    .page-grid {
       display: grid;
-      grid-template-columns: 140px 1fr;
-      gap: 28px;
-      align-items: start;
-      padding: 16px 0 20px;
+      grid-template-columns: 150px 1fr;
+      gap: 0 32px;
     }
 
     .portrait {
-      width: 140px;
-      height: 175px;
+      grid-row: 1;
+      width: 150px;
+      height: 188px;
       background: var(--card);
       border-radius: 4px;
       overflow: hidden;
+      margin-top: 4px;
     }
-
     .portrait img {
       width: 100%;
       height: 100%;
@@ -97,19 +91,18 @@
       display: block;
     }
 
-    .hero-text {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 175px;
+    /* everything in column 2 */
+    .content {
+      grid-column: 2;
     }
 
+    /* ---------- hero bio ---------- */
     .hero-bio {
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.65;
       color: var(--ink);
+      padding: 4px 0 0;
     }
-
     .hero-bio em {
       color: var(--dim-70);
     }
@@ -123,33 +116,22 @@
       align-items: center;
       gap: 10px;
     }
-
     .link-row a {
       border-bottom: 1px solid var(--dim-25);
     }
-
     .link-row .sep {
       color: var(--dim-25);
       user-select: none;
     }
 
-    /* ---------- two-column layout ---------- */
-    .columns {
+    /* ---------- meta row (Contact | Bio) ---------- */
+    .meta-row {
       display: grid;
-      grid-template-columns: 170px 1fr;
-      gap: 36px;
-      padding: 20px 0 0;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding: 24px 0 0;
     }
 
-    .sidebar > section + section {
-      margin-top: 24px;
-    }
-
-    .main-col > section + section {
-      margin-top: 24px;
-    }
-
-    /* ---------- section headings ---------- */
     .section-label {
       display: flex;
       align-items: center;
@@ -159,9 +141,8 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--ink);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-
     .section-label::before {
       content: "";
       display: inline-block;
@@ -170,13 +151,11 @@
       background: var(--ink);
     }
 
-    /* ---------- sidebar content ---------- */
     .contact-line {
       font-size: 12px;
       line-height: 1.7;
       color: var(--ink);
     }
-
     .contact-line .muted {
       color: var(--dim-70);
       font-style: italic;
@@ -187,14 +166,12 @@
       font-size: 12px;
       line-height: 1.85;
     }
-
     .timeline li {
       display: grid;
       grid-template-columns: 58px 1fr;
       gap: 8px;
       color: var(--ink);
     }
-
     .timeline .year {
       font-style: italic;
       color: var(--dim-70);
@@ -202,11 +179,15 @@
       padding-top: 1px;
     }
 
-    /* ---------- work section ---------- */
+    /* ---------- work ---------- */
+    .work-section {
+      padding-top: 24px;
+    }
+
     .work-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 18px;
+      gap: 16px;
       margin-top: 4px;
     }
 
@@ -218,7 +199,6 @@
       display: flex;
       flex-direction: column;
     }
-
     .card-venue {
       font-size: 9px;
       letter-spacing: 0.1em;
@@ -226,7 +206,6 @@
       color: var(--dim-70);
       margin-bottom: 10px;
     }
-
     .card-title {
       font-size: 14px;
       font-weight: 700;
@@ -234,14 +213,12 @@
       color: var(--ink);
       margin-bottom: 6px;
     }
-
     .card-authors {
       font-size: 10px;
       font-style: italic;
       color: var(--dim-70);
       margin-bottom: 12px;
     }
-
     .card-abstract {
       font-size: 10px;
       line-height: 1.6;
@@ -249,7 +226,6 @@
       opacity: 0.85;
       margin-bottom: auto;
     }
-
     .card-links {
       display: flex;
       flex-wrap: wrap;
@@ -258,7 +234,6 @@
       color: var(--dim-70);
       padding-top: 14px;
     }
-
     .card-links a {
       border-bottom: 1px solid var(--dim-25);
     }
@@ -277,46 +252,32 @@
     }
 
     /* ---------- responsive ---------- */
-    @media (max-width: 1100px) {
-      body {
-        padding: 40px max(36px, 6%);
-      }
-      .columns {
-        gap: 32px;
-      }
-    }
-
     @media (max-width: 860px) {
-      body {
-        padding: 40px 32px;
-      }
+      body { padding: 36px 28px; }
       .name { font-size: 28px; }
-      .hero {
+      .page-grid {
         grid-template-columns: 1fr;
-        gap: 20px;
-        padding: 28px 0 28px;
+        gap: 20px 0;
       }
       .portrait {
         width: 120px;
         height: 150px;
       }
-      .hero-text {
-        min-height: 0;
-      }
+      .content { grid-column: 1; }
       .hero-bio { font-size: 13px; }
-      .columns {
+      .meta-row {
         grid-template-columns: 1fr;
-        gap: 36px;
+        gap: 24px;
       }
       .work-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 14px;
       }
       .card { padding: 20px 20px; }
     }
 
     @media (max-width: 480px) {
-      body { padding: 32px 18px; }
+      body { padding: 28px 18px; }
       .name { font-size: 24px; }
       .hero-bio { font-size: 12px; }
       .timeline li {
@@ -335,41 +296,39 @@
     <h1 class="name">hugo andersson</h1>
   </header>
 
-  <main>
+  <main class="page-grid">
 
-    <section class="hero" aria-label="Introduction">
-      <div class="portrait">
-        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
-      </div>
-      <div class="hero-text">
-        <p class="hero-bio">
-          I'm a PhD Fellow in Human-Centered Computing at
-          <a href="#">Aarhus University</a>, advised by
-          <a href="#">Niklas Elmqvist</a>. I build systems where human and
-          artificial reasoning mix, then study what happens to the thinking.
-          My work combines <em>HCI</em>, <em>AI</em>, and <em>design research</em>,
-          exploring what happens to knowledge, creativity, and meaning when
-          people and AI share the same cognitive environment. I'm particularly
-          drawn to agentic AI and the near future these systems point toward,
-          not just the interfaces we put on them.
-        </p>
-        <nav class="link-row" aria-label="External profiles">
-          <a href="#">Google Scholar</a>
-          <span class="sep">·</span>
-          <a href="#">GitHub</a>
-          <span class="sep">·</span>
-          <a href="#">ORCID</a>
-          <span class="sep">·</span>
-          <a href="#">Semantic Scholar</a>
-          <span class="sep">·</span>
-          <a href="#">LinkedIn</a>
-        </nav>
-      </div>
-    </section>
+    <div class="portrait">
+      <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
+    </div>
 
-    <div class="columns">
+    <div class="content">
+      <p class="hero-bio">
+        I'm a PhD Fellow in Human-Centered Computing at
+        <a href="#">Aarhus University</a>, advised by
+        <a href="#">Niklas Elmqvist</a>. I build systems where human and
+        artificial reasoning mix, then study what happens to the thinking.
+        My work combines <em>HCI</em>, <em>AI</em>, and <em>design research</em>,
+        exploring what happens to knowledge, creativity, and meaning when
+        people and AI share the same cognitive environment. I'm particularly
+        drawn to agentic AI and the near future these systems point toward,
+        not just the interfaces we put on them.
+      </p>
+      <nav class="link-row" aria-label="External profiles">
+        <a href="#">Google Scholar</a>
+        <span class="sep">·</span>
+        <a href="#">GitHub</a>
+        <span class="sep">·</span>
+        <a href="#">ORCID</a>
+        <span class="sep">·</span>
+        <a href="#">Semantic Scholar</a>
+        <span class="sep">·</span>
+        <a href="#">LinkedIn</a>
+      </nav>
+    </div>
 
-      <aside class="sidebar" aria-label="Contact and background">
+    <div class="content">
+      <div class="meta-row">
         <section aria-labelledby="contact-label">
           <h2 id="contact-label" class="section-label">Contact</h2>
           <p class="contact-line">
@@ -391,59 +350,58 @@
             <li><span class="year">2019–22</span><span>BSc · Cognitive Science · U. of Gothenburg</span></li>
           </ul>
         </section>
-      </aside>
-
-      <div class="main-col">
-        <section aria-labelledby="work-label">
-          <h2 id="work-label" class="section-label">Work</h2>
-          <div class="work-grid">
-            <article class="card">
-              <p class="card-venue">UIST · 2026 · under review</p>
-              <h3 class="card-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
-              <p class="card-authors">Hugo Andersson</p>
-              <p class="card-abstract"></p>
-              <div class="card-links">
-                <a href="#">PDF</a>
-                <a href="#">BibTeX</a>
-              </div>
-            </article>
-
-            <article class="card">
-              <p class="card-venue">AVI · 2026</p>
-              <h3 class="card-title">TombWriter: Exploring Beat-Level Interaction in Human-AI Co-Writing</h3>
-              <p class="card-authors">Hugo Andersson</p>
-              <p class="card-abstract"></p>
-              <div class="card-links">
-                <a href="#">PDF</a>
-                <a href="#">BibTeX</a>
-              </div>
-            </article>
-
-            <article class="card">
-              <p class="card-venue">CHI · 2026 · Tools for Thought workshop</p>
-              <h3 class="card-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
-              <p class="card-authors">Hugo Andersson</p>
-              <p class="card-abstract"></p>
-              <div class="card-links">
-                <a href="#">PDF</a>
-                <a href="#">BibTeX</a>
-              </div>
-            </article>
-
-            <article class="card">
-              <p class="card-venue">CHI · 2026 · AutomationXP workshop</p>
-              <h3 class="card-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
-              <p class="card-authors">Hugo Andersson</p>
-              <p class="card-abstract"></p>
-              <div class="card-links">
-                <a href="#">PDF</a>
-                <a href="#">BibTeX</a>
-              </div>
-            </article>
-          </div>
-        </section>
       </div>
+    </div>
 
+    <div class="content">
+      <section class="work-section" aria-labelledby="work-label">
+        <h2 id="work-label" class="section-label">Work</h2>
+        <div class="work-grid">
+          <article class="card">
+            <p class="card-venue">UIST · 2026 · under review</p>
+            <h3 class="card-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
+            <p class="card-authors">Hugo Andersson</p>
+            <p class="card-abstract"></p>
+            <div class="card-links">
+              <a href="#">PDF</a>
+              <a href="#">BibTeX</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-venue">AVI · 2026</p>
+            <h3 class="card-title">TombWriter: Exploring Beat-Level Interaction in Human-AI Co-Writing</h3>
+            <p class="card-authors">Hugo Andersson</p>
+            <p class="card-abstract"></p>
+            <div class="card-links">
+              <a href="#">PDF</a>
+              <a href="#">BibTeX</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-venue">CHI · 2026 · Tools for Thought workshop</p>
+            <h3 class="card-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
+            <p class="card-authors">Hugo Andersson</p>
+            <p class="card-abstract"></p>
+            <div class="card-links">
+              <a href="#">PDF</a>
+              <a href="#">BibTeX</a>
+            </div>
+          </article>
+
+          <article class="card">
+            <p class="card-venue">CHI · 2026 · AutomationXP workshop</p>
+            <h3 class="card-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
+            <p class="card-authors">Hugo Andersson</p>
+            <p class="card-abstract"></p>
+            <div class="card-links">
+              <a href="#">PDF</a>
+              <a href="#">BibTeX</a>
+            </div>
+          </article>
+        </div>
+      </section>
     </div>
 
   </main>
