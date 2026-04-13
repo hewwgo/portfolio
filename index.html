@@ -127,9 +127,14 @@
       padding-top: 1px;
     }
 
-    /* all content blocks in column 2 */
-    .content-block {
+    /* hero bio in column 2 */
+    .hero-block {
       grid-column: 2;
+    }
+
+    /* meta + work span full width */
+    .full-width {
+      grid-column: 1 / -1;
     }
 
     /* meta: contact + education side by side */
@@ -218,7 +223,8 @@
       .page-layout {
         grid-template-columns: 1fr;
       }
-      .content-block { grid-column: 1; }
+      .hero-block { grid-column: 1; }
+      .full-width { grid-column: 1; }
       .portrait { width: 120px; height: 150px; }
       .meta-row { grid-template-columns: 1fr; gap: 16px; }
       .work-grid { grid-template-columns: 1fr; gap: 14px; }
@@ -246,7 +252,7 @@
       <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
     </div>
 
-    <div class="content-block">
+    <div class="hero-block">
       <p class="hero-bio">
           I'm a PhD Fellow in Human-Centered Computing at
           <a href="#">Aarhus University</a>, advised by
@@ -271,7 +277,7 @@
         </nav>
     </div>
 
-    <div class="content-block meta-row">
+    <div class="full-width meta-row">
       <section aria-labelledby="contact-label">
         <h2 id="contact-label" class="section-label">Contact</h2>
         <p class="contact-line">
@@ -295,7 +301,7 @@
       </section>
     </div>
 
-    <section class="content-block" style="margin-top:10px" aria-labelledby="work-label">
+    <section class="full-width" style="margin-top:10px" aria-labelledby="work-label">
         <h2 id="work-label" class="section-label">Work</h2>
         <div class="work-grid">
           <article class="card">
