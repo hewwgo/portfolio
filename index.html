@@ -8,12 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    /* reset */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
       --ink: #1F18C0;
@@ -46,20 +41,11 @@
       padding-bottom: 1px;
       transition: color 0.2s ease, border-color 0.2s ease;
     }
-    a:hover {
-      color: var(--ink-hover);
-      border-bottom-color: var(--ink-hover);
-    }
-    a:focus-visible {
-      outline: 2px solid var(--ink);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
+    a:hover { color: var(--ink-hover); border-bottom-color: var(--ink-hover); }
+    a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
 
-    /* ---------- header ---------- */
-    .site-header {
-      padding-bottom: 16px;
-    }
+    /* header */
+    .site-header { padding-bottom: 16px; }
     .name {
       font-size: 32px;
       font-weight: 700;
@@ -68,68 +54,33 @@
       color: var(--ink);
     }
 
-    /* ---------- page grid ---------- */
-    .page-grid {
+    /* two-column layout */
+    .page-layout {
       display: grid;
-      grid-template-columns: 150px 1fr;
-      gap: 0 32px;
+      grid-template-columns: 190px 1fr;
+      gap: 32px;
+      padding-top: 16px;
+    }
+
+    /* left column */
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
     .portrait {
-      grid-row: 1;
-      width: 150px;
-      height: 188px;
+      width: 190px;
+      height: 238px;
       background: var(--card);
       border-radius: 4px;
       overflow: hidden;
-      margin-top: 4px;
     }
     .portrait img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-    }
-
-    /* everything in column 2 */
-    .content {
-      grid-column: 2;
-    }
-
-    /* ---------- hero bio ---------- */
-    .hero-bio {
-      font-size: 14px;
-      line-height: 1.65;
-      color: var(--ink);
-      padding: 4px 0 0;
-    }
-    .hero-bio em {
-      color: var(--dim-70);
-    }
-
-    .link-row {
-      margin-top: 12px;
-      font-size: 11px;
-      color: var(--dim-70);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-    .link-row a {
-      border-bottom: 1px solid var(--dim-25);
-    }
-    .link-row .sep {
-      color: var(--dim-25);
-      user-select: none;
-    }
-
-    /* ---------- meta row (Contact | Bio) ---------- */
-    .meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      padding: 18px 0 0;
     }
 
     .section-label {
@@ -141,7 +92,7 @@
       letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--ink);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .section-label::before {
       content: "";
@@ -153,7 +104,7 @@
 
     .contact-line {
       font-size: 12px;
-      line-height: 1.7;
+      line-height: 1.65;
       color: var(--ink);
     }
     .contact-line .muted {
@@ -173,9 +124,7 @@
       color: var(--ink);
       margin-bottom: 6px;
     }
-    .timeline li:last-child {
-      margin-bottom: 0;
-    }
+    .timeline li:last-child { margin-bottom: 0; }
     .timeline .year {
       font-style: italic;
       color: var(--dim-70);
@@ -183,11 +132,33 @@
       padding-top: 1px;
     }
 
-    /* ---------- work ---------- */
-    .work-section {
-      padding-top: 18px;
+    /* right column */
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
+    .hero-bio {
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--ink);
+    }
+    .hero-bio em { color: var(--dim-70); }
+
+    .link-row {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--dim-70);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .link-row a { border-bottom: 1px solid var(--dim-25); }
+    .link-row .sep { color: var(--dim-25); user-select: none; }
+
+    /* work */
     .work-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -197,7 +168,7 @@
 
     .card {
       background: var(--card);
-      padding: 22px 24px;
+      padding: 20px 22px;
       border: 1px solid var(--dim-12);
       border-radius: 8px;
       display: flex;
@@ -208,10 +179,10 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--dim-70);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .card-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       line-height: 1.35;
       color: var(--ink);
@@ -221,14 +192,13 @@
       font-size: 10px;
       font-style: italic;
       color: var(--dim-70);
-      margin-bottom: 12px;
+      margin-bottom: auto;
     }
     .card-abstract {
       font-size: 10px;
       line-height: 1.6;
       color: var(--ink);
       opacity: 0.85;
-      margin-bottom: auto;
     }
     .card-links {
       display: flex;
@@ -236,62 +206,36 @@
       gap: 12px;
       font-size: 10px;
       color: var(--dim-70);
-      padding-top: 14px;
-    }
-    .card-links a {
-      border-bottom: 1px solid var(--dim-25);
-    }
-
-    /* ---------- footer ---------- */
-    .site-footer {
-      margin-top: 32px;
       padding-top: 12px;
-      font-size: 10px;
-      font-style: italic;
-      color: var(--dim-55);
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
     }
+    .card-links a { border-bottom: 1px solid var(--dim-25); }
 
-    /* ---------- responsive ---------- */
+    /* responsive */
     @media (max-width: 860px) {
       body { padding: 36px 28px; }
       .name { font-size: 28px; }
-      .page-grid {
-        grid-template-columns: 1fr;
-        gap: 20px 0;
-      }
-      .portrait {
-        width: 120px;
-        height: 150px;
-      }
-      .content { grid-column: 1; }
-      .hero-bio { font-size: 13px; }
-      .meta-row {
+      .page-layout {
         grid-template-columns: 1fr;
         gap: 24px;
       }
-      .work-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+      .left-col {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 24px;
       }
-      .card { padding: 20px 20px; }
+      .portrait { width: 130px; height: 163px; }
+      .work-grid { grid-template-columns: 1fr; gap: 14px; }
     }
 
     @media (max-width: 480px) {
       body { padding: 28px 18px; }
       .name { font-size: 24px; }
       .hero-bio { font-size: 12px; }
-      .timeline li {
-        grid-template-columns: 50px 1fr;
-      }
+      .left-col { flex-direction: column; }
+      .timeline li { grid-template-columns: 50px 1fr; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   </style>
 </head>
 <body>
@@ -300,65 +244,63 @@
     <h1 class="name">hugo andersson</h1>
   </header>
 
-  <main class="page-grid">
+  <main class="page-layout">
 
-    <div class="portrait">
-      <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
-    </div>
-
-    <div class="content">
-      <p class="hero-bio">
-        I'm a PhD Fellow in Human-Centered Computing at
-        <a href="#">Aarhus University</a>, advised by
-        <a href="#">Niklas Elmqvist</a>. I build systems where human and
-        artificial reasoning mix, then study what happens to the thinking.
-        My work combines <em>HCI</em>, <em>AI</em>, and <em>design research</em>,
-        exploring what happens to knowledge, creativity, and meaning when
-        people and AI share the same cognitive environment. I'm particularly
-        drawn to agentic AI and the near future these systems point toward,
-        not just the interfaces we put on them.
-      </p>
-      <nav class="link-row" aria-label="External profiles">
-        <a href="#">Google Scholar</a>
-        <span class="sep">·</span>
-        <a href="#">GitHub</a>
-        <span class="sep">·</span>
-        <a href="#">ORCID</a>
-        <span class="sep">·</span>
-        <a href="#">Semantic Scholar</a>
-        <span class="sep">·</span>
-        <a href="#">LinkedIn</a>
-      </nav>
-    </div>
-
-    <div class="content">
-      <div class="meta-row">
-        <section aria-labelledby="contact-label">
-          <h2 id="contact-label" class="section-label">Contact</h2>
-          <p class="contact-line">
-            <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
-            <span class="muted">
-              Department of Computer Science<br>
-              Aarhus University<br>
-              Åbogade 34, 8200 Aarhus
-            </span>
-          </p>
-        </section>
-
-        <section aria-labelledby="bio-label">
-          <h2 id="bio-label" class="section-label">Bio</h2>
-          <ul class="timeline">
-            <li><span class="year">2025–</span><span>PhD Fellow<br>Aarhus University</span></li>
-            <li><span class="year">2023–25</span><span>MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
-            <li><span class="year">2022–23</span><span>Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
-            <li><span class="year">2019–22</span><span>BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
-          </ul>
-        </section>
+    <div class="left-col">
+      <div class="portrait">
+        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
       </div>
+
+      <section aria-labelledby="contact-label">
+        <h2 id="contact-label" class="section-label">Contact</h2>
+        <p class="contact-line">
+          <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
+          <span class="muted">
+            Department of Computer Science<br>
+            Aarhus University<br>
+            Åbogade 34, 8200 Aarhus
+          </span>
+        </p>
+      </section>
+
+      <section aria-labelledby="edu-label">
+        <h2 id="edu-label" class="section-label">Education</h2>
+        <ul class="timeline">
+          <li><span class="year">2025–</span><span>PhD Fellow<br>Aarhus University</span></li>
+          <li><span class="year">2023–25</span><span>MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
+          <li><span class="year">2022–23</span><span>Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
+          <li><span class="year">2019–22</span><span>BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
+        </ul>
+      </section>
     </div>
 
-    <div class="content">
-      <section class="work-section" aria-labelledby="work-label">
+    <div class="right-col">
+      <div>
+        <p class="hero-bio">
+          I'm a PhD Fellow in Human-Centered Computing at
+          <a href="#">Aarhus University</a>, advised by
+          <a href="#">Niklas Elmqvist</a>. I build systems where human and
+          artificial reasoning mix, then study what happens to the thinking.
+          My work combines <em>HCI</em>, <em>AI</em>, and <em>design research</em>,
+          exploring what happens to knowledge, creativity, and meaning when
+          people and AI share the same cognitive environment. I'm particularly
+          drawn to agentic AI and the near future these systems point toward,
+          not just the interfaces we put on them.
+        </p>
+        <nav class="link-row" aria-label="External profiles">
+          <a href="#">Google Scholar</a>
+          <span class="sep">·</span>
+          <a href="#">GitHub</a>
+          <span class="sep">·</span>
+          <a href="#">ORCID</a>
+          <span class="sep">·</span>
+          <a href="#">Semantic Scholar</a>
+          <span class="sep">·</span>
+          <a href="#">LinkedIn</a>
+        </nav>
+      </div>
+
+      <section aria-labelledby="work-label">
         <h2 id="work-label" class="section-label">Work</h2>
         <div class="work-grid">
           <article class="card">
@@ -409,7 +351,6 @@
     </div>
 
   </main>
-
 
 </body>
 </html>
