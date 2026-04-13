@@ -164,13 +164,17 @@
     .timeline {
       list-style: none;
       font-size: 12px;
-      line-height: 1.85;
+      line-height: 1.5;
     }
     .timeline li {
       display: grid;
       grid-template-columns: 58px 1fr;
       gap: 8px;
       color: var(--ink);
+      margin-bottom: 10px;
+    }
+    .timeline li:last-child {
+      margin-bottom: 0;
     }
     .timeline .year {
       font-style: italic;
@@ -344,10 +348,10 @@
         <section aria-labelledby="bio-label">
           <h2 id="bio-label" class="section-label">Bio</h2>
           <ul class="timeline">
-            <li><span class="year">2025–</span><span>PhD Fellow · Aarhus University</span></li>
-            <li><span class="year">2023–25</span><span>MSc · Human-Centered AI · U. of Gothenburg</span></li>
-            <li><span class="year">2022–23</span><span>Adjunct in HCI · U. of Gothenburg</span></li>
-            <li><span class="year">2019–22</span><span>BSc · Cognitive Science · U. of Gothenburg</span></li>
+            <li><span class="year">2025–</span><span>PhD Fellow<br>Aarhus University</span></li>
+            <li><span class="year">2023–25</span><span>MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
+            <li><span class="year">2022–23</span><span>Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
+            <li><span class="year">2019–22</span><span>BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
           </ul>
         </section>
       </div>
