@@ -118,18 +118,21 @@
       line-height: 1.45;
     }
     .timeline li {
-      display: grid;
-      grid-template-columns: 58px 1fr;
-      gap: 6px;
       color: var(--ink);
       margin-bottom: 6px;
+    }
+    .timeline .year {
+      display: block;
+    }
+    .timeline .detail {
+      display: block;
     }
     .timeline li:last-child { margin-bottom: 0; }
     .timeline .year {
       font-style: italic;
-      color: var(--dim-70);
-      font-size: 11px;
-      padding-top: 1px;
+      color: var(--dim-55);
+      font-size: 10px;
+      margin-bottom: 1px;
     }
 
     /* right column */
@@ -266,10 +269,10 @@
       <section aria-labelledby="edu-label">
         <h2 id="edu-label" class="section-label">Education</h2>
         <ul class="timeline">
-          <li><span class="year">2025–</span><span>PhD Fellow<br>Aarhus University</span></li>
-          <li><span class="year">2023–25</span><span>MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
-          <li><span class="year">2022–23</span><span>Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
-          <li><span class="year">2019–22</span><span>BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
+          <li><span class="year">2025–</span><span class="detail">PhD Fellow<br>Aarhus University</span></li>
+          <li><span class="year">2023–25</span><span class="detail">MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
+          <li><span class="year">2022–23</span><span class="detail">Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
+          <li><span class="year">2019–22</span><span class="detail">BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
         </ul>
       </section>
     </div>
