@@ -30,7 +30,7 @@
       font-family: var(--serif);
       font-size: 13px;
       line-height: 1.6;
-      padding: 40px max(48px, 14%);
+      padding: 40px max(48px, 20%);
       min-height: 100vh;
     }
 
@@ -54,24 +54,25 @@
       color: var(--ink);
     }
 
-    /* two-column layout */
+    /* single column layout */
     .page-layout {
-      display: grid;
-      grid-template-columns: 190px 1fr;
-      gap: 32px;
-      padding-top: 16px;
-    }
-
-    /* left column */
-    .left-col {
       display: flex;
       flex-direction: column;
       gap: 20px;
+      padding-top: 16px;
+    }
+
+    /* hero row: photo + bio side by side */
+    .hero-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 28px;
+      align-items: start;
     }
 
     .portrait {
-      width: 190px;
-      height: 238px;
+      width: 160px;
+      height: 200px;
       background: var(--card);
       border-radius: 4px;
       overflow: hidden;
@@ -132,11 +133,11 @@
       padding-top: 1px;
     }
 
-    /* right column */
-    .right-col {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    /* meta row: contact + education side by side */
+    .meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
     }
 
     .hero-bio {
@@ -214,16 +215,12 @@
     @media (max-width: 860px) {
       body { padding: 36px 28px; }
       .name { font-size: 28px; }
-      .page-layout {
+      .hero-row {
         grid-template-columns: 1fr;
-        gap: 24px;
-      }
-      .left-col {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 24px;
+        gap: 20px;
       }
       .portrait { width: 130px; height: 163px; }
+      .meta-row { grid-template-columns: 1fr; gap: 20px; }
       .work-grid { grid-template-columns: 1fr; gap: 14px; }
     }
 
@@ -231,7 +228,6 @@
       body { padding: 28px 18px; }
       .name { font-size: 24px; }
       .hero-bio { font-size: 12px; }
-      .left-col { flex-direction: column; }
       .timeline li { grid-template-columns: 50px 1fr; }
     }
 
@@ -246,35 +242,10 @@
 
   <main class="page-layout">
 
-    <div class="left-col">
+    <div class="hero-row">
       <div class="portrait">
         <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
       </div>
-
-      <section aria-labelledby="contact-label">
-        <h2 id="contact-label" class="section-label">Contact</h2>
-        <p class="contact-line">
-          <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
-          <span class="muted">
-            Department of Computer Science<br>
-            Aarhus University<br>
-            Åbogade 34, 8200 Aarhus
-          </span>
-        </p>
-      </section>
-
-      <section aria-labelledby="edu-label">
-        <h2 id="edu-label" class="section-label">Education</h2>
-        <ul class="timeline">
-          <li><span class="year">2025–</span><span class="detail">PhD Fellow<br>Aarhus University</span></li>
-          <li><span class="year">2023–25</span><span class="detail">MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
-          <li><span class="year">2022–23</span><span class="detail">Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
-          <li><span class="year">2019–22</span><span class="detail">BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
-        </ul>
-      </section>
-    </div>
-
-    <div class="right-col">
       <div>
         <p class="hero-bio">
           I'm a PhD Fellow in Human-Centered Computing at
@@ -299,8 +270,33 @@
           <a href="#">LinkedIn</a>
         </nav>
       </div>
+    </div>
 
-      <section aria-labelledby="work-label">
+    <div class="meta-row">
+      <section aria-labelledby="contact-label">
+        <h2 id="contact-label" class="section-label">Contact</h2>
+        <p class="contact-line">
+          <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
+          <span class="muted">
+            Department of Computer Science<br>
+            Aarhus University<br>
+            Åbogade 34, 8200 Aarhus
+          </span>
+        </p>
+      </section>
+
+      <section aria-labelledby="edu-label">
+        <h2 id="edu-label" class="section-label">Education</h2>
+        <ul class="timeline">
+          <li><span class="year">2025–</span><span class="detail">PhD Fellow<br>Aarhus University</span></li>
+          <li><span class="year">2023–25</span><span class="detail">MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
+          <li><span class="year">2022–23</span><span class="detail">Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
+          <li><span class="year">2019–22</span><span class="detail">BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
+        </ul>
+      </section>
+    </div>
+
+    <section aria-labelledby="work-label">
         <h2 id="work-label" class="section-label">Work</h2>
         <div class="work-grid">
           <article class="card">
@@ -347,8 +343,7 @@
             </div>
           </article>
         </div>
-      </section>
-    </div>
+    </section>
 
   </main>
 
