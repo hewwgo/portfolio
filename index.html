@@ -123,7 +123,7 @@
       grid-template-columns: 52px 1fr;
       gap: 8px;
       color: var(--ink);
-      margin-bottom: 6px;
+      margin-bottom: 2px;
     }
     .timeline li:last-child { margin-bottom: 0; }
     .timeline .year {
@@ -133,11 +133,11 @@
       padding-top: 1px;
     }
 
-    /* meta row: contact + education side by side */
+    /* meta: contact + education stacked */
     .meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .hero-bio {
@@ -220,7 +220,7 @@
         gap: 20px;
       }
       .portrait { width: 130px; height: 163px; }
-      .meta-row { grid-template-columns: 1fr; gap: 20px; }
+      .meta-row { gap: 16px; }
       .work-grid { grid-template-columns: 1fr; gap: 14px; }
     }
 
@@ -288,10 +288,10 @@
       <section aria-labelledby="edu-label">
         <h2 id="edu-label" class="section-label">Education</h2>
         <ul class="timeline">
-          <li><span class="year">2025–</span><span class="detail">PhD Fellow<br>Aarhus University</span></li>
-          <li><span class="year">2023–25</span><span class="detail">MSc<br>Human-Centered AI<br>University of Gothenburg</span></li>
-          <li><span class="year">2022–23</span><span class="detail">Adjunct<br>Human-Computer Interaction<br>University of Gothenburg</span></li>
-          <li><span class="year">2019–22</span><span class="detail">BSc<br>Cognitive Science<br>University of Gothenburg</span></li>
+          <li><span class="year">2025–</span><span class="detail">PhD Fellow, Aarhus University</span></li>
+          <li><span class="year">2023–25</span><span class="detail">MSc Human-Centered AI, University of Gothenburg</span></li>
+          <li><span class="year">2022–23</span><span class="detail">Adjunct in HCI, University of Gothenburg</span></li>
+          <li><span class="year">2019–22</span><span class="detail">BSc Cognitive Science, University of Gothenburg</span></li>
         </ul>
       </section>
     </div>
