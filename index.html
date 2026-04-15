@@ -58,13 +58,15 @@
     .page-layout {
       display: grid;
       grid-template-columns: 210px 1fr;
-      gap: 16px 28px;
+      gap: 12px 28px;
       padding-top: 16px;
+      position: relative;
     }
 
     .portrait {
-      grid-column: 1;
-      grid-row: 1;
+      position: absolute;
+      top: 16px;
+      left: 0;
       width: 210px;
       height: 263px;
       background: var(--card);
