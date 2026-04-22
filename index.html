@@ -161,57 +161,92 @@
     .link-row a { border-bottom: 1px solid var(--dim-25); }
     .link-row .sep { color: var(--dim-25); user-select: none; }
 
-    /* work */
-    .work-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-top: 4px;
+    /* paper stack */
+    .paper-stack {
+      margin-top: 8px;
+      padding-bottom: 30vh;
     }
 
-    .card {
-      background: var(--card);
-      padding: 20px 22px;
-      border: 1px solid var(--dim-12);
-      border-radius: 8px;
+    .paper-card {
+      position: sticky;
+      top: calc(24px + var(--idx) * 20px);
+      background: #FFFFFF;
+      border: 1px solid rgba(31, 24, 192, 0.08);
+      border-radius: 6px;
+      box-shadow:
+        0 1px 2px rgba(31, 24, 192, 0.04),
+        0 12px 28px -16px rgba(31, 24, 192, 0.22),
+        0 30px 60px -30px rgba(0, 0, 0, 0.18);
+      padding: 44px 56px 36px;
+      margin-bottom: 28vh;
+      min-height: 440px;
       display: flex;
       flex-direction: column;
-    }
-    .card-venue {
-      font-size: 9px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--dim-70);
-      margin-bottom: 8px;
-    }
-    .card-title {
-      font-size: 13px;
-      font-weight: 700;
-      line-height: 1.35;
+      text-decoration: none;
       color: var(--ink);
-      margin-bottom: 6px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .card-authors {
+    .paper-card:last-child { margin-bottom: 0; }
+    .paper-card:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 2px 4px rgba(31, 24, 192, 0.06),
+        0 16px 32px -16px rgba(31, 24, 192, 0.28),
+        0 40px 72px -32px rgba(0, 0, 0, 0.22);
+    }
+
+    .paper-venue {
       font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim-55);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--dim-12);
+    }
+    .paper-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 10px;
+      letter-spacing: -0.005em;
+    }
+    .paper-authors {
+      font-size: 13px;
       font-style: italic;
       color: var(--dim-70);
-      margin-bottom: auto;
+      margin-bottom: 20px;
     }
-    .card-abstract {
+    .paper-abstract-label {
       font-size: 10px;
-      line-height: 1.6;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim-55);
+      margin-bottom: 6px;
+    }
+    .paper-abstract {
+      font-size: 13px;
+      line-height: 1.7;
       color: var(--ink);
-      opacity: 0.85;
+      opacity: 0.9;
+      margin-bottom: auto;
+      max-width: 68ch;
     }
-    .card-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      font-size: 10px;
-      color: var(--dim-70);
-      padding-top: 12px;
+    .paper-link {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      padding-top: 24px;
+      border-bottom: none;
     }
-    .card-links a { border-bottom: 1px solid var(--dim-25); }
+    .paper-link .arrow {
+      transition: transform 0.2s ease;
+      display: inline-block;
+    }
+    .paper-card:hover .paper-link .arrow {
+      transform: translateX(4px);
+    }
 
     /* responsive */
     @media (max-width: 860px) {
@@ -223,7 +258,12 @@
       .content-block { grid-column: 1; }
       .portrait { width: 140px; height: 175px; }
       .meta-row { grid-template-columns: 1fr; gap: 16px; }
-      .work-grid { grid-template-columns: 1fr; gap: 14px; }
+      .paper-card {
+        padding: 32px 28px 28px;
+        margin-bottom: 22vh;
+        min-height: 360px;
+      }
+      .paper-title { font-size: 18px; }
     }
 
     @media (max-width: 480px) {
@@ -293,52 +333,71 @@
     </div>
 
     <section class="content-block" aria-labelledby="work-label">
-        <h2 id="work-label" class="section-label">Work</h2>
-        <div class="work-grid">
-          <article class="card">
-            <p class="card-venue">UIST · 2026 · under review</p>
-            <h3 class="card-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
-            <p class="card-authors">Hugo Andersson, Niklas Elmqvist</p>
-            <p class="card-abstract"></p>
-            <div class="card-links">
-              <a href="#">PDF</a>
+      <h2 id="work-label" class="section-label">Work</h2>
+      <div class="paper-stack">
 
-            </div>
-          </article>
+        <a class="paper-card" style="--idx: 0" href="#">
+          <p class="paper-venue">UIST 2026 · under review</p>
+          <h3 class="paper-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
+          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="paper-abstract-label">Abstract</p>
+          <p class="paper-abstract">
+            Tessera captures a research group's collective knowledge as a
+            navigable map of tiles, then launches a faceted ideation engine
+            that generates candidate directions constrained by the group's
+            actual submissions. The LLM drives divergence by inferring
+            dimensions; the user drives convergence by locking in constraints,
+            with the exploration space restructuring at each step. Deployed
+            with a university research group over two weeks.
+          </p>
+          <span class="paper-link">Read paper <span class="arrow">→</span></span>
+        </a>
 
-          <article class="card">
-            <p class="card-venue">AVI · 2026</p>
-            <h3 class="card-title">TombWriter: Exploring Beat-Level Interaction in Human-AI Co-Writing</h3>
-            <p class="card-authors">Hugo Andersson, Niklas Elmqvist</p>
-            <p class="card-abstract"></p>
-            <div class="card-links">
-              <a href="#">PDF</a>
+        <a class="paper-card" style="--idx: 1" href="#">
+          <p class="paper-venue">AVI 2026 · Venice</p>
+          <h3 class="paper-title">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</h3>
+          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="paper-abstract-label">Abstract</p>
+          <p class="paper-abstract">
+            TombWriter treats LLM prompts not as disposable queries but as a
+            hierarchical story instrument refined over time. Writers work at
+            the level of story beats rather than prose — generating character
+            actions and editing to excavate their intended story. A
+            qualitative study with five experienced writers over three days
+            found writers framed the AI as a generation engine rather than a
+            collaborator, and valued the system for structural discovery.
+          </p>
+          <span class="paper-link">Read paper <span class="arrow">→</span></span>
+        </a>
 
-            </div>
-          </article>
+        <a class="paper-card" style="--idx: 2" href="#">
+          <p class="paper-venue">CHI 2026 · Tools for Thought workshop</p>
+          <h3 class="paper-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
+          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="paper-abstract-label">Abstract</p>
+          <p class="paper-abstract">
+            A position paper arguing that treating AI as a creative
+            <em>medium</em> — something you shape and push against — rather
+            than a tool that executes instructions, reframes the design space
+            for tools of thought. Abstract to be expanded.
+          </p>
+          <span class="paper-link">Read paper <span class="arrow">→</span></span>
+        </a>
 
-          <article class="card">
-            <p class="card-venue">CHI · 2026 · Tools for Thought workshop</p>
-            <h3 class="card-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
-            <p class="card-authors">Hugo Andersson, Niklas Elmqvist</p>
-            <p class="card-abstract"></p>
-            <div class="card-links">
-              <a href="#">PDF</a>
+        <a class="paper-card" style="--idx: 3" href="#">
+          <p class="paper-venue">CHI 2026 · AutomationXP workshop</p>
+          <h3 class="paper-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
+          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="paper-abstract-label">Abstract</p>
+          <p class="paper-abstract">
+            Examines trust calibration challenges when agents move from
+            playing roles to simulating specific people, particularly in
+            human-in-the-loop automation scenarios. Abstract to be expanded.
+          </p>
+          <span class="paper-link">Read paper <span class="arrow">→</span></span>
+        </a>
 
-            </div>
-          </article>
-
-          <article class="card">
-            <p class="card-venue">CHI · 2026 · AutomationXP workshop</p>
-            <h3 class="card-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
-            <p class="card-authors">Hugo Andersson, Niklas Elmqvist</p>
-            <p class="card-abstract"></p>
-            <div class="card-links">
-              <a href="#">PDF</a>
-
-            </div>
-          </article>
-        </div>
+      </div>
     </section>
 
   </main>
