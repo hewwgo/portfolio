@@ -477,20 +477,21 @@
       const left = document.querySelector('.left-pane');
       if (!right) return;
 
-      const SCROLL_MULTIPLIER = 3.5;
-
       window.addEventListener('wheel', (e) => {
         const path = e.composedPath();
-        const onLeft = path.includes(left);
-        if (onLeft) {
+        // Cursor over the right pane: let native scroll handle it (smooth, normal feel).
+        if (path.includes(right)) return;
+        // Cursor over the left pane: let it scroll if it can.
+        if (path.includes(left)) {
           const canScrollDown = left.scrollTop + left.clientHeight < left.scrollHeight - 1;
           const canScrollUp = left.scrollTop > 0;
           if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
-            return; // let left pane handle it
+            return;
           }
         }
+        // Cursor outside both panes (or over a non-scrollable left): forward at native speed.
         e.preventDefault();
-        right.scrollTop += e.deltaY * SCROLL_MULTIPLIER;
+        right.scrollTop += e.deltaY;
       }, { passive: false });
 
       // Touch devices: translate vertical swipe on left into right-pane scroll.
