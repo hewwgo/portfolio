@@ -30,7 +30,6 @@
       font-family: var(--serif);
       font-size: 13px;
       line-height: 1.6;
-      padding: 40px max(48px, 22%);
       min-height: 100vh;
     }
 
@@ -44,29 +43,40 @@
     a:hover { color: var(--ink-hover); border-bottom-color: var(--ink-hover); }
     a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
 
-    /* header */
-    .site-header { padding-bottom: 16px; }
+    /* ---------- split layout ---------- */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      padding: 0 max(40px, 6%);
+      max-width: 1680px;
+      margin: 0 auto;
+    }
+
+    /* ---------- left: static / sticky ---------- */
+    .left-pane {
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 56px 0 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      scrollbar-width: none;
+    }
+    .left-pane::-webkit-scrollbar { display: none; }
+
     .name {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 700;
       line-height: 1;
       letter-spacing: -0.01em;
       color: var(--ink);
     }
 
-    /* page grid: photo column + content column */
-    .page-layout {
-      display: grid;
-      grid-template-columns: 210px 1fr;
-      gap: 12px 28px;
-      padding-top: 16px;
-      position: relative;
-    }
-
     .portrait {
-      position: absolute;
-      top: 16px;
-      left: 0;
       width: 210px;
       height: 263px;
       background: var(--card);
@@ -79,6 +89,25 @@
       object-fit: cover;
       display: block;
     }
+
+    .hero-bio {
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--ink);
+      max-width: 52ch;
+    }
+    .hero-bio em { color: var(--dim-70); }
+
+    .link-row {
+      font-size: 11px;
+      color: var(--dim-70);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+    .link-row a { border-bottom: 1px solid var(--dim-25); }
+    .link-row .sep { color: var(--dim-25); user-select: none; }
 
     .section-label {
       display: flex;
@@ -97,6 +126,12 @@
       width: 3px;
       height: 11px;
       background: var(--ink);
+    }
+
+    .meta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
     }
 
     .contact-line {
@@ -129,83 +164,74 @@
       padding-top: 1px;
     }
 
-    /* all content blocks in column 2 */
-    .content-block {
-      grid-column: 2;
+    /* ---------- right: scrolling paper stack ---------- */
+    .right-pane {
+      padding: 56px 0 30vh;
     }
 
-    /* meta: contact + education side by side */
-    .meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      margin-top: 0;
+    .work-heading {
+      margin-bottom: 20px;
     }
 
-    .hero-bio {
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: var(--ink);
-    }
-    .hero-bio em { color: var(--dim-70); }
-
-    .link-row {
-      margin-top: 10px;
-      font-size: 11px;
-      color: var(--dim-70);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-    .link-row a { border-bottom: 1px solid var(--dim-25); }
-    .link-row .sep { color: var(--dim-25); user-select: none; }
-
-    /* paper stack */
     .paper-stack {
-      margin-top: 8px;
-      padding-bottom: 30vh;
+      /* each card below has sticky positioning */
     }
 
+    /* A4 ratio: 210:297 = 1:1.414 */
     .paper-card {
       position: sticky;
-      top: calc(24px + var(--idx) * 20px);
+      top: calc(32px + var(--idx) * 18px);
+      width: 100%;
+      max-width: 560px;
+      aspect-ratio: 1 / 1.414;
       background: #FFFFFF;
       border: 1px solid rgba(31, 24, 192, 0.08);
-      border-radius: 6px;
+      border-radius: 3px;
       box-shadow:
         0 1px 2px rgba(31, 24, 192, 0.04),
-        0 12px 28px -16px rgba(31, 24, 192, 0.22),
-        0 30px 60px -30px rgba(0, 0, 0, 0.18);
-      padding: 44px 56px 36px;
-      margin-bottom: 28vh;
-      min-height: 440px;
+        0 16px 40px -20px rgba(31, 24, 192, 0.25),
+        0 40px 80px -40px rgba(0, 0, 0, 0.22);
+      padding: 40px 44px 32px;
+      margin: 0 auto 22vh;
       display: flex;
       flex-direction: column;
       text-decoration: none;
       color: var(--ink);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
     }
-    .paper-card:last-child { margin-bottom: 0; }
+    .paper-card:last-child { margin-bottom: 6vh; }
     .paper-card:hover {
-      transform: translateY(-2px);
+      transform: translateY(-3px);
       box-shadow:
         0 2px 4px rgba(31, 24, 192, 0.06),
-        0 16px 32px -16px rgba(31, 24, 192, 0.28),
-        0 40px 72px -32px rgba(0, 0, 0, 0.22);
+        0 20px 48px -20px rgba(31, 24, 192, 0.32),
+        0 48px 96px -40px rgba(0, 0, 0, 0.28);
+    }
+
+    /* a thin stripe at the very top to evoke a paper header */
+    .paper-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--ink);
+      opacity: 0.85;
     }
 
     .paper-venue {
-      font-size: 10px;
-      letter-spacing: 0.18em;
+      font-size: 9px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--dim-55);
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       padding-bottom: 10px;
       border-bottom: 1px solid var(--dim-12);
     }
     .paper-title {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       line-height: 1.3;
       color: var(--ink);
@@ -213,32 +239,39 @@
       letter-spacing: -0.005em;
     }
     .paper-authors {
-      font-size: 13px;
+      font-size: 12px;
       font-style: italic;
       color: var(--dim-70);
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .paper-abstract-label {
-      font-size: 10px;
-      letter-spacing: 0.18em;
+      font-size: 9px;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--dim-55);
       margin-bottom: 6px;
     }
     .paper-abstract {
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.7;
       color: var(--ink);
-      opacity: 0.9;
+      opacity: 0.88;
       margin-bottom: auto;
-      max-width: 68ch;
+      text-align: justify;
+      hyphens: auto;
     }
     .paper-link {
-      font-size: 11px;
-      letter-spacing: 0.06em;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--ink);
-      padding-top: 24px;
+      padding-top: 18px;
+      margin-top: 16px;
+      border-top: 1px solid var(--dim-12);
       border-bottom: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .paper-link .arrow {
       transition: transform 0.2s ease;
@@ -248,29 +281,39 @@
       transform: translateX(4px);
     }
 
-    /* responsive */
-    @media (max-width: 860px) {
-      body { padding: 36px 28px; }
-      .name { font-size: 28px; }
-      .page-layout {
+    /* ---------- responsive ---------- */
+    @media (max-width: 960px) {
+      .split {
         grid-template-columns: 1fr;
+        gap: 32px;
+        padding: 0 32px;
       }
-      .content-block { grid-column: 1; }
-      .portrait { width: 140px; height: 175px; }
-      .meta-row { grid-template-columns: 1fr; gap: 16px; }
+      .left-pane {
+        position: static;
+        height: auto;
+        overflow: visible;
+        padding: 40px 0 0;
+      }
+      .right-pane {
+        padding: 0 0 30vh;
+      }
       .paper-card {
-        padding: 32px 28px 28px;
-        margin-bottom: 22vh;
-        min-height: 360px;
+        max-width: 480px;
+        top: calc(20px + var(--idx) * 16px);
       }
-      .paper-title { font-size: 18px; }
     }
 
-    @media (max-width: 480px) {
-      body { padding: 28px 18px; }
-      .name { font-size: 24px; }
-      .hero-bio { font-size: 12px; }
-      .timeline li { grid-template-columns: 50px 1fr; }
+    @media (max-width: 560px) {
+      .split { padding: 0 20px; }
+      .name { font-size: 26px; }
+      .portrait { width: 160px; height: 200px; }
+      .meta-row { grid-template-columns: 1fr; gap: 16px; }
+      .paper-card {
+        aspect-ratio: auto;
+        min-height: 420px;
+        padding: 28px 24px 22px;
+      }
+      .paper-title { font-size: 17px; }
     }
 
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -278,62 +321,62 @@
 </head>
 <body>
 
-  <header class="site-header">
-    <h1 class="name">hugo andersson</h1>
-  </header>
+  <div class="split">
 
-  <main class="page-layout">
+    <aside class="left-pane">
+      <h1 class="name">hugo andersson</h1>
 
-    <div class="portrait">
-      <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
-    </div>
+      <div class="portrait">
+        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
+      </div>
 
-    <div class="content-block">
       <p class="hero-bio">
-          I'm a first-year PhD Fellow in Human-Centered Computing at
-          <a href="#">Aarhus University</a>, advised by
-          <a href="#">Niklas Elmqvist</a>. My background is in cognitive
-          science, and I now work across <em>HCI</em>, <em>AI</em>, and
-          <em>design research</em>. So far my PhD has taken me through
-          creativity tools, collective knowledge systems, and agentic
-          simulations — different entry points into the same question:
-          what changes when AI becomes part of how people think, create,
-          and collaborate? I enjoy building systems, picking up whatever
-          they require, and learning as I go.
-        </p>
-        <nav class="link-row" aria-label="External profiles">
-          <a href="#">Semantic Scholar</a>
-          <span class="sep">·</span>
-          <a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a>
-        </nav>
-    </div>
+        I'm a first-year PhD Fellow in Human-Centered Computing at
+        <a href="#">Aarhus University</a>, advised by
+        <a href="#">Niklas Elmqvist</a>. My background is in cognitive
+        science, and I now work across <em>HCI</em>, <em>AI</em>, and
+        <em>design research</em>. So far my PhD has taken me through
+        creativity tools, collective knowledge systems, and agentic
+        simulations — different entry points into the same question:
+        what changes when AI becomes part of how people think, create,
+        and collaborate? I enjoy building systems, picking up whatever
+        they require, and learning as I go.
+      </p>
 
-    <div class="content-block meta-row">
-      <section aria-labelledby="contact-label">
-        <h2 id="contact-label" class="section-label">Contact</h2>
-        <p class="contact-line">
-          <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
-          <span class="muted">
-            Department of Computer Science<br>
-            Aarhus University<br>
-            Åbogade 34, 8200 Aarhus
-          </span>
-        </p>
-      </section>
+      <nav class="link-row" aria-label="External profiles">
+        <a href="#">Semantic Scholar</a>
+        <span class="sep">·</span>
+        <a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a>
+      </nav>
 
-      <section aria-labelledby="edu-label">
-        <h2 id="edu-label" class="section-label">Education</h2>
-        <ul class="timeline">
-          <li><span class="year">2025–</span><span class="detail">PhD Fellow, Aarhus University</span></li>
-          <li><span class="year">2023–25</span><span class="detail">MSc Human-Centered AI, University of Gothenburg</span></li>
-          <li><span class="year">2022–23</span><span class="detail">Adjunct in HCI, University of Gothenburg</span></li>
-          <li><span class="year">2019–22</span><span class="detail">BSc Cognitive Science, University of Gothenburg</span></li>
-        </ul>
-      </section>
-    </div>
+      <div class="meta-row">
+        <section aria-labelledby="contact-label">
+          <h2 id="contact-label" class="section-label">Contact</h2>
+          <p class="contact-line">
+            <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
+            <span class="muted">
+              Department of Computer Science<br>
+              Aarhus University<br>
+              Åbogade 34, 8200 Aarhus
+            </span>
+          </p>
+        </section>
 
-    <section class="content-block" aria-labelledby="work-label">
-      <h2 id="work-label" class="section-label">Work</h2>
+        <section aria-labelledby="edu-label">
+          <h2 id="edu-label" class="section-label">Education</h2>
+          <ul class="timeline">
+            <li><span class="year">2025–</span><span>PhD Fellow, Aarhus University</span></li>
+            <li><span class="year">2023–25</span><span>MSc Human-Centered AI, University of Gothenburg</span></li>
+            <li><span class="year">2022–23</span><span>Adjunct in HCI, University of Gothenburg</span></li>
+            <li><span class="year">2019–22</span><span>BSc Cognitive Science, University of Gothenburg</span></li>
+          </ul>
+        </section>
+      </div>
+    </aside>
+
+    <main class="right-pane">
+      <h2 class="section-label work-heading">Work</h2>
+
       <div class="paper-stack">
 
         <a class="paper-card" style="--idx: 0" href="#">
@@ -398,9 +441,9 @@
         </a>
 
       </div>
-    </section>
+    </main>
 
-  </main>
+  </div>
 
 </body>
 </html>
