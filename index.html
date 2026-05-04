@@ -22,17 +22,20 @@
       --serif: "Libre Baskerville", Georgia, serif;
     }
 
-    html, body {
-      height: 100%;
-      overflow: hidden;
-    }
-
+    html { scroll-behavior: smooth; }
     body {
       background: var(--paper);
       color: var(--ink);
       font-family: var(--serif);
       font-size: 13px;
       line-height: 1.6;
+      padding: 56px max(40px, 9%) 80px;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
     }
 
     a {
@@ -40,48 +43,45 @@
       text-decoration: none;
       border-bottom: 1px solid var(--dim-25);
       padding-bottom: 1px;
-      transition: color 0.2s ease, border-color 0.2s ease;
+      transition: color 0.18s ease, border-color 0.18s ease;
     }
     a:hover { color: var(--ink-hover); border-bottom-color: var(--ink-hover); }
     a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
 
-    /* ---------- split layout ---------- */
-    .split {
+    /* ---------- frontispiece ---------- */
+    .frontispiece {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 64px;
-      padding: 0 max(40px, 6%);
-      max-width: 1680px;
-      margin: 0 auto;
-      height: 100vh;
+      grid-template-columns: minmax(240px, 1fr) 2.4fr;
+      gap: 56px;
+      align-items: start;
     }
 
-    /* ---------- left: static pane ---------- */
-    .left-pane {
-      height: 100vh;
-      overflow-y: auto;
-      padding: 56px 0 40px;
+    .title-block {
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      scrollbar-width: none;
+      gap: 14px;
     }
-    .left-pane::-webkit-scrollbar { display: none; }
-
     .name {
-      font-size: 34px;
+      font-size: 30px;
       font-weight: 700;
-      line-height: 1;
+      line-height: 1.05;
       letter-spacing: -0.01em;
       color: var(--ink);
     }
-
+    .subtitle {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--dim-70);
+      line-height: 1.4;
+    }
     .portrait {
-      width: 210px;
-      height: 263px;
+      width: 100%;
+      max-width: 200px;
+      aspect-ratio: 4 / 5;
       background: var(--card);
       border-radius: 4px;
       overflow: hidden;
+      margin-top: 4px;
     }
     .portrait img {
       width: 100%;
@@ -90,481 +90,451 @@
       display: block;
     }
 
-    .hero-bio {
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--ink);
-    }
-    .hero-bio em { color: var(--dim-70); }
-
-    .link-row {
-      font-size: 11px;
-      color: var(--dim-70);
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 10px;
-    }
-    .link-row a { border-bottom: 1px solid var(--dim-25); }
-    .link-row .sep { color: var(--dim-25); user-select: none; }
-
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 10px;
-      font-weight: 400;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ink);
-      margin-bottom: 8px;
-    }
-    .section-label::before {
-      content: "";
-      display: inline-block;
-      width: 3px;
-      height: 11px;
-      background: var(--ink);
-    }
-
-    .meta-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    .contact-line {
+    .contact-block {
       font-size: 12px;
-      line-height: 1.65;
+      line-height: 1.7;
       color: var(--ink);
+      margin-top: 4px;
     }
-    .contact-line .muted {
+    .contact-block .muted {
       color: var(--dim-70);
       font-style: italic;
     }
+    .contact-block a { display: inline-block; }
 
-    .timeline {
+    .intro {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--ink);
+      max-width: 64ch;
+    }
+    .intro p + p { margin-top: 14px; }
+    .intro em { color: var(--dim-70); }
+
+    /* ---------- divider ---------- */
+    .rule {
+      margin: 56px 0 36px;
+      border: none;
+      border-top: 1px solid var(--dim-25);
+    }
+
+    /* ---------- explorable section ---------- */
+    .explorable {
+      display: grid;
+      grid-template-columns: minmax(240px, 1fr) 2.4fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .explorer-list {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .section-heading {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--ink);
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--dim-25);
+    }
+
+    /* Education list */
+    .education-list {
       list-style: none;
       font-size: 12px;
-      line-height: 1.45;
+      line-height: 1.5;
     }
-    .timeline li {
+    .education-list li {
       display: grid;
-      grid-template-columns: 52px 1fr;
+      grid-template-columns: 56px 1fr;
       gap: 8px;
-      color: var(--ink);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
-    .timeline li:last-child { margin-bottom: 0; }
-    .timeline .year {
+    .education-list li:last-child { margin-bottom: 0; }
+    .education-list .year {
       font-style: italic;
       color: var(--dim-70);
       font-size: 11px;
       padding-top: 1px;
     }
-    .timeline .degree {
-      font-size: 12px;
-      color: var(--ink);
-    }
-    .timeline .affil {
+    .education-list .degree { color: var(--ink); }
+    .education-list .affil {
       font-size: 11px;
       font-style: italic;
       color: var(--dim-70);
     }
 
-    /* ---------- right column: heading + scrolling stack ---------- */
-    .right-column {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding-top: 56px;
+    /* Paper list (interactive) */
+    .paper-list {
+      list-style: none;
+      font-size: 13px;
+      line-height: 1.45;
     }
-
-    .work-heading {
-      font-size: 34px;
+    .paper-list > li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 8px;
+      padding: 10px 10px 10px 6px;
+      margin-left: -10px;
+      border-radius: 3px;
+      cursor: pointer;
+      color: var(--dim-70);
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .paper-list > li:hover {
+      background: rgba(31, 24, 192, 0.05);
+      color: var(--ink);
+    }
+    .paper-list > li.active {
+      color: var(--ink);
+      background: rgba(31, 24, 192, 0.07);
+    }
+    .paper-list .num {
+      font-style: italic;
+      font-size: 11px;
+      color: var(--dim-55);
+      padding-top: 2px;
+    }
+    .paper-list .paper-name {
       font-weight: 700;
-      line-height: 1;
-      letter-spacing: -0.01em;
-      color: var(--ink);
-      margin-bottom: 18px;
-      text-transform: none;
+      color: inherit;
     }
-
-    .right-pane {
-      flex: 1;
-      overflow-y: auto;
-      padding-bottom: 16vh;
-      scrollbar-width: none;
-    }
-    .right-pane::-webkit-scrollbar { display: none; }
-
-    /* paper cards — tighter, with peek */
-    .paper-card {
-      position: sticky;
-      top: calc(8px + var(--idx) * 12px);
-      width: 100%;
-      max-width: 480px;
-      height: 68vh;
-      min-height: 460px;
-      background: #FFFFFF;
-      border: 1px solid rgba(31, 24, 192, 0.08);
-      border-radius: 4px;
-      box-shadow:
-        0 1px 2px rgba(31, 24, 192, 0.04),
-        0 14px 32px -18px rgba(31, 24, 192, 0.25),
-        0 32px 64px -32px rgba(0, 0, 0, 0.20);
-      padding: 28px 34px 24px;
-      margin: 0 0 6vh;
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
-      color: var(--ink);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      overflow: hidden;
-    }
-    .paper-card:last-child { margin-bottom: 16vh; }
-
-    /* PDF-embedding variant: uses iframe for body */
-    .paper-card.has-pdf { padding: 0; }
-    .paper-card.has-pdf .paper-pdf {
-      flex: 1;
-      width: 100%;
-      border: none;
-      background: #f5f5f5;
-      pointer-events: none;
-    }
-    .paper-card.has-pdf .paper-meta {
-      padding: 18px 24px 14px;
-      border-bottom: 1px solid var(--dim-12);
-    }
-    .paper-card.has-pdf .paper-link-bar {
-      padding: 12px 24px;
-      border-top: 1px solid var(--dim-12);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .paper-card.has-pdf .paper-meta .paper-venue {
-      margin-bottom: 8px;
-      padding-bottom: 0;
-      border-bottom: none;
-    }
-    .paper-card.has-pdf .paper-meta .paper-title {
-      margin-bottom: 4px;
-      font-size: 16px;
-    }
-    .paper-card.has-pdf .paper-meta .paper-authors {
-      margin-bottom: 0;
+    .paper-list .paper-venue-tiny {
+      display: block;
       font-size: 10px;
-    }
-    .paper-card:hover {
-      transform: translateY(-3px);
-      box-shadow:
-        0 2px 4px rgba(31, 24, 192, 0.06),
-        0 20px 48px -20px rgba(31, 24, 192, 0.32),
-        0 48px 96px -40px rgba(0, 0, 0, 0.28);
+      font-style: italic;
+      color: var(--dim-55);
+      margin-top: 2px;
+      letter-spacing: 0.02em;
     }
 
-    /* a thin stripe at the very top to evoke a paper header */
-    .paper-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: var(--ink);
-      opacity: 0.85;
+    /* Right detail panel */
+    .explorer-detail {
+      position: relative;
+      min-height: 400px;
     }
 
-    .paper-venue {
-      font-size: 9px;
-      letter-spacing: 0.2em;
+    .paper-detail {
+      display: none;
+    }
+    .paper-detail.active {
+      display: block;
+      animation: fadein 0.18s ease;
+    }
+    @keyframes fadein {
+      from { opacity: 0.4; transform: translateY(2px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .detail-venue {
+      font-size: 10px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--dim-55);
-      margin-bottom: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--dim-12);
+      margin-bottom: 10px;
     }
-    .paper-title {
-      font-size: 18px;
+    .detail-title {
+      font-size: 24px;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.25;
       color: var(--ink);
-      margin-bottom: 6px;
+      margin-bottom: 10px;
       letter-spacing: -0.005em;
     }
-    .paper-authors {
-      font-size: 11px;
+    .detail-authors {
+      font-size: 13px;
       font-style: italic;
       color: var(--dim-70);
-      margin-bottom: 14px;
+      margin-bottom: 22px;
     }
-    .paper-abstract-label {
-      font-size: 9px;
-      letter-spacing: 0.2em;
+    .detail-section-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--dim-55);
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
-    .paper-abstract {
-      font-size: 12px;
-      line-height: 1.65;
+    .detail-abstract {
+      font-size: 14px;
+      line-height: 1.7;
       color: var(--ink);
-      opacity: 0.88;
+      max-width: 64ch;
+      margin-bottom: 24px;
       text-align: justify;
       hyphens: auto;
     }
-    .paper-link {
-      font-size: 10px;
+    .detail-abstract em { color: var(--dim-70); }
+
+    .detail-pdf {
+      width: 100%;
+      max-width: 540px;
+      aspect-ratio: 1 / 1.414;
+      background: var(--card);
+      border: 1px solid var(--dim-12);
+      border-radius: 3px;
+      box-shadow: 0 12px 28px -16px rgba(31, 24, 192, 0.22);
+      margin-bottom: 22px;
+      overflow: hidden;
+    }
+    .detail-pdf iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      pointer-events: none;
+    }
+
+    .detail-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 11px;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: var(--ink);
-      padding-top: 12px;
-      margin-top: auto;
-      border-top: 1px solid var(--dim-12);
-      border-bottom: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      align-self: flex-start;
     }
-    .paper-card.has-pdf .paper-link {
-      margin-top: 0;
-      padding-top: 0;
-      border-top: none;
-    }
-    .paper-link .arrow {
-      transition: transform 0.2s ease;
+    .detail-links a { border-bottom: 1px solid var(--dim-25); }
+    .detail-links a .arrow {
+      transition: transform 0.15s ease;
       display: inline-block;
     }
-    .paper-link:hover {
-      color: var(--ink-hover);
-    }
-    .paper-link:hover .arrow {
-      transform: translateX(4px);
-    }
+    .detail-links a:hover .arrow { transform: translateX(3px); }
 
     /* ---------- responsive ---------- */
-    @media (max-width: 960px) {
-      html, body { overflow: auto; height: auto; }
-      .split {
+    @media (max-width: 900px) {
+      body { padding: 36px 28px 60px; }
+      .frontispiece, .explorable {
         grid-template-columns: 1fr;
-        gap: 32px;
-        padding: 0 32px;
-        height: auto;
+        gap: 28px;
       }
-      .left-pane {
-        height: auto;
-        overflow: visible;
-        padding: 40px 0 0;
-      }
-      .right-column {
-        height: auto;
-        padding-top: 0;
-      }
-      .right-pane {
-        height: auto;
-        overflow: visible;
-        padding: 0 0 20vh;
-      }
-      .paper-card {
-        width: 100%;
-        max-width: 480px;
-        height: auto;
-        aspect-ratio: 1 / 1.414;
-        top: calc(20px + var(--idx) * 16px);
-        margin-bottom: 6vh;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .split { padding: 0 20px; }
       .name { font-size: 26px; }
-      .portrait { width: 160px; height: 200px; }
-      .meta-row { grid-template-columns: 1fr; gap: 16px; }
-      .paper-card {
-        aspect-ratio: auto;
-        min-height: 420px;
-        padding: 28px 24px 22px;
-      }
-      .paper-title { font-size: 17px; }
+      .portrait { max-width: 160px; }
+      .intro { font-size: 14px; }
+      .detail-title { font-size: 20px; }
+      .detail-abstract { font-size: 13px; }
+      .rule { margin: 36px 0 28px; }
     }
-
-    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    @media (max-width: 480px) {
+      body { padding: 28px 18px 50px; }
+      .name { font-size: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .paper-detail.active { animation: none; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="split">
+  <main class="page">
 
-    <aside class="left-pane">
-      <h1 class="name">hugo andersson</h1>
+    <header class="frontispiece">
+      <aside class="title-block">
+        <h1 class="name">hugo andersson</h1>
+        <p class="subtitle">PhD Fellow in Human-Centered Computing<br>Aarhus University</p>
+        <div class="portrait">
+          <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
+        </div>
+        <p class="contact-block">
+          <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
+          <a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a><br>
+          <span class="muted">
+            Department of Computer Science<br>
+            Aarhus University<br>
+            Åbogade 34, 8200 Aarhus
+          </span>
+        </p>
+      </aside>
 
-      <div class="portrait">
-        <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
-      </div>
+      <section class="intro" aria-label="About">
+        <p>
+          I'm a first-year PhD Fellow in Human-Centered Computing at
+          <a href="#">Aarhus University</a>, advised by
+          <a href="#">Niklas Elmqvist</a>. My background is in cognitive
+          science, and I now work across <em>HCI</em>, <em>AI</em>, and
+          <em>design research</em>.
+        </p>
+        <p>
+          So far my PhD has taken me through creativity tools, collective
+          knowledge systems, and agentic simulations — different entry
+          points into the same question: what changes when AI becomes part
+          of how people think, create, and collaborate?
+        </p>
+      </section>
+    </header>
 
-      <p class="hero-bio">
-        I'm a first-year PhD Fellow in Human-Centered Computing at
-        <a href="#">Aarhus University</a>, advised by
-        <a href="#">Niklas Elmqvist</a>. My background is in cognitive
-        science, and I now work across <em>HCI</em>, <em>AI</em>, and
-        <em>design research</em>. So far my PhD has taken me through
-        creativity tools, collective knowledge systems, and agentic
-        simulations — different entry points into the same question:
-        what changes when AI becomes part of how people think, create,
-        and collaborate?
-      </p>
+    <hr class="rule">
 
-      <div class="meta-row">
-        <section aria-labelledby="contact-label">
-          <h2 id="contact-label" class="section-label">Contact</h2>
-          <p class="contact-line">
-            <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
-            <a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a><br>
-            <span class="muted">
-              Department of Computer Science<br>
-              Aarhus University<br>
-              Åbogade 34, 8200 Aarhus
-            </span>
-          </p>
+    <div class="explorable">
+
+      <aside class="explorer-list">
+
+        <section aria-labelledby="edu-heading">
+          <h2 id="edu-heading" class="section-heading">Education</h2>
+          <ul class="education-list">
+            <li><span class="year">2025–</span><span><span class="degree">PhD Fellow</span><br><span class="affil">Aarhus University</span></span></li>
+            <li><span class="year">2023–25</span><span><span class="degree">MSc Human-Centered AI</span><br><span class="affil">University of Gothenburg</span></span></li>
+            <li><span class="year">2022–23</span><span><span class="degree">Adjunct in HCI</span><br><span class="affil">University of Gothenburg</span></span></li>
+            <li><span class="year">2019–22</span><span><span class="degree">BSc Cognitive Science</span><br><span class="affil">University of Gothenburg</span></span></li>
+          </ul>
         </section>
 
-        <section aria-labelledby="edu-label">
-          <h2 id="edu-label" class="section-label">Education</h2>
-          <ul class="timeline">
-            <li>
-              <span class="year">2025–</span>
-              <span><span class="degree">PhD Fellow</span><br><span class="affil">Aarhus University</span></span>
+        <section aria-labelledby="work-heading">
+          <h2 id="work-heading" class="section-heading">Work</h2>
+          <ul class="paper-list" role="tablist">
+            <li role="tab" data-paper="tessera" tabindex="0" aria-selected="true">
+              <span class="num">1</span>
+              <span>
+                <span class="paper-name">Tessera</span>
+                <span class="paper-venue-tiny">UIST 2026 · under review</span>
+              </span>
             </li>
-            <li>
-              <span class="year">2023–25</span>
-              <span><span class="degree">MSc Human-Centered AI</span><br><span class="affil">University of Gothenburg</span></span>
+            <li role="tab" data-paper="tombwriter" tabindex="0">
+              <span class="num">2</span>
+              <span>
+                <span class="paper-name">TombWriter</span>
+                <span class="paper-venue-tiny">AVI 2026 · Venice</span>
+              </span>
             </li>
-            <li>
-              <span class="year">2022–23</span>
-              <span><span class="degree">Adjunct in HCI</span><br><span class="affil">University of Gothenburg</span></span>
+            <li role="tab" data-paper="material" tabindex="0">
+              <span class="num">3</span>
+              <span>
+                <span class="paper-name">Material for Thought</span>
+                <span class="paper-venue-tiny">CHI 2026 · Tools for Thought workshop</span>
+              </span>
             </li>
-            <li>
-              <span class="year">2019–22</span>
-              <span><span class="degree">BSc Cognitive Science</span><br><span class="affil">University of Gothenburg</span></span>
+            <li role="tab" data-paper="role" tabindex="0">
+              <span class="num">4</span>
+              <span>
+                <span class="paper-name">From Role to Person</span>
+                <span class="paper-venue-tiny">CHI 2026 · AutomationXP workshop</span>
+              </span>
             </li>
           </ul>
         </section>
-      </div>
-    </aside>
 
-    <div class="right-column">
-      <h2 class="work-heading">work</h2>
-      <main class="right-pane">
+      </aside>
 
-        <div class="paper-card" style="--idx: 0">
-          <p class="paper-venue">UIST 2026 · under review</p>
-          <h3 class="paper-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
-          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
-          <p class="paper-abstract-label">Abstract</p>
-          <p class="paper-abstract">
+      <div class="explorer-detail" aria-live="polite">
+
+        <article class="paper-detail active" data-paper="tessera">
+          <p class="detail-venue">UIST 2026 · under review</p>
+          <h3 class="detail-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="detail-section-label">Abstract</p>
+          <p class="detail-abstract">
             Tessera captures a research group's collective knowledge as a
             navigable map of tiles, then launches a faceted ideation engine
             that generates candidate directions constrained by the group's
             actual submissions. The LLM drives divergence by inferring
-            dimensions; the user drives convergence by locking in constraints,
-            with the exploration space restructuring at each step. Deployed
-            with a university research group over two weeks.
+            dimensions; the user drives convergence by locking in
+            constraints, with the exploration space restructuring at each
+            step. Deployed with a university research group over two weeks.
           </p>
-          <a class="paper-link" href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
-        </div>
+          <p class="detail-links">
+            <a href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
+          </p>
+        </article>
 
-        <div class="paper-card has-pdf" style="--idx: 1">
-          <div class="paper-meta">
-            <p class="paper-venue">AVI 2026 · Venice</p>
-            <h3 class="paper-title">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</h3>
-            <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
+        <article class="paper-detail" data-paper="tombwriter">
+          <p class="detail-venue">AVI 2026 · Venice</p>
+          <h3 class="detail-title">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</h3>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="detail-section-label">Abstract</p>
+          <p class="detail-abstract">
+            TombWriter treats LLM prompts not as disposable queries but as
+            a hierarchical story instrument refined over time. Writers work
+            at the level of story beats rather than prose — generating
+            character actions and editing to excavate their intended story.
+            A qualitative study with five experienced writers over three
+            days found writers framed the AI as a generation engine rather
+            than a collaborator, and valued the system for structural
+            discovery.
+          </p>
+          <div class="detail-pdf">
+            <iframe src="papers/tombwriter.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" title="TombWriter PDF preview" loading="lazy"></iframe>
           </div>
-          <iframe class="paper-pdf" src="papers/tombwriter.pdf#toolbar=0&navpanes=0&scrollbar=0&view=FitH" title="TombWriter PDF preview" loading="lazy"></iframe>
-          <div class="paper-link-bar">
-            <a class="paper-link" href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
-            <a class="paper-link" href="papers/tombwriter.pdf" target="_blank" rel="noopener">Open PDF <span class="arrow">→</span></a>
-          </div>
-        </div>
+          <p class="detail-links">
+            <a href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
+            <a href="papers/tombwriter.pdf" target="_blank" rel="noopener">Open PDF <span class="arrow">→</span></a>
+          </p>
+        </article>
 
-        <div class="paper-card" style="--idx: 2">
-          <p class="paper-venue">CHI 2026 · Tools for Thought workshop</p>
-          <h3 class="paper-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
-          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
-          <p class="paper-abstract-label">Abstract</p>
-          <p class="paper-abstract">
+        <article class="paper-detail" data-paper="material">
+          <p class="detail-venue">CHI 2026 · Tools for Thought workshop</p>
+          <h3 class="detail-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="detail-section-label">Abstract</p>
+          <p class="detail-abstract">
             A position paper arguing that treating AI as a creative
-            <em>medium</em> — something you shape and push against — rather
-            than a tool that executes instructions, reframes the design space
-            for tools of thought. Abstract to be expanded.
+            <em>medium</em> — something you shape and push against —
+            rather than a tool that executes instructions, reframes the
+            design space for tools of thought. Abstract to be expanded.
           </p>
-          <a class="paper-link" href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
-        </div>
+          <p class="detail-links">
+            <a href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
+          </p>
+        </article>
 
-        <div class="paper-card" style="--idx: 3">
-          <p class="paper-venue">CHI 2026 · AutomationXP workshop</p>
-          <h3 class="paper-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
-          <p class="paper-authors">Hugo Andersson, Niklas Elmqvist</p>
-          <p class="paper-abstract-label">Abstract</p>
-          <p class="paper-abstract">
+        <article class="paper-detail" data-paper="role">
+          <p class="detail-venue">CHI 2026 · AutomationXP workshop</p>
+          <h3 class="detail-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
+          <p class="detail-section-label">Abstract</p>
+          <p class="detail-abstract">
             Examines trust calibration challenges when agents move from
             playing roles to simulating specific people, particularly in
-            human-in-the-loop automation scenarios. Abstract to be expanded.
+            human-in-the-loop automation scenarios. Abstract to be
+            expanded.
           </p>
-          <a class="paper-link" href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
-        </div>
+          <p class="detail-links">
+            <a href="https://arxiv.org/" target="_blank" rel="noopener">arXiv <span class="arrow">→</span></a>
+          </p>
+        </article>
 
-      </main>
+      </div>
+
     </div>
 
-  </div>
+  </main>
 
   <script>
-    // Forward wheel events (and touch scroll) on the whole window to the
-    // right pane, so scrolling anywhere — including over the static left —
-    // moves the papers, not the page.
     (function () {
-      const right = document.querySelector('.right-pane');
-      const left = document.querySelector('.left-pane');
-      if (!right) return;
+      const items = document.querySelectorAll('.paper-list > li');
+      const details = document.querySelectorAll('.paper-detail');
+      let lockedId = null;
 
-      window.addEventListener('wheel', (e) => {
-        const path = e.composedPath();
-        // Cursor over the right pane: let native scroll handle it (smooth, normal feel).
-        if (path.includes(right)) return;
-        // Cursor over the left pane: let it scroll if it can.
-        if (path.includes(left)) {
-          const canScrollDown = left.scrollTop + left.clientHeight < left.scrollHeight - 1;
-          const canScrollUp = left.scrollTop > 0;
-          if ((e.deltaY > 0 && canScrollDown) || (e.deltaY < 0 && canScrollUp)) {
-            return;
+      function activate(id) {
+        items.forEach(li => {
+          const match = li.dataset.paper === id;
+          li.classList.toggle('active', match);
+          li.setAttribute('aria-selected', match ? 'true' : 'false');
+        });
+        details.forEach(d => d.classList.toggle('active', d.dataset.paper === id));
+      }
+
+      items.forEach(li => {
+        li.addEventListener('mouseenter', () => {
+          if (lockedId) return; // pinned
+          activate(li.dataset.paper);
+        });
+        li.addEventListener('focus', () => activate(li.dataset.paper));
+        li.addEventListener('click', () => {
+          // toggle pin: clicking pins this paper; clicking the same again unpins
+          const id = li.dataset.paper;
+          lockedId = lockedId === id ? null : id;
+          activate(id);
+        });
+        li.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            li.click();
           }
-        }
-        // Cursor outside both panes (or over a non-scrollable left): forward at native speed.
-        e.preventDefault();
-        right.scrollTop += e.deltaY;
-      }, { passive: false });
-
-      // Touch devices: translate vertical swipe on left into right-pane scroll.
-      let touchStartY = null;
-      window.addEventListener('touchstart', (e) => {
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
-      window.addEventListener('touchmove', (e) => {
-        if (touchStartY == null) return;
-        const y = e.touches[0].clientY;
-        const dy = touchStartY - y;
-        touchStartY = y;
-        const onLeft = e.composedPath().includes(left);
-        if (onLeft) {
-          const canScrollDown = left.scrollTop + left.clientHeight < left.scrollHeight - 1;
-          const canScrollUp = left.scrollTop > 0;
-          if ((dy > 0 && canScrollDown) || (dy < 0 && canScrollUp)) return;
-        }
-        right.scrollBy({ top: dy, behavior: 'auto' });
-      }, { passive: true });
+        });
+      });
     })();
   </script>
 
