@@ -119,13 +119,20 @@
     }
 
     /* dim non-matching papers when a bio cross-ref is hovered */
-    .papers.dimming li { opacity: 0.25; }
-    .papers.dimming li.matched { opacity: 1; }
+    .papers.dimming > li { opacity: 0.25; }
+    .papers.dimming > li.matched { opacity: 1; }
+    /* When a bio ref is dimming, paper-hover dimming should not apply */
+    .papers.dimming:hover > li:not(:hover) { opacity: 0.25; }
+    .papers.dimming:hover > li.matched { opacity: 1; }
+
+    /* Dim siblings of the hovered paper so the sidenote clearly belongs
+       to the bright one. */
+    .papers:hover > li:not(:hover) { opacity: 0.4; }
 
     /* Tufte-style sidenote — appears to the right of the paper on hover */
     .sidenote {
       position: absolute;
-      top: 0;
+      top: -2px;
       left: calc(100% + 32px);
       width: 220px;
       font-size: 11.5px;
@@ -137,17 +144,27 @@
       transition: opacity 0.18s ease, transform 0.18s ease;
       pointer-events: none;
     }
+    /* Connecting hairline that extends from the paper title into the
+       sidenote, making the relationship unambiguous. */
     .sidenote::before {
       content: "";
       position: absolute;
-      top: 8px;
-      left: -16px;
-      width: 8px;
+      top: 10px;
+      left: -28px;
+      width: 22px;
       height: 1px;
-      background: var(--dim-25);
+      background: var(--ink);
+      opacity: 0;
+      transform: scaleX(0.4);
+      transform-origin: left center;
+      transition: opacity 0.18s ease, transform 0.18s ease;
     }
     .papers li:hover .sidenote {
       opacity: 1;
+      transform: none;
+    }
+    .papers li:hover .sidenote::before {
+      opacity: 0.55;
       transform: none;
     }
 
@@ -271,9 +288,9 @@
       <h2>Education</h2>
       <ul class="education">
         <li><span class="year">2025–</span><span>PhD Fellow, Aarhus University</span></li>
-        <li><span class="year">2023–25</span><span>MSc Human-Centered AI, U. of Gothenburg</span></li>
-        <li><span class="year">2022–23</span><span>Adjunct in HCI, U. of Gothenburg</span></li>
-        <li><span class="year">2019–22</span><span>BSc Cognitive Science, U. of Gothenburg</span></li>
+        <li><span class="year">2023–25</span><span>MSc Human-Centered AI, University of Gothenburg</span></li>
+        <li><span class="year">2022–23</span><span>Adjunct in HCI, University of Gothenburg</span></li>
+        <li><span class="year">2019–22</span><span>BSc Cognitive Science, University of Gothenburg</span></li>
       </ul>
     </section>
 
