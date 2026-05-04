@@ -27,15 +27,9 @@
       background: var(--paper);
       color: var(--ink);
       font-family: var(--serif);
-      font-size: 13px;
+      font-size: 12px;
       line-height: 1.6;
-      padding: 56px max(40px, 9%) 80px;
       min-height: 100vh;
-    }
-
-    .page {
-      max-width: 1180px;
-      margin: 0 auto;
     }
 
     a {
@@ -48,40 +42,45 @@
     a:hover { color: var(--ink-hover); border-bottom-color: var(--ink-hover); }
     a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
 
-    /* ---------- frontispiece ---------- */
-    .frontispiece {
+    /* ---------- page ---------- */
+    .page {
       display: grid;
-      grid-template-columns: minmax(240px, 1fr) 2.4fr;
+      grid-template-columns: 240px 1fr;
       gap: 56px;
-      align-items: start;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px max(28px, 5%) 60px;
     }
 
-    .title-block {
+    /* ---------- sidebar ---------- */
+    .sidebar {
+      position: sticky;
+      top: 48px;
+      align-self: start;
+      max-height: calc(100vh - 96px);
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--dim-25) transparent;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 22px;
     }
-    .name {
-      font-size: 30px;
-      font-weight: 700;
-      line-height: 1.05;
-      letter-spacing: -0.01em;
-      color: var(--ink);
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-thumb { background: var(--dim-25); border-radius: 2px; }
+
+    .id-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    .subtitle {
-      font-size: 12px;
-      font-style: italic;
-      color: var(--dim-70);
-      line-height: 1.4;
-    }
+
     .portrait {
-      width: 100%;
-      max-width: 200px;
-      aspect-ratio: 4 / 5;
+      width: 110px;
+      height: 138px;
       background: var(--card);
-      border-radius: 4px;
+      border-radius: 3px;
       overflow: hidden;
-      margin-top: 4px;
     }
     .portrait img {
       width: 100%;
@@ -90,11 +89,37 @@
       display: block;
     }
 
-    .contact-block {
-      font-size: 12px;
-      line-height: 1.7;
+    .name {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
       color: var(--ink);
       margin-top: 4px;
+    }
+    .subtitle {
+      font-size: 11px;
+      font-style: italic;
+      color: var(--dim-70);
+      line-height: 1.45;
+    }
+
+    .section-heading {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim-70);
+      margin-bottom: 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--dim-25);
+    }
+
+    /* contact */
+    .contact-block {
+      font-size: 11px;
+      line-height: 1.7;
+      color: var(--ink);
     }
     .contact-block .muted {
       color: var(--dim-70);
@@ -102,85 +127,44 @@
     }
     .contact-block a { display: inline-block; }
 
-    .intro {
-      font-size: 15px;
-      line-height: 1.65;
-      color: var(--ink);
-      max-width: 64ch;
-    }
-    .intro p + p { margin-top: 14px; }
-    .intro em { color: var(--dim-70); }
-
-    /* ---------- divider ---------- */
-    .rule {
-      margin: 56px 0 36px;
-      border: none;
-      border-top: 1px solid var(--dim-25);
-    }
-
-    /* ---------- explorable section ---------- */
-    .explorable {
-      display: grid;
-      grid-template-columns: minmax(240px, 1fr) 2.4fr;
-      gap: 56px;
-      align-items: start;
-    }
-
-    .explorer-list {
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .section-heading {
-      font-size: 11px;
-      font-weight: 400;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ink);
-      margin-bottom: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--dim-25);
-    }
-
-    /* Education list */
+    /* education */
     .education-list {
       list-style: none;
-      font-size: 12px;
-      line-height: 1.5;
+      font-size: 11px;
+      line-height: 1.45;
     }
     .education-list li {
       display: grid;
-      grid-template-columns: 56px 1fr;
+      grid-template-columns: 50px 1fr;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     .education-list li:last-child { margin-bottom: 0; }
     .education-list .year {
       font-style: italic;
       color: var(--dim-70);
-      font-size: 11px;
+      font-size: 10px;
       padding-top: 1px;
     }
-    .education-list .degree { color: var(--ink); }
+    .education-list .degree { color: var(--ink); font-size: 11px; }
     .education-list .affil {
-      font-size: 11px;
+      font-size: 10px;
       font-style: italic;
       color: var(--dim-70);
     }
 
-    /* Paper list (interactive) */
+    /* work list (interactive) */
     .paper-list {
       list-style: none;
-      font-size: 13px;
-      line-height: 1.45;
+      font-size: 12px;
+      line-height: 1.4;
     }
     .paper-list > li {
       display: grid;
-      grid-template-columns: 22px 1fr;
-      gap: 8px;
-      padding: 10px 10px 10px 6px;
-      margin-left: -10px;
+      grid-template-columns: 18px 1fr;
+      gap: 6px;
+      padding: 7px 8px 7px 6px;
+      margin-left: -8px;
       border-radius: 3px;
       cursor: pointer;
       color: var(--dim-70);
@@ -192,36 +176,62 @@
     }
     .paper-list > li.active {
       color: var(--ink);
-      background: rgba(31, 24, 192, 0.07);
+      background: rgba(31, 24, 192, 0.08);
     }
     .paper-list .num {
       font-style: italic;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--dim-55);
-      padding-top: 2px;
+      padding-top: 1px;
     }
     .paper-list .paper-name {
       font-weight: 700;
       color: inherit;
+      font-size: 11px;
     }
     .paper-list .paper-venue-tiny {
       display: block;
-      font-size: 10px;
+      font-size: 9px;
       font-style: italic;
       color: var(--dim-55);
-      margin-top: 2px;
+      margin-top: 1px;
       letter-spacing: 0.02em;
     }
 
-    /* Right detail panel */
-    .explorer-detail {
-      position: relative;
-      min-height: 400px;
+    /* ---------- main ---------- */
+    .main {
+      min-width: 0;
+      padding-top: 4px;
     }
 
-    .paper-detail {
-      display: none;
+    .intro {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink);
+      max-width: 64ch;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--dim-25);
     }
+    .intro p + p { margin-top: 10px; }
+    .intro em { color: var(--dim-70); }
+
+    .work-section-heading {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim-70);
+      margin-bottom: 14px;
+    }
+
+    /* paper detail (right side) */
+    .explorer-detail {
+      position: relative;
+      min-height: 380px;
+    }
+
+    .paper-detail { display: none; }
     .paper-detail.active {
       display: block;
       animation: fadein 0.18s ease;
@@ -232,39 +242,39 @@
     }
 
     .detail-venue {
-      font-size: 10px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--dim-55);
-      margin-bottom: 10px;
-    }
-    .detail-title {
-      font-size: 24px;
-      font-weight: 700;
-      line-height: 1.25;
-      color: var(--ink);
-      margin-bottom: 10px;
-      letter-spacing: -0.005em;
-    }
-    .detail-authors {
-      font-size: 13px;
-      font-style: italic;
-      color: var(--dim-70);
-      margin-bottom: 22px;
-    }
-    .detail-section-label {
-      font-size: 10px;
+      font-size: 9px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--dim-55);
       margin-bottom: 8px;
     }
+    .detail-title {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--ink);
+      margin-bottom: 8px;
+      letter-spacing: -0.005em;
+    }
+    .detail-authors {
+      font-size: 12px;
+      font-style: italic;
+      color: var(--dim-70);
+      margin-bottom: 18px;
+    }
+    .detail-section-label {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--dim-55);
+      margin-bottom: 6px;
+    }
     .detail-abstract {
-      font-size: 14px;
+      font-size: 12.5px;
       line-height: 1.7;
       color: var(--ink);
       max-width: 64ch;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       text-align: justify;
       hyphens: auto;
     }
@@ -272,13 +282,13 @@
 
     .detail-pdf {
       width: 100%;
-      max-width: 540px;
+      max-width: 460px;
       aspect-ratio: 1 / 1.414;
       background: var(--card);
       border: 1px solid var(--dim-12);
       border-radius: 3px;
-      box-shadow: 0 12px 28px -16px rgba(31, 24, 192, 0.22);
-      margin-bottom: 22px;
+      box-shadow: 0 10px 24px -14px rgba(31, 24, 192, 0.20);
+      margin-bottom: 18px;
       overflow: hidden;
     }
     .detail-pdf iframe {
@@ -291,9 +301,9 @@
     .detail-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 18px;
-      font-size: 11px;
-      letter-spacing: 0.08em;
+      gap: 16px;
+      font-size: 10px;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
     }
     .detail-links a { border-bottom: 1px solid var(--dim-25); }
@@ -304,22 +314,18 @@
     .detail-links a:hover .arrow { transform: translateX(3px); }
 
     /* ---------- responsive ---------- */
-    @media (max-width: 900px) {
-      body { padding: 36px 28px 60px; }
-      .frontispiece, .explorable {
+    @media (max-width: 880px) {
+      .page {
         grid-template-columns: 1fr;
-        gap: 28px;
+        gap: 32px;
+        padding: 32px 24px 56px;
       }
-      .name { font-size: 26px; }
-      .portrait { max-width: 160px; }
-      .intro { font-size: 14px; }
-      .detail-title { font-size: 20px; }
-      .detail-abstract { font-size: 13px; }
-      .rule { margin: 36px 0 28px; }
-    }
-    @media (max-width: 480px) {
-      body { padding: 28px 18px 50px; }
-      .name { font-size: 22px; }
+      .sidebar {
+        position: static;
+        max-height: none;
+        overflow: visible;
+      }
+      .name { font-size: 24px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -331,23 +337,75 @@
 
   <main class="page">
 
-    <header class="frontispiece">
-      <aside class="title-block">
-        <h1 class="name">hugo andersson</h1>
-        <p class="subtitle">PhD Fellow in Human-Centered Computing<br>Aarhus University</p>
+    <aside class="sidebar">
+
+      <div class="id-block">
         <div class="portrait">
           <img src="hugopiccrop.JPG" alt="Portrait of Hugo Andersson">
         </div>
+        <h1 class="name">hugo andersson</h1>
+        <p class="subtitle">PhD Fellow in Human-Centered Computing<br>Aarhus University</p>
+      </div>
+
+      <section aria-labelledby="contact-heading">
+        <h2 id="contact-heading" class="section-heading">Contact</h2>
         <p class="contact-block">
           <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a><br>
           <a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a><br>
           <span class="muted">
             Department of Computer Science<br>
-            Aarhus University<br>
             Åbogade 34, 8200 Aarhus
           </span>
         </p>
-      </aside>
+      </section>
+
+      <section aria-labelledby="edu-heading">
+        <h2 id="edu-heading" class="section-heading">Education</h2>
+        <ul class="education-list">
+          <li><span class="year">2025–</span><span><span class="degree">PhD Fellow</span><br><span class="affil">Aarhus University</span></span></li>
+          <li><span class="year">2023–25</span><span><span class="degree">MSc Human-Centered AI</span><br><span class="affil">U. of Gothenburg</span></span></li>
+          <li><span class="year">2022–23</span><span><span class="degree">Adjunct in HCI</span><br><span class="affil">U. of Gothenburg</span></span></li>
+          <li><span class="year">2019–22</span><span><span class="degree">BSc Cognitive Science</span><br><span class="affil">U. of Gothenburg</span></span></li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="work-heading">
+        <h2 id="work-heading" class="section-heading">Work</h2>
+        <ul class="paper-list" role="tablist">
+          <li role="tab" data-paper="tessera" tabindex="0" aria-selected="true">
+            <span class="num">1</span>
+            <span>
+              <span class="paper-name">Tessera</span>
+              <span class="paper-venue-tiny">UIST 2026 · under review</span>
+            </span>
+          </li>
+          <li role="tab" data-paper="tombwriter" tabindex="0">
+            <span class="num">2</span>
+            <span>
+              <span class="paper-name">TombWriter</span>
+              <span class="paper-venue-tiny">AVI 2026 · Venice</span>
+            </span>
+          </li>
+          <li role="tab" data-paper="material" tabindex="0">
+            <span class="num">3</span>
+            <span>
+              <span class="paper-name">Material for Thought</span>
+              <span class="paper-venue-tiny">CHI 2026 · ToolsForThought workshop</span>
+            </span>
+          </li>
+          <li role="tab" data-paper="role" tabindex="0">
+            <span class="num">4</span>
+            <span>
+              <span class="paper-name">From Role to Person</span>
+              <span class="paper-venue-tiny">CHI 2026 · AutomationXP workshop</span>
+            </span>
+          </li>
+        </ul>
+      </section>
+
+    </aside>
+
+    <div class="main">
 
       <section class="intro" aria-label="About">
         <p>
@@ -360,63 +418,12 @@
         <p>
           So far my PhD has taken me through creativity tools, collective
           knowledge systems, and agentic simulations — different entry
-          points into the same question: what changes when AI becomes part
-          of how people think, create, and collaborate?
+          points into the same question: what changes when AI becomes
+          part of how people think, create, and collaborate?
         </p>
       </section>
-    </header>
 
-    <hr class="rule">
-
-    <div class="explorable">
-
-      <aside class="explorer-list">
-
-        <section aria-labelledby="edu-heading">
-          <h2 id="edu-heading" class="section-heading">Education</h2>
-          <ul class="education-list">
-            <li><span class="year">2025–</span><span><span class="degree">PhD Fellow</span><br><span class="affil">Aarhus University</span></span></li>
-            <li><span class="year">2023–25</span><span><span class="degree">MSc Human-Centered AI</span><br><span class="affil">University of Gothenburg</span></span></li>
-            <li><span class="year">2022–23</span><span><span class="degree">Adjunct in HCI</span><br><span class="affil">University of Gothenburg</span></span></li>
-            <li><span class="year">2019–22</span><span><span class="degree">BSc Cognitive Science</span><br><span class="affil">University of Gothenburg</span></span></li>
-          </ul>
-        </section>
-
-        <section aria-labelledby="work-heading">
-          <h2 id="work-heading" class="section-heading">Work</h2>
-          <ul class="paper-list" role="tablist">
-            <li role="tab" data-paper="tessera" tabindex="0" aria-selected="true">
-              <span class="num">1</span>
-              <span>
-                <span class="paper-name">Tessera</span>
-                <span class="paper-venue-tiny">UIST 2026 · under review</span>
-              </span>
-            </li>
-            <li role="tab" data-paper="tombwriter" tabindex="0">
-              <span class="num">2</span>
-              <span>
-                <span class="paper-name">TombWriter</span>
-                <span class="paper-venue-tiny">AVI 2026 · Venice</span>
-              </span>
-            </li>
-            <li role="tab" data-paper="material" tabindex="0">
-              <span class="num">3</span>
-              <span>
-                <span class="paper-name">Material for Thought</span>
-                <span class="paper-venue-tiny">CHI 2026 · Tools for Thought workshop</span>
-              </span>
-            </li>
-            <li role="tab" data-paper="role" tabindex="0">
-              <span class="num">4</span>
-              <span>
-                <span class="paper-name">From Role to Person</span>
-                <span class="paper-venue-tiny">CHI 2026 · AutomationXP workshop</span>
-              </span>
-            </li>
-          </ul>
-        </section>
-
-      </aside>
+      <h2 class="work-section-heading">Selected Work</h2>
 
       <div class="explorer-detail" aria-live="polite">
 
@@ -518,12 +525,11 @@
 
       items.forEach(li => {
         li.addEventListener('mouseenter', () => {
-          if (lockedId) return; // pinned
+          if (lockedId) return;
           activate(li.dataset.paper);
         });
         li.addEventListener('focus', () => activate(li.dataset.paper));
         li.addEventListener('click', () => {
-          // toggle pin: clicking pins this paper; clicking the same again unpins
           const id = li.dataset.paper;
           lockedId = lockedId === id ? null : id;
           activate(id);
