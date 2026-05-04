@@ -63,6 +63,19 @@
     .bio p { margin-bottom: 12px; }
     .bio p:last-child { margin-bottom: 0; }
 
+    /* inline cross-references */
+    .ref {
+      cursor: pointer;
+      border-bottom: 1px dotted var(--dim-25);
+      padding-bottom: 1px;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .ref:hover {
+      color: var(--ink-hover);
+      border-bottom-style: solid;
+      border-bottom-color: var(--ink);
+    }
+
     section + section {
       margin-top: 44px;
     }
@@ -81,7 +94,9 @@
       list-style: none;
     }
     .papers li {
+      position: relative;
       margin-bottom: 22px;
+      transition: opacity 0.18s ease;
     }
     .papers li:last-child { margin-bottom: 0; }
     .papers .paper-title {
@@ -103,6 +118,39 @@
       letter-spacing: 0.04em;
     }
 
+    /* dim non-matching papers when a bio cross-ref is hovered */
+    .papers.dimming li { opacity: 0.25; }
+    .papers.dimming li.matched { opacity: 1; }
+
+    /* Tufte-style sidenote — appears to the right of the paper on hover */
+    .sidenote {
+      position: absolute;
+      top: 0;
+      left: calc(100% + 32px);
+      width: 220px;
+      font-size: 11.5px;
+      line-height: 1.55;
+      font-style: italic;
+      color: var(--dim-70);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      pointer-events: none;
+    }
+    .sidenote::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: -16px;
+      width: 8px;
+      height: 1px;
+      background: var(--dim-25);
+    }
+    .papers li:hover .sidenote {
+      opacity: 1;
+      transform: none;
+    }
+
     /* education */
     .education {
       list-style: none;
@@ -119,6 +167,11 @@
       font-style: italic;
       color: var(--dim-70);
       font-size: 12.5px;
+    }
+
+    /* not enough side margin for sidenotes — drop them */
+    @media (max-width: 980px) {
+      .sidenote { display: none; }
     }
 
     @media (max-width: 520px) {
@@ -148,24 +201,31 @@
         science, and I now work across HCI, AI, and design research.
       </p>
       <p>
-        So far my PhD has taken me through creativity tools, collective
-        knowledge systems, and agentic simulations — different entry
-        points into the same question: what changes when AI becomes part
-        of how people think, create, and collaborate?
+        So far my PhD has taken me through
+        <span class="ref" data-papers="material,tombwriter">creativity tools</span>,
+        <span class="ref" data-papers="tessera">collective knowledge systems</span>,
+        and <span class="ref" data-papers="role">agentic simulations</span> —
+        different entry points into the same question: what changes when AI
+        becomes part of how people think, create, and collaborate?
       </p>
     </section>
 
     <section>
       <h2>Papers</h2>
       <ol class="papers">
-        <li>
+        <li data-paper="tessera">
           <span class="paper-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</span>
           <span class="paper-meta">
             Hugo Andersson, Niklas Elmqvist · UIST 2026 (under review)
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
+          <aside class="sidenote">
+            Captures a research group's collective knowledge as a navigable
+            map of tiles, then generates ideation directions constrained by
+            the group's actual submissions.
+          </aside>
         </li>
-        <li>
+        <li data-paper="tombwriter">
           <span class="paper-title">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</span>
           <span class="paper-meta">
             Hugo Andersson, Niklas Elmqvist · AVI 2026
@@ -174,20 +234,35 @@
               <a href="https://arxiv.org/">arXiv ↗</a>
             </span>
           </span>
+          <aside class="sidenote">
+            Treats LLM prompts as a hierarchical story instrument refined
+            over time. Writers work at the level of story beats rather than
+            prose, generating character actions to excavate their story.
+          </aside>
         </li>
-        <li>
+        <li data-paper="material">
           <span class="paper-title">Material for Thought: AI as Creative Medium, Not Tool</span>
           <span class="paper-meta">
             Hugo Andersson, Niklas Elmqvist · CHI 2026, Tools for Thought workshop
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
+          <aside class="sidenote">
+            Position paper arguing that AI is better understood as a
+            creative medium — something you shape and push against — than a
+            tool that executes instructions.
+          </aside>
         </li>
-        <li>
+        <li data-paper="role">
           <span class="paper-title">From Role to Person: Trust Calibration Challenges in Twin Agents</span>
           <span class="paper-meta">
             Hugo Andersson, Niklas Elmqvist · CHI 2026, AutomationXP workshop
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
+          <aside class="sidenote">
+            Examines trust calibration challenges when agents move from
+            playing roles to simulating specific people in human-in-the-loop
+            automation.
+          </aside>
         </li>
       </ol>
     </section>
@@ -203,6 +278,27 @@
     </section>
 
   </main>
+
+  <script>
+    (function () {
+      const refs = document.querySelectorAll('.ref');
+      const list = document.querySelector('.papers');
+      const items = document.querySelectorAll('.papers > li');
+      if (!list || !items.length) return;
+
+      refs.forEach(ref => {
+        const ids = (ref.dataset.papers || '').split(',').map(s => s.trim()).filter(Boolean);
+        ref.addEventListener('mouseenter', () => {
+          items.forEach(li => li.classList.toggle('matched', ids.includes(li.dataset.paper)));
+          list.classList.add('dimming');
+        });
+        ref.addEventListener('mouseleave', () => {
+          list.classList.remove('dimming');
+          items.forEach(li => li.classList.remove('matched'));
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>
