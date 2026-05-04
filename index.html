@@ -108,25 +108,7 @@
       background: var(--card);
       border-radius: 3px;
       overflow: hidden;
-      transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease;
-      transform-origin: 30% 80%;
-      cursor: pointer;
-      position: relative;
     }
-    .portrait::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 60%, rgba(31, 24, 192, 0.06));
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      opacity: 0;
-    }
-    .portrait:hover {
-      transform: rotate(-1.2deg) scale(1.02);
-      box-shadow: 0 14px 32px -16px rgba(31, 24, 192, 0.28);
-    }
-    .portrait:hover::after { opacity: 1; }
     .portrait img {
       width: 100%;
       height: 100%;
@@ -141,16 +123,6 @@
       letter-spacing: -0.01em;
       color: var(--ink);
       margin-top: 6px;
-      position: relative;
-    }
-    .name::after {
-      content: "";
-      display: block;
-      width: 22px;
-      height: 2px;
-      background: var(--ink);
-      margin-top: 6px;
-      border-radius: 1px;
     }
     .subtitle {
       font-size: 12px;
@@ -295,26 +267,6 @@
       letter-spacing: 0.02em;
     }
 
-    /* now-playing indicator on the active list item */
-    .now-mark {
-      display: none;
-      font-size: 9px;
-      font-style: italic;
-      color: var(--ink);
-      letter-spacing: 0.06em;
-      margin-left: 6px;
-    }
-    .paper-list > li.active .now-mark { display: inline; }
-    .now-mark::before {
-      content: "★ ";
-      animation: star-spin 6s linear infinite;
-      display: inline-block;
-    }
-    @keyframes star-spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     /* ---------- main ---------- */
     .main {
       min-width: 0;
@@ -402,39 +354,7 @@
       text-transform: uppercase;
       color: var(--dim-55);
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
     }
-
-    /* status pill */
-    .status {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      font-style: italic;
-      text-transform: lowercase;
-      background: rgba(31, 24, 192, 0.08);
-      color: var(--ink);
-      border: 1px solid var(--dim-12);
-    }
-    .status::before {
-      content: "";
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: var(--ink);
-    }
-    .status-review::before {
-      animation: dot-pulse 2.2s ease-in-out infinite;
-    }
-    .status-accepted { background: rgba(31, 24, 192, 0.16); }
-    .status-published::before { background: #16a34a; }
 
     .detail-title {
       font-size: 22px;
@@ -443,57 +363,13 @@
       color: var(--ink);
       margin-bottom: 10px;
       letter-spacing: -0.005em;
-      position: relative;
-      display: inline-block;
     }
-    .detail-title::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 0;
-      height: 1px;
-      background: var(--ink);
-      transition: width 0.7s cubic-bezier(.2,.8,.2,1) 0.1s;
-    }
-    .paper-detail.active .detail-title::after { width: 36px; }
 
     .detail-authors {
       font-size: 13px;
       font-style: italic;
       color: var(--dim-70);
-      margin-bottom: 14px;
-    }
-    .detail-authors .me {
-      color: var(--ink);
-      font-weight: 700;
-      font-style: italic;
-      border-bottom: 1px dotted var(--dim-25);
-    }
-
-    /* tags */
-    .paper-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
       margin-bottom: 22px;
-    }
-    .tag {
-      font-size: 10px;
-      letter-spacing: 0.04em;
-      padding: 3px 9px;
-      border-radius: 11px;
-      background: var(--dim-06);
-      color: var(--dim-70);
-      font-style: italic;
-      border: 1px solid var(--dim-12);
-      cursor: pointer;
-      transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
-    }
-    .tag:hover {
-      background: rgba(31, 24, 192, 0.10);
-      color: var(--ink);
-      transform: translateY(-1px);
     }
 
     .detail-section-label {
@@ -513,14 +389,6 @@
       hyphens: auto;
     }
     .detail-abstract em { color: var(--dim-70); }
-    .detail-abstract::first-letter {
-      font-size: 1.6em;
-      font-weight: 700;
-      line-height: 1;
-      float: left;
-      margin: 4px 6px 0 0;
-      color: var(--ink);
-    }
 
     .detail-pdf {
       width: 100%;
@@ -528,16 +396,10 @@
       aspect-ratio: 1 / 1.414;
       background: #FFFFFF;
       border-radius: 3px;
-      box-shadow: 0 12px 32px -16px rgba(31, 24, 192, 0.30), 0 1px 0 rgba(31, 24, 192, 0.05);
+      box-shadow: 0 8px 24px -16px rgba(31, 24, 192, 0.20);
       margin-bottom: 22px;
       overflow: hidden;
       display: block;
-      transition: transform 0.4s cubic-bezier(.2,.8,.2,1), box-shadow 0.3s ease;
-      transform-origin: 50% 100%;
-    }
-    .detail-pdf:hover {
-      transform: rotate(-0.5deg) translateY(-3px);
-      box-shadow: 0 18px 40px -16px rgba(31, 24, 192, 0.35), 0 2px 0 rgba(31, 24, 192, 0.06);
     }
     .detail-pdf canvas {
       width: 100%;
@@ -601,10 +463,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .paper-detail.active { animation: none; }
-      .now-mark::before { animation: none; }
-      .status-review::before { animation: none; }
       .ambient-mark::before { animation: none; }
-      .detail-title::after { transition: none; }
     }
   </style>
 </head>
@@ -633,28 +492,28 @@
           <li role="tab" data-paper="tessera" tabindex="0" aria-selected="true">
             <span class="num">01</span>
             <span>
-              <span class="paper-name">Tessera</span><span class="now-mark">now</span>
+              <span class="paper-name">Tessera</span>
               <span class="paper-venue-tiny">UIST 2026 · under review</span>
             </span>
           </li>
           <li role="tab" data-paper="tombwriter" tabindex="0">
             <span class="num">02</span>
             <span>
-              <span class="paper-name">TombWriter</span><span class="now-mark">now</span>
+              <span class="paper-name">TombWriter</span>
               <span class="paper-venue-tiny">AVI 2026 · Venice</span>
             </span>
           </li>
           <li role="tab" data-paper="material" tabindex="0">
             <span class="num">03</span>
             <span>
-              <span class="paper-name">Material for Thought</span><span class="now-mark">now</span>
+              <span class="paper-name">Material for Thought</span>
               <span class="paper-venue-tiny">CHI 2026 · ToolsForThought workshop</span>
             </span>
           </li>
           <li role="tab" data-paper="role" tabindex="0">
             <span class="num">04</span>
             <span>
-              <span class="paper-name">From Role to Person</span><span class="now-mark">now</span>
+              <span class="paper-name">From Role to Person</span>
               <span class="paper-venue-tiny">CHI 2026 · AutomationXP workshop</span>
             </span>
           </li>
@@ -713,18 +572,9 @@
       <div class="explorer-detail" aria-live="polite">
 
         <article class="paper-detail active" data-paper="tessera">
-          <p class="detail-venue">
-            <span>UIST 2026</span>
-            <span class="status status-review">in review</span>
-          </p>
+          <p class="detail-venue">UIST 2026 · under review</p>
           <h3 class="detail-title">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</h3>
-          <p class="detail-authors"><span class="me">Hugo Andersson</span>, Niklas Elmqvist</p>
-          <div class="paper-tags">
-            <span class="tag">collective knowledge</span>
-            <span class="tag">group ideation</span>
-            <span class="tag">faceted exploration</span>
-            <span class="tag">LLM</span>
-          </div>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
           <p class="detail-section-label">Abstract</p>
           <p class="detail-abstract">
             Tessera captures a research group's collective knowledge as a
@@ -741,18 +591,9 @@
         </article>
 
         <article class="paper-detail" data-paper="tombwriter">
-          <p class="detail-venue">
-            <span>AVI 2026 · Venice</span>
-            <span class="status status-accepted">accepted</span>
-          </p>
+          <p class="detail-venue">AVI 2026 · Venice</p>
           <h3 class="detail-title">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</h3>
-          <p class="detail-authors"><span class="me">Hugo Andersson</span>, Niklas Elmqvist</p>
-          <div class="paper-tags">
-            <span class="tag">creative writing</span>
-            <span class="tag">beat-level interaction</span>
-            <span class="tag">narrative</span>
-            <span class="tag">creativity support</span>
-          </div>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
           <p class="detail-section-label">Abstract</p>
           <p class="detail-abstract">
             TombWriter treats LLM prompts not as disposable queries but as
@@ -774,17 +615,9 @@
         </article>
 
         <article class="paper-detail" data-paper="material">
-          <p class="detail-venue">
-            <span>CHI 2026 · Tools for Thought workshop</span>
-            <span class="status status-accepted">accepted</span>
-          </p>
+          <p class="detail-venue">CHI 2026 · Tools for Thought workshop</p>
           <h3 class="detail-title">Material for Thought: AI as Creative Medium, Not Tool</h3>
-          <p class="detail-authors"><span class="me">Hugo Andersson</span>, Niklas Elmqvist</p>
-          <div class="paper-tags">
-            <span class="tag">position paper</span>
-            <span class="tag">AI as medium</span>
-            <span class="tag">tools for thought</span>
-          </div>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
           <p class="detail-section-label">Abstract</p>
           <p class="detail-abstract">
             A position paper arguing that treating AI as a creative
@@ -798,17 +631,9 @@
         </article>
 
         <article class="paper-detail" data-paper="role">
-          <p class="detail-venue">
-            <span>CHI 2026 · AutomationXP workshop</span>
-            <span class="status status-accepted">accepted</span>
-          </p>
+          <p class="detail-venue">CHI 2026 · AutomationXP workshop</p>
           <h3 class="detail-title">From Role to Person: Trust Calibration Challenges in Twin Agents</h3>
-          <p class="detail-authors"><span class="me">Hugo Andersson</span>, Niklas Elmqvist</p>
-          <div class="paper-tags">
-            <span class="tag">trust calibration</span>
-            <span class="tag">twin agents</span>
-            <span class="tag">human-AI teaming</span>
-          </div>
+          <p class="detail-authors">Hugo Andersson, Niklas Elmqvist</p>
           <p class="detail-section-label">Abstract</p>
           <p class="detail-abstract">
             Examines trust calibration challenges when agents move from
@@ -865,7 +690,6 @@
       const items = document.querySelectorAll('.paper-list > li');
       const details = document.querySelectorAll('.paper-detail');
       const refs = document.querySelectorAll('.ref');
-      const tags = document.querySelectorAll('.tag');
       const counterEl = document.getElementById('paper-counter-current');
       const numByPaper = {};
       items.forEach(li => { numByPaper[li.dataset.paper] = li.querySelector('.num').textContent; });
@@ -925,23 +749,6 @@
         });
       });
 
-      // Tag hover: highlight any papers that contain this tag in their detail
-      const tagToPapers = {};
-      details.forEach(d => {
-        const id = d.dataset.paper;
-        d.querySelectorAll('.tag').forEach(t => {
-          const txt = t.textContent.trim().toLowerCase();
-          (tagToPapers[txt] ||= []).push(id);
-        });
-      });
-      tags.forEach(t => {
-        t.addEventListener('mouseenter', () => {
-          const txt = t.textContent.trim().toLowerCase();
-          const ids = tagToPapers[txt] || [];
-          items.forEach(li => li.classList.toggle('matched', ids.includes(li.dataset.paper)));
-        });
-        t.addEventListener('mouseleave', clearMatched);
-      });
     })();
   </script>
 
