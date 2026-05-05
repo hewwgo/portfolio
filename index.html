@@ -154,16 +154,13 @@
     /* Tufte-style sidenote — small document to the right on hover */
     .sidenote {
       position: absolute;
-      top: -10px;
-      left: calc(100% + 28px);
+      top: 0;
+      left: calc(100% + 36px);
       width: 290px;
-      font-size: 13px;
+      font-size: 15px;
       line-height: 1.6;
       font-style: italic;
-      color: var(--dim-70);
-      background: var(--card);
-      padding: 16px 18px;
-      border-radius: 3px;
+      color: var(--ink);
       opacity: 0;
       transform: translateX(-4px);
       transition: opacity 0.18s ease, transform 0.18s ease;
@@ -171,7 +168,7 @@
     }
     .sidenote .sidenote-label {
       display: block;
-      font-size: 9.5px;
+      font-size: 10.5px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       font-style: normal;
