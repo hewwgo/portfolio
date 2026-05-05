@@ -45,13 +45,15 @@
       position: relative;
     }
 
-    /* drawn portrait — sits in the LEFT margin, outside the main column */
+    /* drawn portrait — sits in the LEFT margin, outside the main column.
+       Top aligned with the name; size chosen so its bottom lands near
+       the end of the first bio paragraph. */
     .portrait-draw {
       position: absolute;
-      top: 38px;
+      top: 56px;
       right: calc(100% - 28px);
-      margin-right: 24px;
-      width: 130px;
+      margin-right: 28px;
+      width: 180px;
       height: auto;
       pointer-events: none;
       user-select: none;
@@ -214,12 +216,12 @@
 
     /* On viewports too narrow to fit the illustration in the left margin,
        fall back to placing it inline above the name. */
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
       .portrait-draw {
         position: static;
         right: auto;
-        margin: 0 0 12px;
-        width: 100px;
+        margin: 0 0 16px;
+        width: 130px;
       }
     }
 
@@ -233,7 +235,7 @@
 
   <main>
 
-    <img class="portrait-draw" src="hugopicdrawpaper.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
+    <img class="portrait-draw" src="hugopictransparent.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
 
     <header>
       <h1 class="name">hugo andersson</h1>
