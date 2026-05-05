@@ -129,35 +129,43 @@
        to the bright one. */
     .papers:hover > li:not(:hover) { opacity: 0.4; }
 
-    /* Tufte-style sidenote — appears to the right of the paper on hover */
+    /* Tufte-style sidenote — small document to the right on hover */
     .sidenote {
       position: absolute;
       top: -2px;
-      left: calc(100% + 32px);
-      width: 220px;
-      font-size: 11.5px;
-      line-height: 1.55;
+      left: calc(100% + 36px);
+      width: 260px;
+      font-size: 12.5px;
+      line-height: 1.6;
       font-style: italic;
       color: var(--dim-70);
       opacity: 0;
       transform: translateX(-4px);
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
       pointer-events: none;
     }
-    /* Connecting hairline that extends from the paper title into the
-       sidenote, making the relationship unambiguous. */
+    .sidenote .sidenote-label {
+      display: block;
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-style: normal;
+      color: var(--dim-55);
+      margin-bottom: 8px;
+    }
+    /* Connecting hairline from paper title into the sidenote */
     .sidenote::before {
       content: "";
       position: absolute;
       top: 10px;
-      left: -28px;
-      width: 22px;
+      left: -32px;
+      width: 26px;
       height: 1px;
       background: var(--ink);
       opacity: 0;
       transform: scaleX(0.4);
       transform-origin: left center;
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
     }
     .papers li:hover .sidenote {
       opacity: 1;
@@ -186,8 +194,8 @@
       font-size: 12.5px;
     }
 
-    /* not enough side margin for sidenotes — drop them */
-    @media (max-width: 980px) {
+    /* not enough side margin for the wider sidenote — drop them */
+    @media (max-width: 1140px) {
       .sidenote { display: none; }
     }
 
@@ -237,6 +245,7 @@
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
           <aside class="sidenote">
+            <span class="sidenote-label">Abstract</span>
             Captures a research group's collective knowledge as a navigable
             map of tiles, then generates ideation directions constrained by
             the group's actual submissions.
@@ -252,6 +261,7 @@
             </span>
           </span>
           <aside class="sidenote">
+            <span class="sidenote-label">Abstract</span>
             Treats LLM prompts as a hierarchical story instrument refined
             over time. Writers work at the level of story beats rather than
             prose, generating character actions to excavate their story.
@@ -264,6 +274,7 @@
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
           <aside class="sidenote">
+            <span class="sidenote-label">Abstract</span>
             Position paper arguing that AI is better understood as a
             creative medium — something you shape and push against — than a
             tool that executes instructions.
@@ -276,6 +287,7 @@
             <span class="paper-links"><a href="https://arxiv.org/">arXiv ↗</a></span>
           </span>
           <aside class="sidenote">
+            <span class="sidenote-label">Abstract</span>
             Examines trust calibration challenges when agents move from
             playing roles to simulating specific people in human-in-the-loop
             automation.
