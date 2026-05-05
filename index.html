@@ -42,6 +42,19 @@
       max-width: 600px;
       margin: 0 auto;
       padding: 64px 28px 96px;
+      position: relative;
+    }
+
+    /* drawn portrait — top right of the main column, aligned with body */
+    .portrait-draw {
+      position: absolute;
+      top: 56px;
+      right: 28px;
+      width: 110px;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+      mix-blend-mode: multiply;
     }
 
     .name {
@@ -199,6 +212,14 @@
       .sidenote { display: none; }
     }
 
+    @media (max-width: 640px) {
+      .portrait-draw {
+        position: static;
+        width: 90px;
+        margin-bottom: 12px;
+      }
+    }
+
     @media (max-width: 520px) {
       main { padding: 48px 22px 72px; }
       .name { font-size: 24px; }
@@ -208,6 +229,8 @@
 <body>
 
   <main>
+
+    <img class="portrait-draw" src="hugopicdraw.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
 
     <header>
       <h1 class="name">hugo andersson</h1>
