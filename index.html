@@ -45,16 +45,15 @@
       position: relative;
     }
 
-    /* drawn portrait — sits in the LEFT margin, outside the main column.
-       Top aligned with the name; size chosen so its bottom lands near
-       the end of the first bio paragraph. */
+    /* drawn portrait — floats right of the name, body text wraps around
+       it on the left. Right edge sits at the bio body's right edge. */
     .portrait-draw {
-      position: absolute;
-      top: 56px;
-      right: calc(100% - 28px);
-      margin-right: 28px;
-      width: 180px;
+      float: right;
+      width: 170px;
       height: auto;
+      margin: -8px 0 8px 24px;
+      shape-outside: inset(0 0 0 0);
+      shape-margin: 14px;
       pointer-events: none;
       user-select: none;
     }
@@ -214,14 +213,11 @@
       .sidenote { display: none; }
     }
 
-    /* On viewports too narrow to fit the illustration in the left margin,
-       fall back to placing it inline above the name. */
-    @media (max-width: 1000px) {
+    /* On narrow viewports the float still works, but shrink it slightly */
+    @media (max-width: 640px) {
       .portrait-draw {
-        position: static;
-        right: auto;
-        margin: 0 0 16px;
-        width: 130px;
+        width: 120px;
+        margin: 0 0 8px 16px;
       }
     }
 
