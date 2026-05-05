@@ -17,6 +17,7 @@
       --ink: #1F18C0;
       --ink-hover: #0f0b80;
       --paper: #F8F6F3;
+      --card: #EEEAE5;
       --dim-70: rgba(31, 24, 192, 0.70);
       --dim-55: rgba(31, 24, 192, 0.55);
       --dim-25: rgba(31, 24, 192, 0.25);
@@ -153,16 +154,19 @@
     /* Tufte-style sidenote — small document to the right on hover */
     .sidenote {
       position: absolute;
-      top: -2px;
-      left: calc(100% + 36px);
-      width: 260px;
-      font-size: 12.5px;
+      top: -10px;
+      left: calc(100% + 28px);
+      width: 290px;
+      font-size: 13px;
       line-height: 1.6;
       font-style: italic;
       color: var(--dim-70);
+      background: var(--card);
+      padding: 16px 18px;
+      border-radius: 3px;
       opacity: 0;
       transform: translateX(-4px);
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition: opacity 0.18s ease, transform 0.18s ease;
       pointer-events: none;
     }
     .sidenote .sidenote-label {
@@ -174,26 +178,8 @@
       color: var(--dim-55);
       margin-bottom: 8px;
     }
-    /* Connecting hairline from paper title into the sidenote */
-    .sidenote::before {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: -32px;
-      width: 26px;
-      height: 1px;
-      background: var(--ink);
-      opacity: 0;
-      transform: scaleX(0.4);
-      transform-origin: left center;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-    }
     .papers li:hover .sidenote {
       opacity: 1;
-      transform: none;
-    }
-    .papers li:hover .sidenote::before {
-      opacity: 0.55;
       transform: none;
     }
 
