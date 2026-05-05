@@ -45,16 +45,16 @@
       position: relative;
     }
 
-    /* drawn portrait — top right of the main column, aligned with body */
+    /* drawn portrait — sits in the LEFT margin, outside the main column */
     .portrait-draw {
       position: absolute;
-      top: 56px;
-      right: 28px;
-      width: 110px;
+      top: 38px;
+      right: calc(100% - 28px);
+      margin-right: 24px;
+      width: 130px;
       height: auto;
       pointer-events: none;
       user-select: none;
-      mix-blend-mode: multiply;
     }
 
     .name {
@@ -212,11 +212,14 @@
       .sidenote { display: none; }
     }
 
-    @media (max-width: 640px) {
+    /* On viewports too narrow to fit the illustration in the left margin,
+       fall back to placing it inline above the name. */
+    @media (max-width: 900px) {
       .portrait-draw {
         position: static;
-        width: 90px;
-        margin-bottom: 12px;
+        right: auto;
+        margin: 0 0 12px;
+        width: 100px;
       }
     }
 
@@ -230,7 +233,7 @@
 
   <main>
 
-    <img class="portrait-draw" src="hugopicdraw.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
+    <img class="portrait-draw" src="hugopicdrawpaper.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
 
     <header>
       <h1 class="name">hugo andersson</h1>
