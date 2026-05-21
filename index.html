@@ -9,7 +9,7 @@
   <!-- ORIGINAL FONT (uncomment to revert):
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   -->
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -64,13 +64,39 @@
     }
 
     .name {
+      margin-bottom: 8px;
       font-size: 31px;
       font-weight: 700;
       line-height: 1.1;
       letter-spacing: -0.01em;
       color: var(--ink);
-      margin-bottom: 8px;
     }
+    /* ASCII destruction headline */
+    .name-ascii {
+      display: block;
+      font-family: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 1;
+      color: var(--ink);
+      cursor: crosshair;
+      user-select: none;
+      -webkit-user-select: none;
+      margin-bottom: 6px;
+    }
+    .name-ascii .row {
+      display: block;
+      white-space: pre;
+      height: 1em;
+    }
+    .name-ascii .cell {
+      display: inline-block;
+      width: 0.6em;
+      text-align: center;
+      transition: transform 0.32s cubic-bezier(.2,.8,.2,1), color 0.32s ease, opacity 0.32s ease;
+      will-change: transform;
+    }
+    .name-ascii .cell.off { color: transparent; }
 
     .meta {
       font-size: 13px;
@@ -224,7 +250,9 @@
     <img class="portrait-draw" src="hugopictransparent.png" alt="Drawn portrait of Hugo Andersson" aria-hidden="true">
 
     <header>
-      <h1 class="name">hugo andersson</h1>
+      <h1 class="name" aria-label="hugo andersson">
+        <span class="name-ascii" aria-hidden="true"></span>
+      </h1>
       <p class="meta">
         PhD student at <a href="#">Aarhus University</a> ·
         <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a> ·
@@ -323,6 +351,118 @@
   </main>
 
   <script>
+    /* ----- ASCII name destruction ----- */
+    (function () {
+      const FONT = {
+        h: ['#  #', '#  #', '####', '#  #', '#  #'],
+        u: ['#  #', '#  #', '#  #', '#  #', '####'],
+        g: ['####', '#   ', '# ##', '#  #', '####'],
+        o: ['####', '#  #', '#  #', '#  #', '####'],
+        ' ': ['    ', '    ', '    ', '    ', '    '],
+        a: [' ## ', '#  #', '####', '#  #', '#  #'],
+        n: ['#  #', '## #', '# ##', '#  #', '#  #'],
+        d: ['### ', '#  #', '#  #', '#  #', '### '],
+        e: ['####', '#   ', '### ', '#   ', '####'],
+        r: ['### ', '#  #', '### ', '# # ', '#  #'],
+        s: [' ###', '#   ', ' ## ', '   #', '### '],
+      };
+      const TEXT = 'hugo andersson';
+      const ROWS = 5;
+      const GAP = 1; // empty column between letters
+      const container = document.querySelector('.name-ascii');
+      if (!container) return;
+
+      // Build rows of cells
+      const cells = []; // { el, ox, oy }
+      for (let r = 0; r < ROWS; r++) {
+        const rowEl = document.createElement('span');
+        rowEl.className = 'row';
+        let first = true;
+        for (const ch of TEXT) {
+          const letter = FONT[ch] || FONT[' '];
+          if (!first) {
+            for (let g = 0; g < GAP; g++) {
+              const sp = document.createElement('span');
+              sp.className = 'cell off';
+              sp.textContent = ' ';
+              rowEl.appendChild(sp);
+              cells.push({ el: sp, ox: 0, oy: 0 });
+            }
+          }
+          for (const c of letter[r]) {
+            const sp = document.createElement('span');
+            sp.className = 'cell' + (c === ' ' ? ' off' : '');
+            sp.textContent = c === ' ' ? ' ' : '█'; // █
+            rowEl.appendChild(sp);
+            cells.push({ el: sp, ox: 0, oy: 0 });
+          }
+          first = false;
+        }
+        container.appendChild(rowEl);
+      }
+
+      // Cache each cell's center (relative to container). We re-measure
+       // whenever cells look unmeasured (positions all 0) — handles font
+       // load races and layout reflows without timing fragility.
+      let measured = false;
+      function measure() {
+        const cRect = container.getBoundingClientRect();
+        if (cRect.width === 0) return;
+        cells.forEach(c => {
+          // Temporarily clear transform so we measure the resting position
+          const saved = c.el.style.transform;
+          c.el.style.transform = '';
+          const r = c.el.getBoundingClientRect();
+          c.ox = r.left - cRect.left + r.width / 2;
+          c.oy = r.top - cRect.top + r.height / 2;
+          c.el.style.transform = saved;
+        });
+        measured = cells.some(c => c.ox > 0 || c.oy > 0);
+      }
+      // Measure on load, after fonts, and on resize
+      requestAnimationFrame(() => requestAnimationFrame(measure));
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(measure);
+      }
+      window.addEventListener('load', measure);
+      window.addEventListener('resize', measure);
+
+      const RADIUS = 70;
+      const STRENGTH = 28;
+      let mouseX = -9999, mouseY = -9999;
+      let raf = null;
+
+      function update() {
+        raf = null;
+        if (!measured) measure();
+        for (const c of cells) {
+          const dx = c.ox - mouseX;
+          const dy = c.oy - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < RADIUS) {
+            const force = (1 - dist / RADIUS) * STRENGTH;
+            const nx = dist > 0.01 ? dx / dist : 0;
+            const ny = dist > 0.01 ? dy / dist : 0;
+            c.el.style.transform = 'translate(' + (nx * force).toFixed(2) + 'px,' + (ny * force).toFixed(2) + 'px)';
+          } else if (c.el.style.transform) {
+            c.el.style.transform = '';
+          }
+        }
+      }
+
+      container.addEventListener('mousemove', (e) => {
+        const r = container.getBoundingClientRect();
+        mouseX = e.clientX - r.left;
+        mouseY = e.clientY - r.top;
+        if (!raf) raf = requestAnimationFrame(update);
+      });
+      container.addEventListener('mouseleave', () => {
+        mouseX = mouseY = -9999;
+        if (!raf) raf = requestAnimationFrame(update);
+      });
+    })();
+
+    /* ----- bio cross-refs ----- */
     (function () {
       const refs = document.querySelectorAll('.ref');
       const list = document.querySelector('.papers');
