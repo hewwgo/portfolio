@@ -380,8 +380,8 @@
       window.addEventListener('load', measure);
       window.addEventListener('resize', measure);
 
-      const RADIUS = 90;
-      const STRENGTH = 26;
+      const RADIUS = 140;
+      const STRENGTH = 30;
       const ROT_STRENGTH = 18; // deg max
       let mouseX = -9999, mouseY = -9999;
       let raf = null;
@@ -407,13 +407,17 @@
         }
       }
 
-      container.addEventListener('mousemove', (e) => {
+      // Listen on the whole window so the cursor's field of influence
+      // doesn't end at the element's bounding box.
+      window.addEventListener('mousemove', (e) => {
         const r = container.getBoundingClientRect();
         mouseX = e.clientX - r.left;
         mouseY = e.clientY - r.top;
         if (!raf) raf = requestAnimationFrame(update);
-      });
-      container.addEventListener('mouseleave', () => {
+      }, { passive: true });
+
+      // Reset when the cursor leaves the page entirely.
+      document.addEventListener('mouseleave', () => {
         mouseX = mouseY = -9999;
         if (!raf) raf = requestAnimationFrame(update);
       });
