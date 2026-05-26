@@ -74,10 +74,10 @@
     .name {
       font-family: var(--display);
       font-weight: 900;
-      font-size: clamp(30px, 5vw, 72px);
-      line-height: 0.92;
+      font-size: clamp(26px, 4.2vw, 56px);
+      line-height: 0.95;
       letter-spacing: -0.04em;
-      text-transform: uppercase;
+      text-transform: none;
       color: var(--ink);
       margin: 0;
     }
@@ -89,7 +89,8 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--dim);
-      margin-top: 16px;
+      margin-top: 14px;
+      max-width: 68ch;
     }
     .role .sep { margin: 0 6px; opacity: 0.5; }
 
@@ -114,12 +115,25 @@
     .bio {
       font-size: 14.5px;
       line-height: 1.55;
-      max-width: 56ch;
+      max-width: 68ch;
       color: var(--ink);
     }
     .bio p + p { margin-top: 10px; }
     .bio a {
       border-bottom: 1px solid var(--ink);
+    }
+
+    /* inline cross-references: hover any to highlight matching papers */
+    .ref {
+      cursor: pointer;
+      border-bottom: 1px dotted var(--ink);
+      padding-bottom: 1px;
+      transition: background 0.12s linear, color 0.12s linear;
+    }
+    .ref:hover {
+      background: var(--ink);
+      color: var(--paper);
+      border-bottom-color: transparent;
     }
 
     /* contact: definition list, mono uppercase */
@@ -153,9 +167,9 @@
       padding: 10px 0;
       border-bottom: 1px solid var(--rule);
       font-family: var(--mono);
-      font-size: 10.5px;
+      font-size: 12.5px;
       font-weight: 700;
-      letter-spacing: 0.16em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: var(--ink);
     }
@@ -174,6 +188,11 @@
     }
     .papers > li:last-child { border-bottom: 1px solid var(--rule); }
     .papers:hover > li:not(:hover) { opacity: 0.4; }
+    /* When a bio cross-ref is hovered, only matching papers stay lit */
+    .papers.dimming > li { opacity: 0.25; }
+    .papers.dimming > li.matched { opacity: 1; }
+    .papers.dimming:hover > li:not(:hover) { opacity: 0.25; }
+    .papers.dimming:hover > li.matched { opacity: 1; }
 
     /* Tufte-style sidenote (only when there's room in the right margin) */
     .sidenote {
@@ -201,9 +220,9 @@
     .papers .title {
       font-family: var(--display);
       font-weight: 900;
-      font-size: clamp(17px, 2vw, 22px);
-      line-height: 1.05;
-      letter-spacing: -0.012em;
+      font-size: clamp(15px, 1.6vw, 18px);
+      line-height: 1.1;
+      letter-spacing: -0.01em;
       text-transform: uppercase;
       color: var(--ink);
       margin-bottom: 12px;
@@ -211,12 +230,12 @@
 
     .paper-fields {
       font-family: var(--mono);
-      font-size: 10.5px;
-      letter-spacing: 0.06em;
+      font-size: 12px;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       display: grid;
-      grid-template-columns: 74px 1fr;
-      gap: 3px 12px;
+      grid-template-columns: 80px 1fr;
+      gap: 5px 14px;
     }
     .paper-fields dt {
       color: var(--dim);
@@ -322,9 +341,9 @@
 
     <!-- TITLE BLOCK -->
     <header class="title-block">
-      <h1 class="name">HUGO ANDERSSON</h1>
+      <h1 class="name">hugo andersson</h1>
       <p class="role">
-        PhD Fellow<span class="sep">·</span>Human-Centered Computing<span class="sep">·</span>Aarhus University
+        PhD Fellow<span class="sep">·</span>Human-Centered Computing<span class="sep">·</span>Aarhus University<span class="sep">·</span>Advised by Niklas Elmqvist
       </p>
     </header>
 
@@ -332,16 +351,17 @@
     <section class="head" aria-label="Introduction and contact">
       <div class="bio">
         <p>
-          First-year PhD Fellow in Human-Centered Computing at
-          <a href="#">Aarhus University</a>, advised by
-          <a href="#">Niklas Elmqvist</a>. Background in cognitive
+          First-year PhD Fellow in Human-Centered Computing at Aarhus
+          University, advised by Niklas Elmqvist. Background in cognitive
           science. Currently working across HCI, AI, and design research.
         </p>
         <p>
-          So far the PhD has covered creativity tools, collective
-          knowledge systems, and agentic simulations — different entry
-          points into the same question: what changes when AI becomes
-          part of how people think, create, and collaborate?
+          So far the PhD has covered
+          <span class="ref" data-papers="tombwriter,material">creativity tools</span>,
+          <span class="ref" data-papers="tessera">collective knowledge systems</span>,
+          and <span class="ref" data-papers="role">agentic simulations</span>
+          — different entry points into the same question: what changes
+          when AI becomes part of how people think, create, and collaborate?
         </p>
       </div>
 
@@ -365,7 +385,7 @@
 
     <!-- WORK -->
     <section class="work">
-      <div class="section-head">[ Work ]</div>
+      <div class="section-head">[ Papers ]</div>
 
       <ol class="papers">
         <li data-paper="tessera">
@@ -373,6 +393,7 @@
           <dl class="paper-fields">
             <dt>Authors</dt><dd>Hugo Andersson, Niklas Elmqvist</dd>
             <dt>Venue</dt><dd>UIST 2026</dd>
+            <dt>Type</dt><dd>Full paper</dd>
             <dt>Status</dt><dd class="status-pending">Under review</dd>
           </dl>
           <aside class="sidenote">
@@ -388,6 +409,7 @@
           <dl class="paper-fields">
             <dt>Authors</dt><dd>Hugo Andersson, Niklas Elmqvist</dd>
             <dt>Venue</dt><dd>AVI 2026 · Venice</dd>
+            <dt>Type</dt><dd>Full paper</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19681">2605.19681 ↗</a></dd>
           </dl>
           <aside class="sidenote">
@@ -402,6 +424,7 @@
           <dl class="paper-fields">
             <dt>Authors</dt><dd>Hugo Andersson, Niklas Elmqvist</dd>
             <dt>Venue</dt><dd>CHI 2026 · Tools for Thought Workshop</dd>
+            <dt>Type</dt><dd>Workshop paper</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19832">2605.19832 ↗</a></dd>
           </dl>
           <aside class="sidenote">
@@ -416,6 +439,7 @@
           <dl class="paper-fields">
             <dt>Authors</dt><dd>Hugo Andersson, Niklas Elmqvist</dd>
             <dt>Venue</dt><dd>CHI 2026 · AutomationXP Workshop</dd>
+            <dt>Type</dt><dd>Workshop paper</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19838">2605.19838 ↗</a></dd>
           </dl>
           <aside class="sidenote">
@@ -460,6 +484,26 @@
     </footer>
 
   </div>
+
+  <script>
+    (function () {
+      const refs = document.querySelectorAll('.ref');
+      const list = document.querySelector('.papers');
+      const items = document.querySelectorAll('.papers > li');
+      if (!list || !items.length) return;
+      refs.forEach(ref => {
+        const ids = (ref.dataset.papers || '').split(',').map(s => s.trim()).filter(Boolean);
+        ref.addEventListener('mouseenter', () => {
+          items.forEach(li => li.classList.toggle('matched', ids.includes(li.dataset.paper)));
+          list.classList.add('dimming');
+        });
+        ref.addEventListener('mouseleave', () => {
+          list.classList.remove('dimming');
+          items.forEach(li => li.classList.remove('matched'));
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>
