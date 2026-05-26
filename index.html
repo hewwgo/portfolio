@@ -38,6 +38,7 @@
       line-height: 1.5;
       font-feature-settings: "ss01", "cv11";
       min-height: 100vh;
+      overflow-x: hidden;
       background-image:
         radial-gradient(rgba(0,0,0,0.02) 1px, transparent 1px);
       background-size: 3px 3px;
@@ -73,9 +74,9 @@
     .name {
       font-family: var(--display);
       font-weight: 900;
-      font-size: clamp(44px, 10vw, 132px);
-      line-height: 0.88;
-      letter-spacing: -0.045em;
+      font-size: clamp(30px, 5vw, 72px);
+      line-height: 0.92;
+      letter-spacing: -0.04em;
       text-transform: uppercase;
       color: var(--ink);
       margin: 0;
@@ -130,7 +131,7 @@
       text-transform: uppercase;
       display: grid;
       grid-template-columns: 70px 1fr;
-      gap: 6px 14px;
+      gap: 14px 14px;
       align-content: start;
     }
     dl.contact dt {
@@ -166,10 +167,36 @@
 
     .papers { list-style: none; }
     .papers > li {
+      position: relative;
       padding: 20px 0;
       border-bottom: 1px solid var(--rule);
+      transition: opacity 0.18s ease;
     }
     .papers > li:last-child { border-bottom: 1px solid var(--rule); }
+    .papers:hover > li:not(:hover) { opacity: 0.4; }
+
+    /* Tufte-style sidenote (only when there's room in the right margin) */
+    .sidenote {
+      position: absolute;
+      top: 22px;
+      left: calc(100% + 32px);
+      width: 220px;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: var(--dim);
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      pointer-events: none;
+    }
+    .papers > li:hover .sidenote {
+      opacity: 1;
+      transform: none;
+    }
+    @media (max-width: 1440px) {
+      .sidenote { display: none; }
+    }
 
     .papers .title {
       font-family: var(--display);
@@ -295,7 +322,7 @@
 
     <!-- TITLE BLOCK -->
     <header class="title-block">
-      <h1 class="name">HUGO<br>ANDERSSON</h1>
+      <h1 class="name">HUGO ANDERSSON</h1>
       <p class="role">
         PhD Fellow<span class="sep">·</span>Human-Centered Computing<span class="sep">·</span>Aarhus University
       </p>
@@ -348,6 +375,12 @@
             <dt>Venue</dt><dd>UIST 2026</dd>
             <dt>Status</dt><dd class="status-pending">Under review</dd>
           </dl>
+          <aside class="sidenote">
+            A research group's notes, docs, and half-formed ideas become
+            a navigable map of tiles. From any subset, an LLM-driven
+            ideation engine generates research directions constrained to
+            the group's actual contributions.
+          </aside>
         </li>
 
         <li data-paper="tombwriter">
@@ -357,6 +390,11 @@
             <dt>Venue</dt><dd>AVI 2026 · Venice</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19681">2605.19681 ↗</a></dd>
           </dl>
+          <aside class="sidenote">
+            LLM prompts treated as a hierarchical story instrument rather
+            than disposable queries. Writers work at the level of beats —
+            character actions per scene — and refine the story over time.
+          </aside>
         </li>
 
         <li data-paper="material">
@@ -366,6 +404,11 @@
             <dt>Venue</dt><dd>CHI 2026 · Tools for Thought Workshop</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19832">2605.19832 ↗</a></dd>
           </dl>
+          <aside class="sidenote">
+            Position paper. Treating AI as a creative medium — something
+            you shape and push against — rather than a tool that executes
+            instructions, reframes the design space for tools of thought.
+          </aside>
         </li>
 
         <li data-paper="role">
@@ -375,6 +418,11 @@
             <dt>Venue</dt><dd>CHI 2026 · AutomationXP Workshop</dd>
             <dt>arXiv</dt><dd><a href="https://arxiv.org/abs/2605.19838">2605.19838 ↗</a></dd>
           </dl>
+          <aside class="sidenote">
+            Trust calibration challenges when agents move from playing
+            generic roles to simulating specific people in human-in-the-loop
+            automation.
+          </aside>
         </li>
       </ol>
     </section>
