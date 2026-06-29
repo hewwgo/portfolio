@@ -17,13 +17,13 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg:        #0a1c33;   /* deep navy */
-      --bg-2:     #08172a;
-      --ink:       #d8d6cd;   /* warm off-white */
-      --ink-dim:   #6c809e;   /* muted slate-blue */
-      --ink-dim-2: #455c7c;
-      --accent:    #ead37c;   /* soft warm yellow (links/highlights) */
-      --accent-hi: #fff1b3;
+      --bg:        #15181d;   /* warm charcoal */
+      --bg-2:      #101216;
+      --ink:       #d6d2c7;   /* warm cream */
+      --ink-hi:    #f1ecdf;   /* brighter cream for highlights / hover */
+      --ink-dim:   #71747a;   /* warm slate gray */
+      --ink-dim-2: #4a4c52;
+      --rule:      #2a2d34;
       --sans:      'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
@@ -39,12 +39,16 @@
     }
 
     a {
-      color: var(--accent);
+      color: var(--ink-hi);
       text-decoration: none;
-      transition: color 0.12s ease;
+      border-bottom: 1px solid var(--ink-dim-2);
+      transition: color 0.12s ease, border-color 0.12s ease;
     }
-    a:hover { color: var(--accent-hi); }
-    a:focus-visible { outline: 1px dotted var(--accent); outline-offset: 3px; }
+    a:hover {
+      color: var(--ink-hi);
+      border-bottom-color: var(--ink-hi);
+    }
+    a:focus-visible { outline: 1px dotted var(--ink-hi); outline-offset: 3px; }
 
     /* ---------- page frame ---------- */
     .page {
@@ -89,18 +93,17 @@
       max-width: 60ch;
     }
     .intro p + p { margin-top: 12px; }
-    .intro a { color: var(--accent); }
 
-    /* inline cross-refs: dotted underline, highlight on hover */
+    /* inline cross-refs: dotted underline, brightens on hover */
     .ref {
       cursor: pointer;
-      color: var(--accent);
-      border-bottom: 1px dotted rgba(234, 211, 124, 0.4);
+      color: var(--ink);
+      border-bottom: 1px dotted var(--ink-dim);
       transition: color 0.12s ease, border-color 0.12s ease;
     }
     .ref:hover {
-      color: var(--accent-hi);
-      border-bottom-color: var(--accent-hi);
+      color: var(--ink-hi);
+      border-bottom-color: var(--ink-hi);
     }
 
     /* ---------- section labels (Bret-style, period included) ---------- */
@@ -129,20 +132,30 @@
       padding-top: 1px;
     }
     .entries .ttl {
-      color: var(--accent);
+      color: var(--ink-hi);
       font-size: 15px;
       font-weight: 500;
       line-height: 1.35;
+      border-bottom: 0;
     }
-    .entries .ttl:hover { color: var(--accent-hi); }
+    a.ttl { border-bottom: 0; }
+    a.ttl:hover { color: var(--ink-hi); text-decoration: underline; text-underline-offset: 3px; }
     .entries .meta {
       grid-column: 2;
       color: var(--ink-dim);
       font-size: 13px;
       margin-top: 2px;
     }
+    .entries .meta a {
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink-dim-2);
+    }
+    .entries .meta a:hover {
+      color: var(--ink-hi);
+      border-bottom-color: var(--ink-hi);
+    }
     .entries .meta .pending {
-      color: var(--accent);
+      color: var(--ink-hi);
       font-weight: 500;
     }
     .entries .desc {
@@ -171,20 +184,24 @@
     dl.contact dd {
       color: var(--ink);
     }
-    dl.contact dd a { color: var(--accent); }
+    dl.contact dd a {
+      color: var(--ink-hi);
+      border-bottom: 1px solid var(--ink-dim-2);
+    }
+    dl.contact dd a:hover { border-bottom-color: var(--ink-hi); }
 
-    /* ---------- side sketch (Bret-style margin illustration) ---------- */
+    /* ---------- side sketch (margin illustration) ---------- */
     .side-sketch {
       position: absolute;
       top: 80px;
       right: clamp(20px, 4vw, 80px);
       width: clamp(180px, 22vw, 320px);
       height: auto;
-      opacity: 0.72;
+      opacity: 0.32;
       pointer-events: none;
       user-select: none;
-      /* Convert dark-on-white sketch to light-on-navy */
-      filter: invert(1) brightness(1.1) contrast(1.05) hue-rotate(180deg) saturate(0.6);
+      /* invert the dark-on-white sketch to be light, then dim it */
+      filter: invert(1) brightness(0.72) contrast(0.95) saturate(0);
       mix-blend-mode: screen;
       z-index: 1;
     }
