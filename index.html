@@ -72,9 +72,9 @@
 
     /* ---------- name + role ---------- */
     .hd-name {
-      font-size: 28px;
-      font-weight: 500;
-      font-style: italic;
+      font-size: 30px;
+      font-weight: 600;
+      font-style: normal;
       letter-spacing: 0;
       text-transform: none;
       color: var(--ink-hi);
@@ -126,65 +126,119 @@
       border-bottom: 1px solid var(--rule);
     }
 
-    /* ---------- entry list (papers, education) ---------- */
+    /* ---------- education list (year + title grid) ---------- */
     .entries { list-style: none; }
     .entries > li {
       display: grid;
       grid-template-columns: 80px 1fr;
       gap: 2px 12px;
       padding: 10px 0;
-      transition: opacity 0.18s ease;
     }
     .entries .yr {
       color: var(--ink-dim);
-      font-size: 14px;
-      font-weight: 400;
-      padding-top: 1px;
+      font-size: 15px;
+      padding-top: 2px;
     }
     .entries .ttl {
       color: var(--ink-hi);
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 17px;
+      font-weight: 600;
       line-height: 1.35;
       border-bottom: 0;
-    }
-    a.ttl { border-bottom: 0; }
-    a.ttl:hover {
-      color: var(--accent-hi);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: var(--accent);
     }
     .entries .meta {
       grid-column: 2;
       color: var(--ink-dim);
-      font-size: 13px;
+      font-size: 14px;
       margin-top: 2px;
     }
-    .entries .meta a {
-      color: var(--ink);
-      border-bottom: 1px solid var(--ink-dim-2);
+
+    /* ---------- publications list (papers, workshops) ---------- */
+    .pubs { list-style: none; }
+    .pubs > li {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--rule);
+      transition: opacity 0.18s ease;
     }
-    .entries .meta a:hover {
-      color: var(--ink-hi);
-      border-bottom-color: var(--ink-hi);
+    .pubs > li:last-child { border-bottom: 0; }
+
+    .pubs .venue {
+      display: block;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-dim);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
     }
-    .entries .meta .pending {
+    .pubs .venue .pending {
       color: var(--accent);
-      font-weight: 500;
     }
-    .entries .desc {
-      grid-column: 2;
+    .pubs .ttl {
+      display: block;
+      color: var(--ink-hi);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+      border-bottom: 0;
+    }
+    .pubs a.ttl:hover {
+      color: var(--accent-hi);
+    }
+    .pubs .authors {
+      display: block;
+      color: var(--ink-dim);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    .pubs .btns {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .pubs .btn {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      color: var(--ink-dim);
+      background: transparent;
+      border: 1px solid var(--rule);
+      border-radius: 0;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+    .pubs .btn:hover {
+      color: var(--ink-hi);
+      border-color: var(--ink);
+      background: rgba(31, 24, 19, 0.04);
+    }
+    .pubs .btn.is-open {
+      color: var(--bg);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .pubs .desc {
+      display: none;
       color: var(--ink);
-      opacity: 0.78;
-      font-size: 14px;
-      margin-top: 6px;
-      max-width: 56ch;
+      opacity: 0.85;
+      font-size: 17px;
+      line-height: 1.55;
+      margin-top: 12px;
+      padding-left: 12px;
+      border-left: 2px solid var(--rule);
     }
+    .pubs .desc.is-open { display: block; }
 
     /* dim non-matching entries when bio refs are hovered */
-    .entries.dimming > li { opacity: 0.28; }
-    .entries.dimming > li.matched { opacity: 1; }
+    .pubs.dimming > li { opacity: 0.28; }
+    .pubs.dimming > li.matched { opacity: 1; }
 
     /* ---------- contact block ---------- */
     dl.contact {
@@ -295,39 +349,57 @@
       </section>
 
       <h2 class="sec-label">Papers</h2>
-      <ol class="entries" id="papers">
+      <ol class="pubs" id="papers">
 
         <li data-paper="tessera">
-          <span class="yr">2026</span>
+          <span class="venue">UIST 2026 · <span class="pending">Under review</span></span>
           <span class="ttl">Tessera — Faceted Exploration of Collective Knowledge for Collaborative Ideation</span>
-          <span class="meta">Hugo Andersson, Niklas Elmqvist · UIST 2026 · <span class="pending">Under review</span></span>
-          <span class="desc">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</span>
+          <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
+          <div class="btns">
+            <button type="button" class="btn abs-btn">Abstract</button>
+          </div>
+          <p class="desc">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</p>
         </li>
 
         <li data-paper="tombwriter">
-          <span class="yr">2026</span>
-          <a class="ttl" href="https://arxiv.org/abs/2605.19681">TombWriter — Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</a>
-          <span class="meta">Hugo Andersson, Niklas Elmqvist · AVI 2026, Venice · <a href="https://arxiv.org/abs/2605.19681">arXiv</a></span>
-          <span class="desc">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</span>
+          <span class="venue">AVI 2026 · Venice</span>
+          <span class="ttl">TombWriter — Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</span>
+          <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
+          <div class="btns">
+            <button type="button" class="btn abs-btn">Abstract</button>
+            <a class="btn" href="https://arxiv.org/abs/2605.19681">arXiv</a>
+            <a class="btn" href="https://arxiv.org/pdf/2605.19681">PDF</a>
+          </div>
+          <p class="desc">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</p>
         </li>
 
       </ol>
 
       <h2 class="sec-label">Workshops</h2>
-      <ol class="entries" id="workshops">
+      <ol class="pubs" id="workshops">
 
         <li data-paper="material">
-          <span class="yr">2026</span>
-          <a class="ttl" href="https://arxiv.org/abs/2605.19832">Material for Thought — AI as Creative Medium, Not Tool</a>
-          <span class="meta">Hugo Andersson, Niklas Elmqvist · CHI 2026, Tools for Thought workshop · <a href="https://arxiv.org/abs/2605.19832">arXiv</a></span>
-          <span class="desc">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</span>
+          <span class="venue">CHI 2026 · Tools for Thought workshop</span>
+          <span class="ttl">Material for Thought — AI as Creative Medium, Not Tool</span>
+          <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
+          <div class="btns">
+            <button type="button" class="btn abs-btn">Abstract</button>
+            <a class="btn" href="https://arxiv.org/abs/2605.19832">arXiv</a>
+            <a class="btn" href="https://arxiv.org/pdf/2605.19832">PDF</a>
+          </div>
+          <p class="desc">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</p>
         </li>
 
         <li data-paper="role">
-          <span class="yr">2026</span>
-          <a class="ttl" href="https://arxiv.org/abs/2605.19838">From Role to Person — Trust Calibration Challenges in Twin Agents</a>
-          <span class="meta">Hugo Andersson, Niklas Elmqvist · CHI 2026, AutomationXP workshop · <a href="https://arxiv.org/abs/2605.19838">arXiv</a></span>
-          <span class="desc">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</span>
+          <span class="venue">CHI 2026 · AutomationXP workshop</span>
+          <span class="ttl">From Role to Person — Trust Calibration Challenges in Twin Agents</span>
+          <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
+          <div class="btns">
+            <button type="button" class="btn abs-btn">Abstract</button>
+            <a class="btn" href="https://arxiv.org/abs/2605.19838">arXiv</a>
+            <a class="btn" href="https://arxiv.org/pdf/2605.19838">PDF</a>
+          </div>
+          <p class="desc">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</p>
         </li>
 
       </ol>
@@ -380,10 +452,11 @@
   </div>
 
   <script>
+    // bio cross-refs: dim non-matching publications on hover
     (function () {
       const refs = document.querySelectorAll('.ref');
-      const lists = document.querySelectorAll('ol.entries');
-      const items = document.querySelectorAll('ol.entries > li[data-paper]');
+      const lists = document.querySelectorAll('ol.pubs');
+      const items = document.querySelectorAll('ol.pubs > li[data-paper]');
       if (!items.length) return;
       refs.forEach(ref => {
         const ids = (ref.dataset.papers || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -394,6 +467,19 @@
         ref.addEventListener('mouseleave', () => {
           lists.forEach(l => l.classList.remove('dimming'));
           items.forEach(li => li.classList.remove('matched'));
+        });
+      });
+    })();
+
+    // Abstract toggles
+    (function () {
+      document.querySelectorAll('.abs-btn').forEach(btn => {
+        const li = btn.closest('li');
+        const desc = li && li.querySelector('.desc');
+        if (!desc) return;
+        btn.addEventListener('click', () => {
+          const open = desc.classList.toggle('is-open');
+          btn.classList.toggle('is-open', open);
         });
       });
     })();
