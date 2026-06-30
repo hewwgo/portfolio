@@ -72,11 +72,11 @@
 
     /* ---------- name + role ---------- */
     .hd-name {
-      font-size: 30px;
+      font-size: 24px;
       font-weight: 600;
       font-style: normal;
-      letter-spacing: 0;
-      text-transform: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
       color: var(--ink-hi);
       margin: 0;
     }
@@ -260,34 +260,59 @@
     dl.contact dd a:hover { border-bottom-color: var(--ink-hi); }
 
     /* ---------- Don Quixote silhouette overlay ---------- */
-    /* Frame fills viewport width and clips overflow; donx scales
-       up to 150vw inside so the figures end up on either side of
-       the centered text column. */
+    /* Each figure is its own positioned "window" into the source PNG —
+       we scale the image to a fixed display width inside the window and
+       offset it so only the desired figure shows. Lets mule and Quixote
+       move independently. */
     .donx-frame {
       position: absolute;
       top: 32px;
-      /* break out of .page (max-width 1400) so the image isn't clipped
-         on wide viewports — pin to full viewport width instead */
       left: 50%;
       transform: translateX(-50%);
       width: 100vw;
+      height: 1100px;
       overflow: hidden;
       pointer-events: none;
       z-index: 0;
     }
-    .donx {
+    .fig {
+      position: absolute;
+      overflow: hidden;
+    }
+    .fig img {
+      position: absolute;
       display: block;
-      width: 105vw;
-      max-width: 1800px;
+      width: 98vw;       /* shared scale: source image rendered 98vw wide */
       height: auto;
-      margin-left: 46%;
-      transform: translateX(-50%);
-      /* black silhouettes on cream — multiply lets the paper texture
-         (and any underlying tint) read through, so it sits *in* the
-         page like a real engraving */
       mix-blend-mode: multiply;
       opacity: 0.85;
       user-select: none;
+    }
+
+    /* MULE — left side, shifted further left of the column.
+       Source bbox: x 13.3–41.9 %, y 71.5–99.9 % of a 1992×1080 image */
+    .fig-mule {
+      left: 1vw;
+      top: 540px;
+      width: 28vw;
+      height: 15vw;
+    }
+    .fig-mule img {
+      left: -13.3vw;   /* shift so source x≈265 aligns with window left */
+      top: -38vw;      /* shift so source y≈772 aligns with window top */
+    }
+
+    /* QUIXOTE — right side, upper area.
+       Source bbox: x 67.4–81.7 %, y 0.1–54.4 % */
+    .fig-quixote {
+      right: 1vw;
+      top: 60px;
+      width: 14vw;
+      height: 28.5vw;
+    }
+    .fig-quixote img {
+      left: -66vw;
+      top: -0.5vw;
     }
 
     /* ---------- footer ---------- */
@@ -320,7 +345,8 @@
   <div class="page">
 
     <div class="donx-frame" aria-hidden="true">
-      <img class="donx" src="donxedit.png" alt="">
+      <div class="fig fig-mule"><img src="donxedit.png" alt=""></div>
+      <div class="fig fig-quixote"><img src="donxedit.png" alt=""></div>
     </div>
 
     <div class="col">
