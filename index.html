@@ -218,10 +218,10 @@
       height: auto;
       margin-left: 50%;
       transform: translateX(-50%);
-      /* multiply makes the white plate disappear into the navy bg,
-         leaving the black silhouettes as quiet shadow figures */
-      mix-blend-mode: multiply;
-      opacity: 0.9;
+      /* PNG is black silhouettes on transparent — invert to white
+         so they read on the navy, then dim into a quiet ink tone */
+      filter: invert(1) brightness(0.85) sepia(0.25) hue-rotate(-10deg);
+      opacity: 0.18;
       user-select: none;
     }
 
@@ -234,7 +234,7 @@
     }
 
     /* ---------- responsive ---------- */
-    @media (max-width: 1100px) {
+    @media (max-width: 720px) {
       .donx-frame { display: none; }
       .page { padding-top: 32px; }
     }
