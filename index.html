@@ -17,8 +17,8 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg:        #142340;   /* deep navy, a touch brighter & bluer */
-      --bg-2:      #0d1a30;
+      --bg:        #1a2c4e;   /* deep navy, a touch brighter & bluer */
+      --bg-2:      #122042;
       --ink:       #d8d3c4;   /* warm cream */
       --ink-hi:    #f1ebd8;   /* brighter cream for highlights / hover */
       --ink-dim:   #6d7a8c;   /* slate blue */
@@ -218,10 +218,9 @@
       height: auto;
       margin-left: 50%;
       transform: translateX(-50%);
-      /* PNG is black silhouettes on transparent — invert to white
-         so they read on the navy, then dim into a quiet ink tone */
-      filter: invert(1) brightness(0.85) sepia(0.25) hue-rotate(-10deg);
-      opacity: 0.18;
+      /* PNG is black silhouettes on transparent — render natively
+         on the slightly-lighter navy so they read as quiet shadow figures */
+      opacity: 0.55;
       user-select: none;
     }
 
@@ -300,6 +299,11 @@
           <span class="desc">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</span>
         </li>
 
+      </ol>
+
+      <h2 class="sec-label">Workshops.</h2>
+      <ol class="entries" id="workshops">
+
         <li data-paper="material">
           <span class="yr">2026</span>
           <a class="ttl" href="https://arxiv.org/abs/2605.19832">Material for Thought — AI as Creative Medium, Not Tool</a>
@@ -366,17 +370,17 @@
   <script>
     (function () {
       const refs = document.querySelectorAll('.ref');
-      const list = document.getElementById('papers');
-      if (!list) return;
-      const items = list.querySelectorAll(':scope > li');
+      const lists = document.querySelectorAll('ol.entries');
+      const items = document.querySelectorAll('ol.entries > li[data-paper]');
+      if (!items.length) return;
       refs.forEach(ref => {
         const ids = (ref.dataset.papers || '').split(',').map(s => s.trim()).filter(Boolean);
         ref.addEventListener('mouseenter', () => {
           items.forEach(li => li.classList.toggle('matched', ids.includes(li.dataset.paper)));
-          list.classList.add('dimming');
+          lists.forEach(l => l.classList.add('dimming'));
         });
         ref.addEventListener('mouseleave', () => {
-          list.classList.remove('dimming');
+          lists.forEach(l => l.classList.remove('dimming'));
           items.forEach(li => li.classList.remove('matched'));
         });
       });
