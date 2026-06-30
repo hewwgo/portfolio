@@ -7,36 +7,36 @@
   <meta name="description" content="Hugo Andersson — PhD Fellow in Human-Centered Computing at Aarhus University.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ===========================================================
-       Engraved-book look — cream paper, ink, woodcut Quixote
-       (BV-style dark version archived at /index-bv.html)
+       Worrydream / Bret Victor inspired — dark navy, warm cream
+       (previous designs at /index-classic.html, /index-brutalist.html)
        =========================================================== */
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg:        #ede4d0;   /* warm aged paper */
-      --bg-2:      #e1d6bd;
-      --ink:       #1f1813;   /* warm near-black, like old printer's ink */
-      --ink-hi:    #000000;   /* full ink for emphasis */
-      --ink-dim:   #6b5a48;   /* faded ink */
-      --ink-dim-2: #97866f;   /* very faded ink for metadata */
-      --accent:    #7a1d1d;   /* deep oxblood — sparing */
-      --accent-hi: #9b2a28;
-      --rule:      #b9aa90;
-      --serif:     'EB Garamond', "Hoefler Text", Garamond, "Times New Roman", serif;
+      --bg:        #1a2c4e;   /* deep navy, a touch brighter & bluer */
+      --bg-2:      #122042;
+      --ink:       #ece6d4;   /* warm cream, brighter for readability */
+      --ink-hi:    #fbf5e2;   /* brighter cream for highlights / hover */
+      --ink-dim:   #8893a3;   /* slate blue, lifted */
+      --ink-dim-2: #56647d;
+      --accent:    #d29a96;   /* dusty rose — sparing */
+      --accent-hi: #e8b3ae;
+      --card:      #ebe2cf;   /* warm bone for the sketch frame */
+      --rule:      #1b2740;
       --sans:      'Inter', system-ui, -apple-system, "Segoe UI", sans-serif;
     }
 
     html, body { background: var(--bg); }
     body {
       color: var(--ink);
-      font-family: var(--serif);
-      font-size: 18px;
-      line-height: 1.5;
-      font-feature-settings: "kern", "liga", "onum";
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.55;
+      font-feature-settings: "ss01", "cv11";
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -72,33 +72,30 @@
 
     /* ---------- name + role ---------- */
     .hd-name {
-      font-size: 28px;
-      font-weight: 500;
-      font-style: italic;
-      letter-spacing: 0;
-      text-transform: none;
-      color: var(--ink-hi);
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
       margin: 0;
     }
     .hd-sub {
-      margin-top: 6px;
-      font-family: var(--sans);
-      font-size: 11.5px;
+      margin-top: 2px;
+      font-size: 12.5px;
       color: var(--ink-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
+      letter-spacing: 0.01em;
     }
-    .hd-sub .sep { color: var(--ink-dim-2); margin: 0 8px; }
+    .hd-sub .sep { color: var(--ink-dim-2); margin: 0 6px; }
 
     /* ---------- intro paragraphs ---------- */
     .intro {
-      margin-top: 32px;
-      font-size: 18px;
-      line-height: 1.55;
+      margin-top: 26px;
+      font-size: 15px;
+      line-height: 1.62;
       color: var(--ink);
-      max-width: 62ch;
+      max-width: 60ch;
     }
-    .intro p + p { margin-top: 14px; }
+    .intro p + p { margin-top: 12px; }
 
     /* inline cross-refs: dotted underline, terracotta on hover */
     .ref {
@@ -112,18 +109,14 @@
       border-bottom-color: var(--accent);
     }
 
-    /* ---------- section labels (small caps + rule, like a chapter head) ---------- */
+    /* ---------- section labels (Bret-style, period included) ---------- */
     .sec-label {
-      margin-top: 56px;
-      margin-bottom: 18px;
-      font-family: var(--sans);
-      font-size: 10.5px;
-      font-weight: 600;
+      margin-top: 48px;
+      margin-bottom: 14px;
+      font-size: 13.5px;
+      font-weight: 500;
       color: var(--ink-dim);
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--rule);
+      letter-spacing: 0.01em;
     }
 
     /* ---------- entry list (papers, education) ---------- */
@@ -226,13 +219,13 @@
       width: 105vw;
       max-width: 1800px;
       height: auto;
+      /* nudge the whole composition a touch left so the mule has room
+         and Quixote sits closer to the right edge */
       margin-left: 46%;
       transform: translateX(-50%);
-      /* black silhouettes on cream — multiply lets the paper texture
-         (and any underlying tint) read through, so it sits *in* the
-         page like a real engraving */
-      mix-blend-mode: multiply;
-      opacity: 0.85;
+      /* PNG is black silhouettes on transparent — render natively
+         on the slightly-lighter navy so they read as quiet shadow figures */
+      opacity: 0.6;
       user-select: none;
     }
 
@@ -294,7 +287,7 @@
         </p>
       </section>
 
-      <h2 class="sec-label">Papers</h2>
+      <h2 class="sec-label">Papers.</h2>
       <ol class="entries" id="papers">
 
         <li data-paper="tessera">
@@ -313,7 +306,7 @@
 
       </ol>
 
-      <h2 class="sec-label">Workshops</h2>
+      <h2 class="sec-label">Workshops.</h2>
       <ol class="entries" id="workshops">
 
         <li data-paper="material">
@@ -332,7 +325,7 @@
 
       </ol>
 
-      <h2 class="sec-label">Contact</h2>
+      <h2 class="sec-label">Contact.</h2>
       <dl class="contact">
         <dt>email</dt>
         <dd><a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a></dd>
@@ -347,7 +340,7 @@
         <dd>Åbogade 34, 8200 Aarhus, Denmark</dd>
       </dl>
 
-      <h2 class="sec-label">Education</h2>
+      <h2 class="sec-label">Education.</h2>
       <ul class="entries">
         <li>
           <span class="yr">2025—</span>
