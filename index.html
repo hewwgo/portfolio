@@ -19,10 +19,10 @@
     :root {
       --bg:        #1a2c4e;   /* deep navy, a touch brighter & bluer */
       --bg-2:      #122042;
-      --ink:       #d8d3c4;   /* warm cream */
-      --ink-hi:    #f1ebd8;   /* brighter cream for highlights / hover */
-      --ink-dim:   #6d7a8c;   /* slate blue */
-      --ink-dim-2: #44516a;
+      --ink:       #ece6d4;   /* warm cream, brighter for readability */
+      --ink-hi:    #fbf5e2;   /* brighter cream for highlights / hover */
+      --ink-dim:   #8893a3;   /* slate blue, lifted */
+      --ink-dim-2: #56647d;
       --accent:    #d29a96;   /* dusty rose — sparing */
       --accent-hi: #e8b3ae;
       --card:      #ebe2cf;   /* warm bone for the sketch frame */
@@ -205,22 +205,27 @@
     .donx-frame {
       position: absolute;
       top: 32px;
-      left: 0;
-      right: 0;
+      /* break out of .page (max-width 1400) so the image isn't clipped
+         on wide viewports — pin to full viewport width instead */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
       overflow: hidden;
       pointer-events: none;
       z-index: 0;
     }
     .donx {
       display: block;
-      width: 150vw;
-      max-width: 2400px;
+      width: 105vw;
+      max-width: 1800px;
       height: auto;
-      margin-left: 50%;
+      /* nudge the whole composition a touch left so the mule has room
+         and Quixote sits closer to the right edge */
+      margin-left: 46%;
       transform: translateX(-50%);
       /* PNG is black silhouettes on transparent — render natively
          on the slightly-lighter navy so they read as quiet shadow figures */
-      opacity: 0.55;
+      opacity: 0.6;
       user-select: none;
     }
 
