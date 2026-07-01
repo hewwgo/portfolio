@@ -64,7 +64,7 @@
 
     /* central narrow text column, centered horizontally */
     .col {
-      max-width: 660px;
+      max-width: 580px;
       margin: 0 auto;
       position: relative;
       z-index: 2;
@@ -224,7 +224,7 @@
       background: var(--ink);
       border-color: var(--ink);
     }
-    .pubs .desc {
+    .pubs .body {
       display: none;
       color: var(--ink);
       opacity: 0.85;
@@ -234,7 +234,7 @@
       padding-left: 12px;
       border-left: 2px solid var(--rule);
     }
-    .pubs .desc.is-open { display: block; }
+    .pubs .body.is-open { display: block; }
 
     /* dim non-matching entries when bio refs are hovered */
     .pubs.dimming > li { opacity: 0.28; }
@@ -382,9 +382,11 @@
           <span class="ttl">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
           <div class="btns">
-            <button type="button" class="btn abs-btn">Abstract</button>
+            <button type="button" class="btn body-btn" data-target="about">About</button>
+            <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
           </div>
-          <p class="desc">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</p>
+          <p class="body about">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</p>
+          <p class="body abs">[Paste the real Tessera abstract here.]</p>
         </li>
 
         <li data-paper="tombwriter">
@@ -392,11 +394,13 @@
           <span class="ttl">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
           <div class="btns">
-            <button type="button" class="btn abs-btn">Abstract</button>
+            <button type="button" class="btn body-btn" data-target="about">About</button>
+            <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" href="https://arxiv.org/abs/2605.19681">arXiv</a>
             <a class="btn" href="https://arxiv.org/pdf/2605.19681">PDF</a>
           </div>
-          <p class="desc">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</p>
+          <p class="body about">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</p>
+          <p class="body abs">[Paste the real TombWriter abstract here.]</p>
         </li>
 
       </ol>
@@ -409,11 +413,13 @@
           <span class="ttl">Material for Thought: AI as Creative Medium, Not Tool</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
           <div class="btns">
-            <button type="button" class="btn abs-btn">Abstract</button>
+            <button type="button" class="btn body-btn" data-target="about">About</button>
+            <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" href="https://arxiv.org/abs/2605.19832">arXiv</a>
             <a class="btn" href="https://arxiv.org/pdf/2605.19832">PDF</a>
           </div>
-          <p class="desc">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</p>
+          <p class="body about">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</p>
+          <p class="body abs">[Paste the real Material for Thought abstract here.]</p>
         </li>
 
         <li data-paper="role">
@@ -421,11 +427,13 @@
           <span class="ttl">From Role to Person: Trust Calibration Challenges in Twin Agents</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
           <div class="btns">
-            <button type="button" class="btn abs-btn">Abstract</button>
+            <button type="button" class="btn body-btn" data-target="about">About</button>
+            <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" href="https://arxiv.org/abs/2605.19838">arXiv</a>
             <a class="btn" href="https://arxiv.org/pdf/2605.19838">PDF</a>
           </div>
-          <p class="desc">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</p>
+          <p class="body about">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</p>
+          <p class="body abs">[Paste the real From Role to Person abstract here.]</p>
         </li>
 
       </ol>
@@ -497,15 +505,22 @@
       });
     })();
 
-    // Abstract toggles
+    // Accordion: About / Abstract per paper — only one body open at a time
     (function () {
-      document.querySelectorAll('.abs-btn').forEach(btn => {
+      document.querySelectorAll('.body-btn').forEach(btn => {
         const li = btn.closest('li');
-        const desc = li && li.querySelector('.desc');
-        if (!desc) return;
+        if (!li) return;
+        const target = btn.dataset.target;
+        const body = li.querySelector('.body.' + target);
+        if (!body) return;
         btn.addEventListener('click', () => {
-          const open = desc.classList.toggle('is-open');
-          btn.classList.toggle('is-open', open);
+          const nowOpen = !body.classList.contains('is-open');
+          li.querySelectorAll('.body').forEach(b => b.classList.remove('is-open'));
+          li.querySelectorAll('.body-btn').forEach(b => b.classList.remove('is-open'));
+          if (nowOpen) {
+            body.classList.add('is-open');
+            btn.classList.add('is-open');
+          }
         });
       });
     })();
