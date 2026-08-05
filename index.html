@@ -498,13 +498,13 @@
       if (!face) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      // extended density ramp — 18 chars, light → dense.
+      // extended density ramp — 22 chars, light → dense.
       // per-cell wobble picks neighbours within ±1 index so many symbols show
       // even when perceived density is constant.
       const RAMP = " .-'`~,:;+=<>*?/\\%#$&@";
       const RAMP_N = RAMP.length;
-      const COLS = 56;
-      const ROWS = 62;
+      const COLS = 68;
+      const ROWS = 82;
 
       // hash + 2D value noise for organic grain
       function hash(n) {
@@ -567,120 +567,169 @@
         const swayX = Math.sin(t / 2700) * 0.9 + Math.sin(t / 4500) * 0.35;
         const twitch = (t < twitchUntil) ? (Math.random() - 0.5) * twitchAmp : 0;
 
-        P.cx = COLS * 0.60 + swayX + twitch;
-        P.cy = ROWS * 0.28 + bobY;
-        P.hrx = COLS * 0.20;
-        P.hry = ROWS * 0.22;
+        // head center. head is an egg — skull ellipse on top, jaw ellipse below,
+        // combined into a taller-than-wide silhouette.
+        P.cx = COLS * 0.55 + swayX + twitch;
+        P.cy = ROWS * 0.30 + bobY;
+        P.hrx = COLS * 0.19;                 // head half-width
+        P.hry = ROWS * 0.24;                 // head half-height (taller than wide)
+
+        // skull (upper 60 % of head) — full-width oval
+        P.skullY = P.cy - P.hry * 0.22;
+        P.skullRx = P.hrx * 1.00;
+        P.skullRy = P.hry * 0.78;
+        // jaw (lower half) — narrower oval, offset down
+        P.jawY = P.cy + P.hry * 0.55;
+        P.jawRx = P.hrx * 0.72;
+        P.jawRy = P.hry * 0.58;
+
         // shoulders
         P.breath = 1 + Math.sin(t / 3500) * 0.028;
-        P.srx = COLS * 0.60 * P.breath;
-        P.sry = ROWS * 0.40;
-        P.scy = ROWS * 0.96 + bobY * 0.3;
+        P.srx = COLS * 0.62 * P.breath;
+        P.sry = ROWS * 0.32;
+        P.scy = ROWS * 1.00 + bobY * 0.3;
         // neck
-        P.nrx = COLS * 0.09;
-        P.nry = ROWS * 0.10;
-        P.ncy = P.cy + P.hry * 0.90;
+        P.nrx = P.hrx * 0.55;
+        P.nry = P.hry * 0.35;
+        P.ncy = P.cy + P.hry * 1.00;
 
         // eye gaze — smoothly ease toward gaze target
-        gazeX += (gazeTargetX - gazeX) * 0.06;
-        gazeY += (gazeTargetY - gazeY) * 0.06;
+        gazeX += (gazeTargetX - gazeX) * 0.07;
+        gazeY += (gazeTargetY - gazeY) * 0.07;
 
-        // eye positions
-        P.eyeY = P.cy - P.hry * 0.08 + gazeY * 0.4;
-        P.eyeXL = P.cx - P.hrx * 0.42 + gazeX * 0.5;
-        P.eyeXR = P.cx + P.hrx * 0.42 + gazeX * 0.5;
-        // brow
-        P.browY = P.eyeY - P.hry * 0.30;
-        // nose
-        P.noseY = P.cy + P.hry * 0.20;
-        P.noseXi = P.cx - P.hrx * 0.02;    // slight lean to match head
-        // mouth
-        P.mouthY = P.cy + P.hry * 0.55;
-        // hair
-        P.hairY = P.cy - P.hry * 0.65;
-        P.hairRx = P.hrx * 1.15;
-        P.hairRy = P.hry * 0.55;
-        // jaw shadow
-        P.jawY = P.cy + P.hry * 0.75;
-
+        // features (in cell coords)
+        P.eyeY  = P.cy - P.hry * 0.05 + gazeY * 0.5;
+        P.eyeXL = P.cx - P.hrx * 0.42 + gazeX * 0.4;
+        P.eyeXR = P.cx + P.hrx * 0.42 + gazeX * 0.4;
+        P.eyeSpread = P.hrx * 0.42;
+        P.browY = P.eyeY - P.hry * 0.20;
+        P.noseTipY  = P.cy + P.hry * 0.28;
+        P.mouthY = P.cy + P.hry * 0.58;
+        P.chinY  = P.cy + P.hry * 0.92;
         P.blink = t < blinkUntil;
       }
 
       function density(x, y, t) {
-        // inside which region?
-        const insideHead = 1 - Math.hypot((x - P.cx) / P.hrx, (y - P.cy) / P.hry);
-        const insideShoulder = 1 - Math.hypot((x - P.cx) / P.srx, (y - P.scy) / P.sry);
-        const insideNeck = 1 - Math.hypot((x - P.cx) / P.nrx, (y - P.ncy) / P.nry);
-        const inside = Math.max(insideHead, insideShoulder, insideNeck);
+        // region tests — head is skull ∪ jaw (egg shape), plus neck and shoulders
+        const skullD = 1 - Math.hypot((x - P.cx) / P.skullRx, (y - P.skullY) / P.skullRy);
+        const jawD   = 1 - Math.hypot((x - P.cx) / P.jawRx,   (y - P.jawY)   / P.jawRy);
+        const headD  = Math.max(skullD, jawD);
+        const shoulderD = 1 - Math.hypot((x - P.cx) / P.srx, (y - P.scy) / P.sry);
+        const neckD     = 1 - Math.hypot((x - P.cx) / P.nrx, (y - P.ncy) / P.nry);
+        const inside = Math.max(headD, shoulderD, neckD);
         if (inside < 0) return 0;
 
-        // base skin / body density
         let d;
-        if (insideHead >= 0 && insideHead >= insideShoulder && insideHead >= insideNeck) {
-          // face skin — medium density, brighter at cheeks, darker at jaw
-          d = 0.42;
-          // cheek highlight (subtle)
-          const cheekY = P.cy + P.hry * 0.25;
-          const cheekL = Math.exp(-((x - (P.cx - P.hrx * 0.55))**2 + (y - cheekY)**2) / 5);
-          const cheekR = Math.exp(-((x - (P.cx + P.hrx * 0.55))**2 + (y - cheekY)**2) / 5);
-          d -= (cheekL + cheekR) * 0.08;
+        if (headD >= 0 && headD > shoulderD && headD > neckD) {
+          // ============= FACE — lit from upper-left =============
+          d = 0.30;   // base skin (light)
 
-          // hair — denser top of head, wraps over silhouette edge
-          const hairD = 1 - Math.hypot((x - P.cx) / P.hairRx, (y - P.hairY) / P.hairRy);
-          if (hairD > 0) d = Math.max(d, 0.6 + hairD * 0.4);   // 0.6..1.0
+          // rim shadow on right side (form shadow, side away from key light)
+          const rimSide = (x - P.cx) / P.hrx;
+          if (rimSide > 0.35) d += (rimSide - 0.35) * 0.55;
 
-          // brows — two dark horizontal ovals
-          const brL = Math.exp(-((x - P.eyeXL)**2 / 2.2 + (y - P.browY)**2 / 0.35));
-          const brR = Math.exp(-((x - P.eyeXR)**2 / 2.2 + (y - P.browY)**2 / 0.35));
+          // forehead highlight (subtle)
+          const foreheadY = P.cy - P.hry * 0.40;
+          d -= Math.exp(-((x - P.cx)**2 / (P.hrx*P.hrx*0.35) + (y - foreheadY)**2 / (P.hry*P.hry*0.03))) * 0.07;
+
+          // nose bridge highlight — thin bright vertical stripe
+          const bridgeY = P.cy + P.hry * 0.08;
+          d -= Math.exp(-((x - P.cx)**2 / 0.18 + (y - bridgeY)**2 / (P.hry*P.hry*0.10))) * 0.16;
+
+          // cheekbones — left brighter than right (key light from left)
+          const cheekY = P.cy + P.hry * 0.15;
+          d -= Math.exp(-((x - (P.cx - P.hrx*0.55))**2 / 1.6 + (y - cheekY)**2 / 2.2)) * 0.09;
+          d -= Math.exp(-((x - (P.cx + P.hrx*0.50))**2 / 1.6 + (y - cheekY)**2 / 2.2)) * 0.04;
+
+          // eye socket shadows (soft dark ovals)
+          d += Math.exp(-((x - P.eyeXL)**2 / 2.8 + (y - P.eyeY)**2 / 1.4)) * 0.32;
+          d += Math.exp(-((x - P.eyeXR)**2 / 2.8 + (y - P.eyeY)**2 / 1.4)) * 0.32;
+
+          // side-of-nose shadow (nose casts to the right in 3/4 light)
+          const nsideY = P.cy + P.hry * 0.15;
+          d += Math.exp(-((x - (P.cx + 0.55))**2 / 0.30 + (y - nsideY)**2 / 5.5)) * 0.35;
+
+          // under-nose (philtrum) shadow
+          const underNoseY = P.noseTipY + 0.7;
+          d += Math.exp(-((x - P.cx)**2 / 2.8 + (y - underNoseY)**2 / 0.35)) * 0.28;
+
+          // under-lip shadow
+          d += Math.exp(-((x - P.cx)**2 / 3.5 + (y - (P.mouthY + 0.75))**2 / 0.30)) * 0.24;
+
+          // jaw / under-chin shadow
+          d += Math.exp(-((x - P.cx)**2 / (P.hrx*P.hrx*0.25) + (y - P.chinY)**2 / 1.2)) * 0.28;
+
+          // ---- carved features (dark) ----
+          // hair mass — dense cap over the top of the skull, slightly overhanging the sides
+          const hairY = P.cy - P.hry * 0.62;
+          const hairD = 1 - Math.hypot((x - P.cx) / (P.hrx * 1.18), (y - hairY) / (P.hry * 0.62));
+          if (hairD > -0.05) {
+            const hairMass = Math.min(1, (hairD + 0.05) * 3);
+            if (hairMass > 0) d = Math.max(d, 0.62 + hairMass * 0.38);
+          }
+          // hairline shadow across forehead
+          d += Math.exp(-((y - (P.cy - P.hry * 0.32))**2 / 0.35 + (x - P.cx)**2 / (P.hrx*P.hrx*0.6))) * 0.14;
+
+          // brows — thick dark horizontal ovals above eyes
+          const brL = Math.exp(-((x - P.eyeXL)**2 / 2.0 + (y - P.browY)**2 / 0.20));
+          const brR = Math.exp(-((x - P.eyeXR)**2 / 2.0 + (y - P.browY)**2 / 0.20));
           d = Math.max(d, (brL + brR) * 0.95);
 
-          // eyes — pupils. blink hides them.
+          // eyes
           if (!P.blink) {
-            const pL = Math.exp(-((x - P.eyeXL)**2 / 0.7 + (y - P.eyeY)**2 / 0.55));
-            const pR = Math.exp(-((x - P.eyeXR)**2 / 0.7 + (y - P.eyeY)**2 / 0.55));
-            d = Math.max(d, (pL + pR) * 1.0);
+            // pupil — sharp, dark
+            const pL = Math.exp(-((x - P.eyeXL)**2 / 0.40 + (y - P.eyeY)**2 / 0.28));
+            const pR = Math.exp(-((x - P.eyeXR)**2 / 0.40 + (y - P.eyeY)**2 / 0.28));
+            d = Math.max(d, (pL + pR) * 1.05);
+            // eye catch-light — small bright dot beside pupil (subtractive)
+            d -= Math.exp(-((x - (P.eyeXL - 0.35))**2 / 0.05 + (y - (P.eyeY - 0.25))**2 / 0.05)) * 0.5;
+            d -= Math.exp(-((x - (P.eyeXR - 0.35))**2 / 0.05 + (y - (P.eyeY - 0.25))**2 / 0.05)) * 0.5;
           } else {
-            // blink: thin dark horizontal line across eye positions
-            const bL = Math.exp(-((x - P.eyeXL)**2 / 2.0 + (y - P.eyeY)**2 / 0.10));
-            const bR = Math.exp(-((x - P.eyeXR)**2 / 2.0 + (y - P.eyeY)**2 / 0.10));
-            d = Math.max(d, (bL + bR) * 0.8);
+            // blink — a horizontal dark line
+            const bL = Math.exp(-((x - P.eyeXL)**2 / 2.2 + (y - P.eyeY)**2 / 0.08));
+            const bR = Math.exp(-((x - P.eyeXR)**2 / 2.2 + (y - P.eyeY)**2 / 0.08));
+            d = Math.max(d, (bL + bR) * 0.85);
           }
 
-          // eye sockets — subtle darkening around
-          const sL = Math.exp(-((x - P.eyeXL)**2 / 3.5 + (y - P.eyeY)**2 / 2.0));
-          const sR = Math.exp(-((x - P.eyeXR)**2 / 3.5 + (y - P.eyeY)**2 / 2.0));
-          d += (sL + sR) * 0.10;
+          // nostrils — two dark spots at base of nose
+          const nostrilY = P.noseTipY + 0.25;
+          const nsL = Math.exp(-((x - (P.cx - 0.55))**2 / 0.16 + (y - nostrilY)**2 / 0.14));
+          const nsR = Math.exp(-((x - (P.cx + 0.55))**2 / 0.16 + (y - nostrilY)**2 / 0.14));
+          d = Math.max(d, (nsL + nsR) * 0.78);
 
-          // nose — thin vertical ridge just above mouth, subtle
-          const noseRidge = Math.exp(-((x - P.noseXi)**2 / 0.35 + (y - P.noseY)**2 / 3.0));
-          d = Math.max(d, noseRidge * 0.55);
-          // nostrils - small dark spots at base of nose
-          const nstY = P.noseY + 1.2;
-          const nL = Math.exp(-((x - (P.noseXi - 0.6))**2 / 0.25 + (y - nstY)**2 / 0.20));
-          const nR = Math.exp(-((x - (P.noseXi + 0.6))**2 / 0.25 + (y - nstY)**2 / 0.20));
-          d = Math.max(d, (nL + nR) * 0.75);
+          // mouth — two thin bands (upper + lower lip line)
+          const mUp = Math.exp(-((x - P.cx)**2 / 6.0 + (y - (P.mouthY - 0.20))**2 / 0.12));
+          const mLo = Math.exp(-((x - P.cx)**2 / 6.0 + (y - (P.mouthY + 0.20))**2 / 0.12));
+          d = Math.max(d, (mUp + mLo) * 0.80);
 
-          // mouth — flat dark band
-          const mouth = Math.exp(-((x - P.cx)**2 / 6.0 + (y - P.mouthY)**2 / 0.28));
-          d = Math.max(d, mouth * 0.85);
+          // ears — bumps at ear level, extending just past the head silhouette
+          const earY = P.eyeY + P.hry * 0.15;
+          const earL = Math.exp(-((x - (P.cx - P.hrx * 1.08))**2 / 0.5 + (y - earY)**2 / 3.5));
+          const earR = Math.exp(-((x - (P.cx + P.hrx * 1.08))**2 / 0.5 + (y - earY)**2 / 3.5));
+          d = Math.max(d, (earL + earR) * 0.60);
 
-          // jaw shadow — subtle darkening under
-          const jaw = Math.exp(-((x - P.cx)**2 / 30 + (y - P.jawY)**2 / 1.5));
-          d += jaw * 0.10;
-
-          // taper edges so silhouette fades gently
-          d *= Math.min(1, insideHead * 4.5);
+          // taper edges so silhouette fades gently rather than hard-clipping
+          d *= Math.min(1, headD * 5.5 + 0.05);
         } else {
-          // shoulders / neck — solid body silhouette
-          d = 0.75;
-          // subtle collar shadow at top of shoulders (below neck)
-          const collarD = Math.exp(-((x - P.cx)**2 / 12 + (y - (P.scy - P.sry * 0.75))**2 / 1.2));
-          d += collarD * 0.15;
-          d *= Math.min(1, Math.max(insideShoulder, insideNeck) * 3.5);
+          // ============= NECK / SHOULDERS =============
+          const inNeck = neckD > shoulderD;
+          d = inNeck ? 0.55 : 0.82;
+          if (inNeck) {
+            // neck shadow on right side (matches face lighting)
+            const nrimSide = (x - P.cx) / P.nrx;
+            if (nrimSide > 0.2) d += (nrimSide - 0.2) * 0.35;
+          } else {
+            // collar shadow at top of shoulders
+            d += Math.exp(-((x - P.cx)**2 / 20 + (y - (P.scy - P.sry * 0.7))**2 / 1.2)) * 0.12;
+            // shoulder edge highlight on the left (near-flat)
+            const srimSide = (x - P.cx) / P.srx;
+            if (srimSide > 0.5) d += (srimSide - 0.5) * 0.25;
+          }
+          d *= Math.min(1, Math.max(shoulderD, neckD) * 3.5);
         }
 
-        // organic grain — drifts slowly
-        d += (noise2(x * 0.4, y * 0.4 + t * 0.0007) - 0.5) * 0.14;
+        // organic grain — drifts slowly so shading has film-like texture
+        d += (noise2(x * 0.4, y * 0.4 + t * 0.0007) - 0.5) * 0.13;
         return clamp01(d);
       }
 
