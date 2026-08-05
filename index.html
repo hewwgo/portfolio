@@ -64,13 +64,13 @@
       min-height: 100vh;
     }
 
-    /* central narrow text column, nudged right so it sits closer to the face */
+    /* central narrow text column, nudged left so the visual mass isn't all-right */
     .col {
       max-width: 580px;
       margin: 0 auto;
       position: relative;
       z-index: 2;
-      transform: translateX(4vw);
+      transform: translateX(-4vw);
     }
 
     /* ---------- name + role ---------- */
@@ -267,7 +267,8 @@
       position: fixed;
       top: 50%;
       right: -14vw;             /* extend the right side past the viewport */
-      transform: translate(4vw, -50%);   /* shift right to track column */
+      transform: translate(-4vw, -50%);   /* shift left to track column */
+      transform-origin: 55% 62%;          /* rotate around head/neck pivot */
       width: 55vw;
       max-height: 100vh;
       font-family: var(--mono);
@@ -549,18 +550,18 @@
       function scheduleGaze() {
         setTimeout(() => {
           const r = Math.random();
-          if (r < 0.35) {
+          if (r < 0.30) {
             // small return-to-neutral glance
-            gazeTargetX = (Math.random() - 0.5) * 2.0;
-            gazeTargetY = (Math.random() - 0.5) * 1.0;
-          } else if (r < 0.80) {
-            // medium wander
-            gazeTargetX = (Math.random() - 0.45) * 7.0;
-            gazeTargetY = (Math.random() - 0.5) * 3.0;
+            gazeTargetX = (Math.random() - 0.5) * 3.0;
+            gazeTargetY = (Math.random() - 0.5) * 2.0;
+          } else if (r < 0.75) {
+            // medium wander — head tilts sideways or looks up/down
+            gazeTargetX = (Math.random() - 0.45) * 10.0;
+            gazeTargetY = (Math.random() - 0.5) * 6.0;
           } else {
-            // big look-around
-            gazeTargetX = (Math.random() - 0.5) * 12.0;
-            gazeTargetY = (Math.random() - 0.5) * 4.5;
+            // big look-around — real head turn
+            gazeTargetX = (Math.random() - 0.5) * 18.0;
+            gazeTargetY = (Math.random() - 0.5) * 9.0;
           }
           scheduleGaze();
         }, 1500 + Math.random() * 2600);
@@ -574,16 +575,25 @@
         if (!lumGrid) return;
         const t = performance.now() - T0;
 
-        // autonomic motion — slow bob + sway (like breathing / small shifts)
-        const bobY  = Math.sin(t / 2600) * 0.6 + Math.sin(t / 4100) * 0.3;
-        const swayX = Math.sin(t / 3600) * 0.5 + Math.sin(t / 5300) * 0.2;
+        // autonomic motion — tiny bob + sway inside the sampling (breathing)
+        const bobY  = Math.sin(t / 2600) * 0.35 + Math.sin(t / 4100) * 0.18;
+        const swayX = Math.sin(t / 3600) * 0.30 + Math.sin(t / 5300) * 0.15;
 
         // ease gaze smoothly toward its current target
-        gazeX += (gazeTargetX - gazeX) * 0.05;
-        gazeY += (gazeTargetY - gazeY) * 0.05;
+        gazeX += (gazeTargetX - gazeX) * 0.055;
+        gazeY += (gazeTargetY - gazeY) * 0.055;
 
-        const offX = swayX + gazeX;
-        const offY = bobY + gazeY;
+        // gaze drives a CSS transform on the whole face element —
+        // this gives real head shift + tilt, unlike a pure sampling offset
+        const shiftX  = -4 + gazeX * 0.32;       // vw
+        const shiftY  = gazeY * 0.45;             // vw
+        const rot     = gazeX * 0.45;             // degrees — head tilt matches gaze
+        face.style.transform =
+          `translate(${shiftX.toFixed(2)}vw, calc(-50% + ${shiftY.toFixed(2)}vw)) rotate(${rot.toFixed(2)}deg)`;
+
+        // sampling offsets only carry autonomic motion — gaze lives in CSS transform
+        const offX = swayX;
+        const offY = bobY;
 
         for (let y = 0; y < ROWS; y++) {
           let row = '';
