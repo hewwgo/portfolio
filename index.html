@@ -540,17 +540,19 @@
         return a*(1-xf)*(1-yf) + b*xf*(1-yf) + c*(1-xf)*yf + d*xf*yf;
       }
 
-      // ---- occasional micro-twitch (whole head jitters briefly) ----
-      let twitchUntil = 0, twitchAmpX = 0, twitchAmpY = 0;
-      function scheduleTwitch() {
+      // ---- smooth gaze wandering: pick a target, ease into it ----
+      // replaces the old instant "twitch" so movement never jumps
+      let gazeTargetX = 0, gazeTargetY = 0;
+      let gazeX = 0, gazeY = 0;
+      function scheduleGaze() {
         setTimeout(() => {
-          twitchUntil = performance.now() + 150 + Math.random() * 200;
-          twitchAmpX = (Math.random() - 0.5) * 1.8;
-          twitchAmpY = (Math.random() - 0.5) * 0.8;
-          scheduleTwitch();
-        }, 3000 + Math.random() * 5000);
+          // wander a few cells in any direction — asymmetric so it feels human
+          gazeTargetX = (Math.random() - 0.45) * 5.0;
+          gazeTargetY = (Math.random() - 0.5) * 2.2;
+          scheduleGaze();
+        }, 2200 + Math.random() * 3400);
       }
-      scheduleTwitch();
+      scheduleGaze();
 
       const T0 = performance.now();
       const rowBuf = new Array(ROWS);
@@ -559,13 +561,16 @@
         if (!lumGrid) return;
         const t = performance.now() - T0;
 
-        // idle motion — head bob/sway offsets, applied as a sampling offset
-        const bobY  = Math.sin(t / 1900) * 0.9 + Math.sin(t / 3300) * 0.4;
-        const swayX = Math.sin(t / 2700) * 0.8 + Math.sin(t / 4500) * 0.3;
-        const twX = (t < twitchUntil) ? twitchAmpX : 0;
-        const twY = (t < twitchUntil) ? twitchAmpY : 0;
-        const offX = swayX + twX;
-        const offY = bobY + twY;
+        // autonomic motion — slow bob + sway (like breathing / small shifts)
+        const bobY  = Math.sin(t / 2600) * 0.6 + Math.sin(t / 4100) * 0.3;
+        const swayX = Math.sin(t / 3600) * 0.5 + Math.sin(t / 5300) * 0.2;
+
+        // ease gaze smoothly toward its current target
+        gazeX += (gazeTargetX - gazeX) * 0.035;
+        gazeY += (gazeTargetY - gazeY) * 0.035;
+
+        const offX = swayX + gazeX;
+        const offY = bobY + gazeY;
 
         for (let y = 0; y < ROWS; y++) {
           let row = '';
@@ -580,12 +585,13 @@
             let dens = 1 - lum;
             dens = Math.pow(dens, 0.80);
 
-            // temporal luminance noise — slight flicker per frame, obscures identity
-            dens += (Math.random() - 0.5) * 0.05;
+            // very light temporal flicker — enough to feel "alive", not busy
+            dens += (Math.random() - 0.5) * 0.02;
 
-            // choose char, with per-cell time-varying wobble picking neighbours
+            // per-cell char wobble picks a neighbour on the ramp.
+            // slow t coefficients so the symbol pattern drifts calmly.
             const baseIdx = Math.floor(clamp01(dens) * (RAMP_N - 1));
-            const n = noise2(x * 0.85 + t * 0.004, y * 0.85 - t * 0.003);
+            const n = noise2(x * 0.85 + t * 0.0009, y * 0.85 - t * 0.0007);
             const wobble = Math.round((n - 0.5) * 3.0);   // roughly {-1, 0, +1}
             let idx = baseIdx + wobble;
             if (idx < 0) idx = 0;
