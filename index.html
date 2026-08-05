@@ -64,12 +64,13 @@
       min-height: 100vh;
     }
 
-    /* central narrow text column, centered horizontally */
+    /* central narrow text column, nudged right so it sits closer to the face */
     .col {
       max-width: 580px;
       margin: 0 auto;
       position: relative;
       z-index: 2;
+      transform: translateX(4vw);
     }
 
     /* ---------- name + role ---------- */
@@ -266,7 +267,7 @@
       position: fixed;
       top: 50%;
       right: -14vw;             /* extend the right side past the viewport */
-      transform: translateY(-50%);
+      transform: translate(4vw, -50%);   /* shift right to track column */
       width: 55vw;
       max-height: 100vh;
       font-family: var(--mono);
@@ -541,16 +542,28 @@
       }
 
       // ---- smooth gaze wandering: pick a target, ease into it ----
-      // replaces the old instant "twitch" so movement never jumps
+      // three flavours of glance: neutral, wander, big look-around.
+      // like an idle game character.
       let gazeTargetX = 0, gazeTargetY = 0;
       let gazeX = 0, gazeY = 0;
       function scheduleGaze() {
         setTimeout(() => {
-          // wander a few cells in any direction — asymmetric so it feels human
-          gazeTargetX = (Math.random() - 0.45) * 5.0;
-          gazeTargetY = (Math.random() - 0.5) * 2.2;
+          const r = Math.random();
+          if (r < 0.35) {
+            // small return-to-neutral glance
+            gazeTargetX = (Math.random() - 0.5) * 2.0;
+            gazeTargetY = (Math.random() - 0.5) * 1.0;
+          } else if (r < 0.80) {
+            // medium wander
+            gazeTargetX = (Math.random() - 0.45) * 7.0;
+            gazeTargetY = (Math.random() - 0.5) * 3.0;
+          } else {
+            // big look-around
+            gazeTargetX = (Math.random() - 0.5) * 12.0;
+            gazeTargetY = (Math.random() - 0.5) * 4.5;
+          }
           scheduleGaze();
-        }, 2200 + Math.random() * 3400);
+        }, 1500 + Math.random() * 2600);
       }
       scheduleGaze();
 
@@ -566,8 +579,8 @@
         const swayX = Math.sin(t / 3600) * 0.5 + Math.sin(t / 5300) * 0.2;
 
         // ease gaze smoothly toward its current target
-        gazeX += (gazeTargetX - gazeX) * 0.035;
-        gazeY += (gazeTargetY - gazeY) * 0.035;
+        gazeX += (gazeTargetX - gazeX) * 0.05;
+        gazeY += (gazeTargetY - gazeY) * 0.05;
 
         const offX = swayX + gazeX;
         const offY = bobY + gazeY;
@@ -592,7 +605,7 @@
             // slow t coefficients so the symbol pattern drifts calmly.
             const baseIdx = Math.floor(clamp01(dens) * (RAMP_N - 1));
             const n = noise2(x * 0.85 + t * 0.0009, y * 0.85 - t * 0.0007);
-            const wobble = Math.round((n - 0.5) * 3.0);   // roughly {-1, 0, +1}
+            const wobble = Math.round((n - 0.5) * 1.5);   // halved amplitude — quieter symbol drift
             let idx = baseIdx + wobble;
             if (idx < 0) idx = 0;
             if (idx >= RAMP_N) idx = RAMP_N - 1;
