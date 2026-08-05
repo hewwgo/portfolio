@@ -270,7 +270,7 @@
       position: fixed;
       top: 50%;
       right: -14vw;             /* extend the right side past the viewport */
-      transform: translate(-12vw, -50%);  /* shift left to sit next to the text column */
+      transform: translate(-4vw, -50%);   /* face stays in the right column, doesn't crowd the text */
       transform-origin: 55% 62%;          /* rotate around head/neck pivot */
       width: 55vw;
       max-height: 100vh;
@@ -588,7 +588,7 @@
 
         // gaze drives a CSS transform on the whole face element —
         // this gives real head shift + tilt, unlike a pure sampling offset
-        const shiftX  = -20 + gazeX * 0.32;      // vw — base matches CSS shift
+        const shiftX  = -4 + gazeX * 0.32;       // vw — base matches CSS shift
         const shiftY  = gazeY * 0.45;             // vw
         const rot     = gazeX * 0.45;             // degrees — head tilt matches gaze
         face.style.transform =
