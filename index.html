@@ -271,8 +271,8 @@
       max-height: 100vh;
       font-family: var(--mono);
       font-weight: 700;
-      font-size: clamp(9px, 1.1vw, 15px);
-      line-height: 0.82;         /* squish vertically so cells read as ~square */
+      font-size: clamp(7px, 0.85vw, 12px);
+      line-height: 0.62;         /* near-square cells so photo aspect is preserved */
       letter-spacing: 0;
       color: var(--accent);
       opacity: 0.92;
@@ -281,7 +281,7 @@
       pointer-events: none;
       user-select: none;
       z-index: 0;
-      text-shadow: 0 0 12px rgba(184, 54, 42, 0.25);
+      text-shadow: 0 0 12px rgba(217, 74, 58, 0.25);
     }
 
     /* ---------- footer ---------- */
@@ -492,21 +492,24 @@
       });
     })();
 
-    // ASCII portrait — a human in the machine, looking around from the wires
+    // ASCII portrait — photo-sampled, abstracted, alive
     (function () {
       const face = document.querySelector('.face');
       if (!face) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      // extended density ramp — 22 chars, light → dense.
-      // per-cell wobble picks neighbours within ±1 index so many symbols show
-      // even when perceived density is constant.
-      const RAMP = " .-'`~,:;+=<>*?/\\%#$&@";
+      // extended density ramp for photo-fidelity
+      const RAMP = " .`'-,:;!i+=<>*?/\\|(){}[]l%#$&@";
       const RAMP_N = RAMP.length;
-      const COLS = 68;
-      const ROWS = 82;
 
-      // hash + 2D value noise for organic grain
+      // grid sized so cell aspect × grid aspect ≈ photo aspect (portrait)
+      const COLS = 92;
+      const ROWS = 108;
+
+      // luminance grid populated once image loads (Float32Array of length COLS*ROWS)
+      let lumGrid = null;
+
+      // hash + 2D value noise for organic grain / wobble
       function hash(n) {
         const s = Math.sin(n * 12.9898) * 43758.5453;
         return s - Math.floor(s);
@@ -524,244 +527,124 @@
       }
       const clamp01 = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
 
-      // occasional micro-twitch every 3–8s
-      let twitchUntil = 0, twitchAmp = 0;
+      // bilinear sample of lumGrid at fractional (fx, fy)
+      function sampleLum(fx, fy) {
+        if (fx < 0 || fx > COLS - 1 || fy < 0 || fy > ROWS - 1) return 1.0;
+        const xi = Math.floor(fx), yi = Math.floor(fy);
+        const xf = fx - xi, yf = fy - yi;
+        const i = yi * COLS + xi;
+        const a = lumGrid[i];
+        const b = xi + 1 < COLS       ? lumGrid[i + 1]        : a;
+        const c = yi + 1 < ROWS       ? lumGrid[i + COLS]     : a;
+        const d = (xi+1<COLS && yi+1<ROWS) ? lumGrid[i + COLS + 1] : a;
+        return a*(1-xf)*(1-yf) + b*xf*(1-yf) + c*(1-xf)*yf + d*xf*yf;
+      }
+
+      // ---- occasional micro-twitch (whole head jitters briefly) ----
+      let twitchUntil = 0, twitchAmpX = 0, twitchAmpY = 0;
       function scheduleTwitch() {
         setTimeout(() => {
-          twitchUntil = performance.now() + 150 + Math.random() * 220;
-          twitchAmp = 0.4 + Math.random() * 0.7;
+          twitchUntil = performance.now() + 150 + Math.random() * 200;
+          twitchAmpX = (Math.random() - 0.5) * 1.8;
+          twitchAmpY = (Math.random() - 0.5) * 0.8;
           scheduleTwitch();
-        }, 3000 + Math.random() * 5500);
+        }, 3000 + Math.random() * 5000);
       }
       scheduleTwitch();
 
-      // occasional saccade — eyes flick to a new gaze target
-      let gazeTargetX = 0, gazeTargetY = 0;
-      let gazeX = 0, gazeY = 0;
-      function scheduleSaccade() {
-        setTimeout(() => {
-          // pick a new direction to look
-          gazeTargetX = (Math.random() - 0.5) * 1.2;
-          gazeTargetY = (Math.random() - 0.5) * 0.7;
-          scheduleSaccade();
-        }, 1800 + Math.random() * 3500);
-      }
-      scheduleSaccade();
-
-      // occasional blink
-      let blinkUntil = 0;
-      function scheduleBlink() {
-        setTimeout(() => {
-          blinkUntil = performance.now() + 120 + Math.random() * 90;
-          scheduleBlink();
-        }, 2500 + Math.random() * 4500);
-      }
-      scheduleBlink();
-
       const T0 = performance.now();
-
-      // pose parameters cached per-frame (recomputed once, used per-cell)
-      const P = {};
-      function updatePose(t) {
-        const bobY  = Math.sin(t / 1900) * 1.1 + Math.sin(t / 3300) * 0.45;
-        const swayX = Math.sin(t / 2700) * 0.9 + Math.sin(t / 4500) * 0.35;
-        const twitch = (t < twitchUntil) ? (Math.random() - 0.5) * twitchAmp : 0;
-
-        // head center. head is an egg — skull ellipse on top, jaw ellipse below,
-        // combined into a taller-than-wide silhouette.
-        P.cx = COLS * 0.55 + swayX + twitch;
-        P.cy = ROWS * 0.30 + bobY;
-        P.hrx = COLS * 0.19;                 // head half-width
-        P.hry = ROWS * 0.24;                 // head half-height (taller than wide)
-
-        // skull (upper 60 % of head) — full-width oval
-        P.skullY = P.cy - P.hry * 0.22;
-        P.skullRx = P.hrx * 1.00;
-        P.skullRy = P.hry * 0.78;
-        // jaw (lower half) — narrower oval, offset down
-        P.jawY = P.cy + P.hry * 0.55;
-        P.jawRx = P.hrx * 0.72;
-        P.jawRy = P.hry * 0.58;
-
-        // shoulders
-        P.breath = 1 + Math.sin(t / 3500) * 0.028;
-        P.srx = COLS * 0.62 * P.breath;
-        P.sry = ROWS * 0.32;
-        P.scy = ROWS * 1.00 + bobY * 0.3;
-        // neck
-        P.nrx = P.hrx * 0.55;
-        P.nry = P.hry * 0.35;
-        P.ncy = P.cy + P.hry * 1.00;
-
-        // eye gaze — smoothly ease toward gaze target
-        gazeX += (gazeTargetX - gazeX) * 0.07;
-        gazeY += (gazeTargetY - gazeY) * 0.07;
-
-        // features (in cell coords)
-        P.eyeY  = P.cy - P.hry * 0.05 + gazeY * 0.5;
-        P.eyeXL = P.cx - P.hrx * 0.42 + gazeX * 0.4;
-        P.eyeXR = P.cx + P.hrx * 0.42 + gazeX * 0.4;
-        P.eyeSpread = P.hrx * 0.42;
-        P.browY = P.eyeY - P.hry * 0.20;
-        P.noseTipY  = P.cy + P.hry * 0.28;
-        P.mouthY = P.cy + P.hry * 0.58;
-        P.chinY  = P.cy + P.hry * 0.92;
-        P.blink = t < blinkUntil;
-      }
-
-      function density(x, y, t) {
-        // region tests — head is skull ∪ jaw (egg shape), plus neck and shoulders
-        const skullD = 1 - Math.hypot((x - P.cx) / P.skullRx, (y - P.skullY) / P.skullRy);
-        const jawD   = 1 - Math.hypot((x - P.cx) / P.jawRx,   (y - P.jawY)   / P.jawRy);
-        const headD  = Math.max(skullD, jawD);
-        const shoulderD = 1 - Math.hypot((x - P.cx) / P.srx, (y - P.scy) / P.sry);
-        const neckD     = 1 - Math.hypot((x - P.cx) / P.nrx, (y - P.ncy) / P.nry);
-        const inside = Math.max(headD, shoulderD, neckD);
-        if (inside < 0) return 0;
-
-        let d;
-        if (headD >= 0 && headD > shoulderD && headD > neckD) {
-          // ============= FACE — lit from upper-left =============
-          d = 0.30;   // base skin (light)
-
-          // rim shadow on right side (form shadow, side away from key light)
-          const rimSide = (x - P.cx) / P.hrx;
-          if (rimSide > 0.35) d += (rimSide - 0.35) * 0.55;
-
-          // forehead highlight (subtle)
-          const foreheadY = P.cy - P.hry * 0.40;
-          d -= Math.exp(-((x - P.cx)**2 / (P.hrx*P.hrx*0.35) + (y - foreheadY)**2 / (P.hry*P.hry*0.03))) * 0.07;
-
-          // nose bridge highlight — thin bright vertical stripe
-          const bridgeY = P.cy + P.hry * 0.08;
-          d -= Math.exp(-((x - P.cx)**2 / 0.18 + (y - bridgeY)**2 / (P.hry*P.hry*0.10))) * 0.16;
-
-          // cheekbones — left brighter than right (key light from left)
-          const cheekY = P.cy + P.hry * 0.15;
-          d -= Math.exp(-((x - (P.cx - P.hrx*0.55))**2 / 1.6 + (y - cheekY)**2 / 2.2)) * 0.09;
-          d -= Math.exp(-((x - (P.cx + P.hrx*0.50))**2 / 1.6 + (y - cheekY)**2 / 2.2)) * 0.04;
-
-          // eye socket shadows (soft dark ovals)
-          d += Math.exp(-((x - P.eyeXL)**2 / 2.8 + (y - P.eyeY)**2 / 1.4)) * 0.32;
-          d += Math.exp(-((x - P.eyeXR)**2 / 2.8 + (y - P.eyeY)**2 / 1.4)) * 0.32;
-
-          // side-of-nose shadow (nose casts to the right in 3/4 light)
-          const nsideY = P.cy + P.hry * 0.15;
-          d += Math.exp(-((x - (P.cx + 0.55))**2 / 0.30 + (y - nsideY)**2 / 5.5)) * 0.35;
-
-          // under-nose (philtrum) shadow
-          const underNoseY = P.noseTipY + 0.7;
-          d += Math.exp(-((x - P.cx)**2 / 2.8 + (y - underNoseY)**2 / 0.35)) * 0.28;
-
-          // under-lip shadow
-          d += Math.exp(-((x - P.cx)**2 / 3.5 + (y - (P.mouthY + 0.75))**2 / 0.30)) * 0.24;
-
-          // jaw / under-chin shadow
-          d += Math.exp(-((x - P.cx)**2 / (P.hrx*P.hrx*0.25) + (y - P.chinY)**2 / 1.2)) * 0.28;
-
-          // ---- carved features (dark) ----
-          // hair mass — dense cap over the top of the skull, slightly overhanging the sides
-          const hairY = P.cy - P.hry * 0.62;
-          const hairD = 1 - Math.hypot((x - P.cx) / (P.hrx * 1.18), (y - hairY) / (P.hry * 0.62));
-          if (hairD > -0.05) {
-            const hairMass = Math.min(1, (hairD + 0.05) * 3);
-            if (hairMass > 0) d = Math.max(d, 0.62 + hairMass * 0.38);
-          }
-          // hairline shadow across forehead
-          d += Math.exp(-((y - (P.cy - P.hry * 0.32))**2 / 0.35 + (x - P.cx)**2 / (P.hrx*P.hrx*0.6))) * 0.14;
-
-          // brows — thick dark horizontal ovals above eyes
-          const brL = Math.exp(-((x - P.eyeXL)**2 / 2.0 + (y - P.browY)**2 / 0.20));
-          const brR = Math.exp(-((x - P.eyeXR)**2 / 2.0 + (y - P.browY)**2 / 0.20));
-          d = Math.max(d, (brL + brR) * 0.95);
-
-          // eyes
-          if (!P.blink) {
-            // pupil — sharp, dark
-            const pL = Math.exp(-((x - P.eyeXL)**2 / 0.40 + (y - P.eyeY)**2 / 0.28));
-            const pR = Math.exp(-((x - P.eyeXR)**2 / 0.40 + (y - P.eyeY)**2 / 0.28));
-            d = Math.max(d, (pL + pR) * 1.05);
-            // eye catch-light — small bright dot beside pupil (subtractive)
-            d -= Math.exp(-((x - (P.eyeXL - 0.35))**2 / 0.05 + (y - (P.eyeY - 0.25))**2 / 0.05)) * 0.5;
-            d -= Math.exp(-((x - (P.eyeXR - 0.35))**2 / 0.05 + (y - (P.eyeY - 0.25))**2 / 0.05)) * 0.5;
-          } else {
-            // blink — a horizontal dark line
-            const bL = Math.exp(-((x - P.eyeXL)**2 / 2.2 + (y - P.eyeY)**2 / 0.08));
-            const bR = Math.exp(-((x - P.eyeXR)**2 / 2.2 + (y - P.eyeY)**2 / 0.08));
-            d = Math.max(d, (bL + bR) * 0.85);
-          }
-
-          // nostrils — two dark spots at base of nose
-          const nostrilY = P.noseTipY + 0.25;
-          const nsL = Math.exp(-((x - (P.cx - 0.55))**2 / 0.16 + (y - nostrilY)**2 / 0.14));
-          const nsR = Math.exp(-((x - (P.cx + 0.55))**2 / 0.16 + (y - nostrilY)**2 / 0.14));
-          d = Math.max(d, (nsL + nsR) * 0.78);
-
-          // mouth — two thin bands (upper + lower lip line)
-          const mUp = Math.exp(-((x - P.cx)**2 / 6.0 + (y - (P.mouthY - 0.20))**2 / 0.12));
-          const mLo = Math.exp(-((x - P.cx)**2 / 6.0 + (y - (P.mouthY + 0.20))**2 / 0.12));
-          d = Math.max(d, (mUp + mLo) * 0.80);
-
-          // ears — bumps at ear level, extending just past the head silhouette
-          const earY = P.eyeY + P.hry * 0.15;
-          const earL = Math.exp(-((x - (P.cx - P.hrx * 1.08))**2 / 0.5 + (y - earY)**2 / 3.5));
-          const earR = Math.exp(-((x - (P.cx + P.hrx * 1.08))**2 / 0.5 + (y - earY)**2 / 3.5));
-          d = Math.max(d, (earL + earR) * 0.60);
-
-          // taper edges so silhouette fades gently rather than hard-clipping
-          d *= Math.min(1, headD * 5.5 + 0.05);
-        } else {
-          // ============= NECK / SHOULDERS =============
-          const inNeck = neckD > shoulderD;
-          d = inNeck ? 0.55 : 0.82;
-          if (inNeck) {
-            // neck shadow on right side (matches face lighting)
-            const nrimSide = (x - P.cx) / P.nrx;
-            if (nrimSide > 0.2) d += (nrimSide - 0.2) * 0.35;
-          } else {
-            // collar shadow at top of shoulders
-            d += Math.exp(-((x - P.cx)**2 / 20 + (y - (P.scy - P.sry * 0.7))**2 / 1.2)) * 0.12;
-            // shoulder edge highlight on the left (near-flat)
-            const srimSide = (x - P.cx) / P.srx;
-            if (srimSide > 0.5) d += (srimSide - 0.5) * 0.25;
-          }
-          d *= Math.min(1, Math.max(shoulderD, neckD) * 3.5);
-        }
-
-        // organic grain — drifts slowly so shading has film-like texture
-        d += (noise2(x * 0.4, y * 0.4 + t * 0.0007) - 0.5) * 0.13;
-        return clamp01(d);
-      }
-
-      // per-cell char pick with time-varying wobble so many symbols cycle
-      function pickChar(d, x, y, t) {
-        const base = Math.floor(d * (RAMP_N - 1));
-        const n = noise2(x * 0.85 + t * 0.004, y * 0.85 - t * 0.003);
-        const wobble = Math.round((n - 0.5) * 2.6);   // roughly {-1, 0, +1}
-        let idx = base + wobble;
-        if (idx < 0) idx = 0;
-        if (idx >= RAMP_N) idx = RAMP_N - 1;
-        return RAMP.charAt(idx);
-      }
-
       const rowBuf = new Array(ROWS);
+
       function render() {
+        if (!lumGrid) return;
         const t = performance.now() - T0;
-        updatePose(t);
+
+        // idle motion — head bob/sway offsets, applied as a sampling offset
+        const bobY  = Math.sin(t / 1900) * 0.9 + Math.sin(t / 3300) * 0.4;
+        const swayX = Math.sin(t / 2700) * 0.8 + Math.sin(t / 4500) * 0.3;
+        const twX = (t < twitchUntil) ? twitchAmpX : 0;
+        const twY = (t < twitchUntil) ? twitchAmpY : 0;
+        const offX = swayX + twX;
+        const offY = bobY + twY;
+
         for (let y = 0; y < ROWS; y++) {
           let row = '';
           for (let x = 0; x < COLS; x++) {
-            const d = density(x, y, t);
-            if (d <= 0.03) { row += ' '; continue; }
-            row += pickChar(d, x, y, t);
+            // sample source luminance with sub-cell offset (head moves in frame)
+            const lum = sampleLum(x - offX, y - offY);
+
+            // background threshold — light pixels drop out entirely
+            if (lum > 0.94) { row += ' '; continue; }
+
+            // dark pixels → high density. gamma-brighten shadows so features carve.
+            let dens = 1 - lum;
+            dens = Math.pow(dens, 0.80);
+
+            // temporal luminance noise — slight flicker per frame, obscures identity
+            dens += (Math.random() - 0.5) * 0.05;
+
+            // choose char, with per-cell time-varying wobble picking neighbours
+            const baseIdx = Math.floor(clamp01(dens) * (RAMP_N - 1));
+            const n = noise2(x * 0.85 + t * 0.004, y * 0.85 - t * 0.003);
+            const wobble = Math.round((n - 0.5) * 3.0);   // roughly {-1, 0, +1}
+            let idx = baseIdx + wobble;
+            if (idx < 0) idx = 0;
+            if (idx >= RAMP_N) idx = RAMP_N - 1;
+            row += RAMP.charAt(idx);
           }
           rowBuf[y] = row;
         }
         face.textContent = rowBuf.join('\n');
       }
 
-      render();
-      setInterval(render, 66);   // ~15 fps
+      // ---- load source photo, sample to lumGrid, kick off animation ----
+      function loadPhoto() {
+        const img = new Image();
+        img.onload = () => {
+          const cv = document.createElement('canvas');
+          cv.width = COLS;
+          cv.height = ROWS;
+          const g = cv.getContext('2d');
+          g.imageSmoothingEnabled = true;
+          g.imageSmoothingQuality = 'high';
+          // paint a solid background matching page bg so any alpha samples as light
+          g.fillStyle = '#ffffff';
+          g.fillRect(0, 0, COLS, ROWS);
+          g.drawImage(img, 0, 0, COLS, ROWS);
+          const data = g.getImageData(0, 0, COLS, ROWS).data;
+          const lg = new Float32Array(COLS * ROWS);
+          for (let i = 0; i < COLS * ROWS; i++) {
+            const r = data[i * 4], gc = data[i * 4 + 1], b = data[i * 4 + 2];
+            lg[i] = (0.2126 * r + 0.7152 * gc + 0.0722 * b) / 255;
+          }
+          // 3x3 box blur — softens the photo so features abstract rather than photo-print
+          const blurred = new Float32Array(COLS * ROWS);
+          for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+              let sum = 0, n = 0;
+              for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                  const nx = x + dx, ny = y + dy;
+                  if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+                  sum += lg[ny * COLS + nx];
+                  n++;
+                }
+              }
+              blurred[y * COLS + x] = sum / n;
+            }
+          }
+          lumGrid = blurred;
+          render();
+          setInterval(render, 66);   // ~15 fps
+        };
+        img.onerror = () => {
+          // photo missing — leave face blank, don't crash
+          face.textContent = '';
+        };
+        img.src = 'hugopicdraw.png';
+      }
+      loadPhoto();
+
     })();
   </script>
 
