@@ -10,11 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     /* ===========================================================
-       Yves Klein blue + oxblood ASCII video (the man in the machine)
+       Yves Klein blue + oxblood ASCII portrait (the man in the machine)
        (engraved paper version at /index-engraved.html,
-        BV dark version at /index-bv.html,
-        ripped-face photo version saved at /index-face.html —
-        this one live-samples video.mp4 into the character field)
+        BV dark version at /index-bv.html)
        =========================================================== */
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -289,10 +287,6 @@
       z-index: 0;
       text-shadow: 0 0 12px rgba(217, 74, 58, 0.25);
     }
-    /* tonal bands — density maps to opacity so the image gets real shading */
-    .face .t1 { opacity: 0.44; }
-    .face .t2 { opacity: 0.78; }
-    .face .t3 { opacity: 1; color: var(--accent-hi); }
 
     /* ---------- footer ---------- */
     footer.foot {
@@ -502,24 +496,21 @@
       });
     })();
 
-    // ASCII video — live-sampled from video.mp4, ripped, fluid
+    // ASCII portrait — photo-sampled, abstracted, alive
     (function () {
       const face = document.querySelector('.face');
       if (!face) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-      // wide density ramp — many more symbols so tones step smoothly
-      const RAMP = " .`'-_,:;^\"!i~+=<>ltcvx*?/\\|(){}[]fj17%YUCO$#W&@";
+      // extended density ramp for photo-fidelity
+      const RAMP = " .`'-,:;!i+=<>*?/\\|(){}[]l%#$&@";
       const RAMP_N = RAMP.length;
-      // pre-escaped glyphs — rows are built as innerHTML for the tone spans
-      const ESC = Array.from(RAMP, c =>
-        c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c);
 
-      // grid — ROWS derived from the video's aspect once metadata loads
-      const COLS = 112;
-      let ROWS = 61;
+      // grid sized so cell aspect × grid aspect ≈ photo aspect (portrait)
+      const COLS = 92;
+      const ROWS = 108;
 
-      // luminance grid, refreshed from the playing video every frame
+      // luminance grid populated once image loads (Float32Array of length COLS*ROWS)
       let lumGrid = null;
 
       // hash + 2D value noise for organic grain / wobble
@@ -553,168 +544,174 @@
         return a*(1-xf)*(1-yf) + b*xf*(1-yf) + c*(1-xf)*yf + d*xf*yf;
       }
 
+      // ---- smooth gaze wandering: pick a target, ease into it ----
+      // three flavours of glance: neutral, wander, big look-around.
+      // gaze moves the head INSIDE the character grid (sampling offset +
+      // slight rotation of the sample coordinates) — the <pre> never moves.
+      let gazeTargetX = 0, gazeTargetY = 0;
+      let gazeX = 0, gazeY = 0;
+      function scheduleGaze() {
+        setTimeout(() => {
+          const r = Math.random();
+          if (r < 0.30) {
+            // small return-to-neutral glance
+            gazeTargetX = (Math.random() - 0.5) * 3.0;
+            gazeTargetY = (Math.random() - 0.5) * 2.0;
+          } else if (r < 0.75) {
+            // medium wander — head tilts sideways or looks up/down
+            gazeTargetX = (Math.random() - 0.45) * 10.0;
+            gazeTargetY = (Math.random() - 0.5) * 6.0;
+          } else {
+            // big look-around — real head turn
+            gazeTargetX = (Math.random() - 0.5) * 18.0;
+            gazeTargetY = (Math.random() - 0.5) * 9.0;
+          }
+          scheduleGaze();
+        }, 1500 + Math.random() * 2600);
+      }
+      scheduleGaze();
+
       const T0 = performance.now();
+      const rowBuf = new Array(ROWS);
 
       function render() {
         if (!lumGrid) return;
-        sampleVideo();
         const t = performance.now() - T0;
 
         // autonomic motion — tiny bob + sway inside the sampling (breathing)
         const bobY  = Math.sin(t / 2600) * 0.35 + Math.sin(t / 4100) * 0.18;
         const swayX = Math.sin(t / 3600) * 0.30 + Math.sin(t / 5300) * 0.15;
 
-        // slow shear-tilt of the whole sample grid — the frame never sits still
-        const ang  = Math.sin(t / 5200) * 0.009;   // radians
+        // ease gaze smoothly toward its current target
+        gazeX += (gazeTargetX - gazeX) * 0.045;
+        gazeY += (gazeTargetY - gazeY) * 0.045;
+
+        // ALL movement lives in the sampling domain: the head translates and
+        // tilts inside the fixed character grid, never the element itself
+        const offX = swayX + gazeX * 0.55;
+        const offY = bobY  + gazeY * 0.55;
+        const ang  = gazeX * 0.010 + Math.sin(t / 4700) * 0.006;   // radians
         const cosA = Math.cos(ang), sinA = Math.sin(ang);
-        const cx = COLS * 0.5, cy = ROWS * 0.5;
+        const cx = COLS * 0.52, cy = ROWS * 0.40;    // head/neck pivot in grid
 
         // grain reseeds in steps, not per-frame — tears churn, don't shimmer
         const gseed = Math.floor(t / 420) * 31.7;
 
-        let html = '';
-        let cls = '';                    // currently open tone span
         for (let y = 0; y < ROWS; y++) {
           // horizontal rip bands — occasional rows tear sideways and erode
           const ripN = noise2(y * 0.21 + 7.3, t * 0.00011);
-          const rip = ripN > 0.62 ? (ripN - 0.62) / 0.38 : 0;
-          const ripShift = rip * (hash(y * 17.31 + gseed) - 0.5) * 24;
+          const rip = ripN > 0.64 ? (ripN - 0.64) / 0.36 : 0;
+          const ripShift = rip * (hash(y * 17.31 + gseed) - 0.5) * 22;
 
           // slow internal ripple — rows drift sideways independently
           const wave = Math.sin(y * 0.11 + t * 0.00055) * 0.45;
 
+          let row = '';
           for (let x = 0; x < COLS; x++) {
-            // dreamy edge dissolve — no hard frame border: a noisy feather
-            // zone where glyphs thin out, fade, and tear away into the page
-            const exd = Math.min(x, COLS - 1 - x) / (COLS * 0.16);
-            const eyd = Math.min(y, ROWS - 1 - y) / (ROWS * 0.14);
-            let edge = Math.min(exd, eyd, 1);
-            edge = clamp01(edge + (noise2(x * 0.18 + t * 0.00006, y * 0.18 - t * 0.00005) - 0.5) * 0.55);
-
             // fluid warp — a slow low-frequency flow field bends the image
             // in every direction at once, like it's suspended in liquid
             const wx = (noise2(x * 0.045 + t * 0.00013, y * 0.055 + t * 0.00008) - 0.5) * 3.2;
             const wy = (noise2(x * 0.05  - t * 0.00011, y * 0.05  + t * 0.00014 + 41.7) - 0.5) * 2.6;
 
-            // rotate sample coords around the centre, then drift + warp + tear
+            // rotate sample coords around the pivot, then translate + warp + tear
             const dx = x - cx, dy = y - cy;
-            const sx = cx + dx * cosA - dy * sinA - swayX + ripShift + wave + wx;
-            const sy = cy + dx * sinA + dy * cosA - bobY + wy;
+            const sx = cx + dx * cosA - dy * sinA - offX + ripShift + wave + wx;
+            const sy = cy + dx * sinA + dy * cosA - offY + wy;
             const lum = sampleLum(sx, sy);
 
-            // bright areas — mostly empty, but tears fling stray glyphs out
-            // past the image: debris only lands near dark content
-            if (lum > 0.90) {
+            // background — mostly empty, but tears fling stray glyphs out
+            // past the silhouette: debris only lands near dark content
+            if (lum > 0.94) {
               const fling = (hash(x * 3.77 + y * 9.31 + gseed) - 0.5) * 24;
-              if (sampleLum(sx + fling, sy) < 0.72 &&
-                  hash(x * 51.7 + y * 3.9 + gseed + 11.3) < (0.045 + rip * 0.3 + (1 - edge) * 0.06) * (0.25 + edge * 0.75)) {
-                html += ESC[1 + Math.floor(hash(x * 7.13 + y * 13.37 + gseed) * 5)];
+              if (sampleLum(sx + fling, sy) < 0.75 &&
+                  hash(x * 51.7 + y * 3.9 + gseed + 11.3) < 0.05 + rip * 0.28) {
+                row += RAMP.charAt(1 + Math.floor(hash(x * 7.13 + y * 13.37 + gseed) * 5));
               } else {
-                html += ' ';
+                row += ' ';
               }
               continue;
             }
 
-            // near-linear tone — keep the image substantial and weighty
+            // dark pixels → high density. gamma-brighten shadows so features carve.
             let dens = 1 - lum;
+            dens = Math.pow(dens, 0.80);
 
-            // horizontal erosion streaks — gentle in the interior, they mostly
-            // matter inside the edge feather where they rag the border
+            // horizontal erosion streaks — elongated noise fades bands of the
+            // face out toward nothing, so edges rag instead of cutting clean
             const streak = noise2(x * 0.05 + t * 0.00005, y * 0.9 + 3.7);
-            dens -= Math.max(0, streak - 0.55) * (0.5 + (1 - edge) * 1.1);
-
-            // the feather zone thins density smoothly toward the border
-            dens *= Math.pow(edge, 0.65);
+            dens -= Math.max(0, streak - 0.52) * 1.3;
 
             // ragged dropout: rips + streaks knock cells out entirely, with
-            // per-cell grain so the tear line looks torn, not sliced.
-            // rips and tears bite hardest in the edge zone.
+            // per-cell grain so the tear line looks torn, not sliced
             const grain = hash(x * 12.9 + y * 78.233 + gseed);
-            const erode = rip * (0.85 + (1 - edge) * 1.2)
-                        + Math.max(0, streak - 0.6) * (1.4 + (1 - edge) * 2.8)
-                        + (1 - edge) * 0.55;
-            if (grain < erode || dens <= 0.02) { html += ' '; continue; }
+            const erode = rip * 0.85 + Math.max(0, streak - 0.58) * 2.2;
+            if (grain < erode || dens <= 0.02) { row += ' '; continue; }
 
             // very light temporal flicker — enough to feel "alive", not busy
-            dens = clamp01(dens + (Math.random() - 0.5) * 0.03);
+            dens += (Math.random() - 0.5) * 0.02;
 
-            // per-cell char wobble picks a neighbour on the ramp
+            // per-cell char wobble picks a neighbour on the ramp.
+            // slow t coefficients so the symbol pattern drifts calmly.
+            const baseIdx = Math.floor(clamp01(dens) * (RAMP_N - 1));
             const n = noise2(x * 0.85 + t * 0.0009, y * 0.85 - t * 0.0007);
-            let idx = Math.floor(dens * (RAMP_N - 1)) + Math.round((n - 0.5) * 2);
-            if (idx < 1) idx = 1;
+            const wobble = Math.round((n - 0.5) * 1.5);   // halved amplitude — quieter symbol drift
+            let idx = baseIdx + wobble;
+            if (idx < 0) idx = 0;
             if (idx >= RAMP_N) idx = RAMP_N - 1;
-
-            // tone band: density also maps to opacity class for real shading
-            const want = dens < 0.22 ? 't1' : dens < 0.52 ? 't2' : 't3';
-            if (want !== cls) {
-              if (cls) html += '</span>';
-              html += '<span class="' + want + '">';
-              cls = want;
-            }
-            html += ESC[idx];
+            row += RAMP.charAt(idx);
           }
-          html += '\n';
+          rowBuf[y] = row;
         }
-        if (cls) html += '</span>';
-        face.innerHTML = html;
+        face.textContent = rowBuf.join('\n');
       }
 
-      // ---- live video sampling: each tick, draw the playing video onto a
-      // tiny canvas and read it back as a luminance grid ----
-      const video = document.createElement('video');
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = 'auto';
-      video.src = 'video.mp4';
-
-      let cv = null, g = null;
-
-      let exposure = 1;
-
-      function sampleVideo() {
-        if (!g || video.readyState < 2) return;   // keep last frame if not ready
-        g.drawImage(video, 0, 0, COLS, ROWS);      // downscale = built-in blur
-        const data = g.getImageData(0, 0, COLS, ROWS).data;
-        const N = COLS * ROWS;
-        // auto-exposure: the footage runs dark — track the frame mean and
-        // lift it smoothly toward mid grey so tones spread across the ramp
-        let sum = 0;
-        for (let i = 0; i < N; i++) {
-          const l = (0.2126 * data[i * 4] + 0.7152 * data[i * 4 + 1] + 0.0722 * data[i * 4 + 2]) / 255;
-          lumGrid[i] = l;
-          sum += l;
-        }
-        let gain = 0.36 / (sum / N || 0.01);
-        if (gain < 1) gain = 1;
-        if (gain > 4.5) gain = 4.5;
-        exposure += (gain - exposure) * 0.08;   // eased — no exposure flicker
-        for (let i = 0; i < N; i++) {
-          let l = lumGrid[i] * exposure;
-          l = (l - 0.46) * 1.45 + 0.46;         // hard contrast centred dark —
-                                                 // highlights still blow out,
-                                                 // but the body stays weighty
-          lumGrid[i] = l < 0 ? 0 : l > 1 ? 1 : l;
-        }
+      // ---- load source photo, sample to lumGrid, kick off animation ----
+      function loadPhoto() {
+        const img = new Image();
+        img.onload = () => {
+          const cv = document.createElement('canvas');
+          cv.width = COLS;
+          cv.height = ROWS;
+          const g = cv.getContext('2d');
+          g.imageSmoothingEnabled = true;
+          g.imageSmoothingQuality = 'high';
+          // paint a solid background matching page bg so any alpha samples as light
+          g.fillStyle = '#ffffff';
+          g.fillRect(0, 0, COLS, ROWS);
+          g.drawImage(img, 0, 0, COLS, ROWS);
+          const data = g.getImageData(0, 0, COLS, ROWS).data;
+          const lg = new Float32Array(COLS * ROWS);
+          for (let i = 0; i < COLS * ROWS; i++) {
+            const r = data[i * 4], gc = data[i * 4 + 1], b = data[i * 4 + 2];
+            lg[i] = (0.2126 * r + 0.7152 * gc + 0.0722 * b) / 255;
+          }
+          // 3x3 box blur — softens the photo so features abstract rather than photo-print
+          const blurred = new Float32Array(COLS * ROWS);
+          for (let y = 0; y < ROWS; y++) {
+            for (let x = 0; x < COLS; x++) {
+              let sum = 0, n = 0;
+              for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                  const nx = x + dx, ny = y + dy;
+                  if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+                  sum += lg[ny * COLS + nx];
+                  n++;
+                }
+              }
+              blurred[y * COLS + x] = sum / n;
+            }
+          }
+          lumGrid = blurred;
+          render();
+          setInterval(render, 66);   // ~15 fps
+        };
+        img.onerror = () => {
+          // photo missing — leave face blank, don't crash
+          face.textContent = '';
+        };
+        img.src = 'hugopicdraw.png';
       }
-
-      video.addEventListener('loadedmetadata', () => {
-        // derive row count from video aspect; cells are ~0.6em wide on a
-        // 0.62em line-height, so grid aspect ≈ pixel aspect × 0.97
-        const vw = video.videoWidth || 640, vh = video.videoHeight || 360;
-        ROWS = Math.max(24, Math.round(COLS * (vh / vw) * 0.97));
-        cv = document.createElement('canvas');
-        cv.width = COLS;
-        cv.height = ROWS;
-        g = cv.getContext('2d', { willReadFrequently: true });
-        lumGrid = new Float32Array(COLS * ROWS).fill(1);   // start blank
-        setInterval(render, 66);   // ~15 fps
-      }, { once: true });
-
-      video.onerror = () => { face.textContent = ''; };
-      video.play().catch(() => {});
-      // muted autoplay is normally allowed; first interaction is the fallback
-      document.addEventListener('pointerdown', () => video.play().catch(() => {}), { once: true });
+      loadPhoto();
 
     })();
   </script>
