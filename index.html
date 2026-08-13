@@ -269,12 +269,11 @@
 
     /* ---------- ASCII portrait — right side, cutoff, idle-animated ---------- */
     .face {
-      position: fixed;
-      top: 50%;
-      right: -14vw;             /* extend the right side past the viewport */
-      transform: translate(-4vw, -50%);   /* face stays in the right column, doesn't crowd the text */
-      width: 55vw;
-      max-height: 100vh;
+      position: absolute;       /* lives in the page — scrolls with it and
+                                   runs the full document height */
+      top: 0;
+      right: 2vw;               /* pulled in from the edge, toward the centre */
+      width: auto;              /* shrink to the portrait column of glyphs */
       font-family: var(--mono);
       font-weight: 700;
       font-size: clamp(7px, 0.85vw, 12px);
@@ -515,9 +514,12 @@
       const ESC = Array.from(RAMP, c =>
         c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c);
 
-      // grid — ROWS derived from the video's aspect once metadata loads
-      const COLS = 112;
-      let ROWS = 61;
+      // grid — ROWS (one video tile) derived from the cropped aspect once
+      // metadata loads; VROWS is the full rendered column, which mirror-tiles
+      // the clip vertically into one long continuous strip
+      const COLS = 84;
+      let ROWS = 110;
+      let VROWS = 110;
 
       // luminance grid, refreshed from the playing video every frame
       let lumGrid = null;
@@ -540,9 +542,15 @@
       }
       const clamp01 = (v) => v < 0 ? 0 : v > 1 ? 1 : v;
 
-      // bilinear sample of lumGrid at fractional (fx, fy)
+      // bilinear sample of lumGrid at fractional (fx, fy).
+      // y mirror-wraps, so the clip tiles vertically into a seamless column —
+      // each repeat is a reflection of the last, no visible cut line.
       function sampleLum(fx, fy) {
-        if (fx < 0 || fx > COLS - 1 || fy < 0 || fy > ROWS - 1) return 1.0;
+        if (fx < 0 || fx > COLS - 1) return 1.0;
+        const period = 2 * (ROWS - 1);
+        fy = fy % period;
+        if (fy < 0) fy += period;
+        if (fy > ROWS - 1) fy = period - fy;
         const xi = Math.floor(fx), yi = Math.floor(fy);
         const xf = fx - xi, yf = fy - yi;
         const i = yi * COLS + xi;
@@ -567,14 +575,14 @@
         // slow shear-tilt of the whole sample grid — the frame never sits still
         const ang  = Math.sin(t / 5200) * 0.009;   // radians
         const cosA = Math.cos(ang), sinA = Math.sin(ang);
-        const cx = COLS * 0.5, cy = ROWS * 0.5;
+        const cx = COLS * 0.5, cy = VROWS * 0.5;
 
         // grain reseeds in steps, not per-frame — tears churn, don't shimmer
         const gseed = Math.floor(t / 420) * 31.7;
 
         let html = '';
         let cls = '';                    // currently open tone span
-        for (let y = 0; y < ROWS; y++) {
+        for (let y = 0; y < VROWS; y++) {
           // horizontal rip bands — occasional rows tear sideways and erode
           const ripN = noise2(y * 0.21 + 7.3, t * 0.00011);
           const rip = ripN > 0.62 ? (ripN - 0.62) / 0.38 : 0;
@@ -583,11 +591,17 @@
           // slow internal ripple — rows drift sideways independently
           const wave = Math.sin(y * 0.11 + t * 0.00055) * 0.45;
 
+          // long-wavelength horizontal drift down the column: mirrored tile
+          // pairs land at different offsets, so the tiling never reads as a
+          // kaleidoscope — structures wander instead of reflecting
+          const colDrift = Math.sin(y * 0.041 + 1.3) * 2.5
+                         + Math.sin(y * 0.012 + 4.2) * 3.5;
+
           for (let x = 0; x < COLS; x++) {
             // dreamy edge dissolve — no hard frame border: a noisy feather
             // zone where glyphs thin out, fade, and tear away into the page
             const exd = Math.min(x, COLS - 1 - x) / (COLS * 0.16);
-            const eyd = Math.min(y, ROWS - 1 - y) / (ROWS * 0.14);
+            const eyd = Math.min(y, VROWS - 1 - y) / (VROWS * 0.08);
             let edge = Math.min(exd, eyd, 1);
             edge = clamp01(edge + (noise2(x * 0.18 + t * 0.00006, y * 0.18 - t * 0.00005) - 0.5) * 0.55);
 
@@ -598,7 +612,7 @@
 
             // rotate sample coords around the centre, then drift + warp + tear
             const dx = x - cx, dy = y - cy;
-            const sx = cx + dx * cosA - dy * sinA - swayX + ripShift + wave + wx;
+            const sx = cx + dx * cosA - dy * sinA - swayX + ripShift + wave + wx + colDrift;
             const sy = cy + dx * sinA + dy * cosA - bobY + wy;
             const lum = sampleLum(sx, sy);
 
@@ -666,15 +680,16 @@
       video.loop = true;
       video.playsInline = true;
       video.preload = 'auto';
-      video.src = 'video.mp4';
+      video.src = 'thames.mp4';
 
       let cv = null, g = null;
+      let cropX = 0, cropW = 0, cropH = 0;
 
       let exposure = 1;
 
       function sampleVideo() {
         if (!g || video.readyState < 2) return;   // keep last frame if not ready
-        g.drawImage(video, 0, 0, COLS, ROWS);      // downscale = built-in blur
+        g.drawImage(video, cropX, 0, cropW, cropH, 0, 0, COLS, ROWS);   // crop + downscale
         const data = g.getImageData(0, 0, COLS, ROWS).data;
         const N = COLS * ROWS;
         // auto-exposure: the footage runs dark — track the frame mean and
@@ -699,16 +714,24 @@
       }
 
       video.addEventListener('loadedmetadata', () => {
-        // derive row count from video aspect; cells are ~0.6em wide on a
-        // 0.62em line-height, so grid aspect ≈ pixel aspect × 0.97
+        // ONE enlarged rendition: the frame's full height spans the whole
+        // scrollable column, and we see only a narrow vertical slice of it —
+        // heavily zoomed, cut off left and right to the column's width.
+        // cells are ~0.6em wide on a 0.62em line-height → aspect × 0.97
         const vw = video.videoWidth || 640, vh = video.videoHeight || 360;
-        ROWS = Math.max(24, Math.round(COLS * (vh / vw) * 0.97));
+        const fs = parseFloat(getComputedStyle(face).fontSize) || 11;
+        const pageH = document.documentElement.scrollHeight;
+        VROWS = Math.max(48, Math.floor((pageH * 0.99) / (fs * 0.62)));
+        ROWS = VROWS;                            // single tile = whole column
+        cropH = vh;
+        cropW = Math.min(vw, Math.max(8, Math.round(COLS * cropH * 0.97 / VROWS)));
+        cropX = Math.round((vw - cropW) * 0.5);  // centre slice — 0.5 pans
         cv = document.createElement('canvas');
         cv.width = COLS;
         cv.height = ROWS;
         g = cv.getContext('2d', { willReadFrequently: true });
         lumGrid = new Float32Array(COLS * ROWS).fill(1);   // start blank
-        setInterval(render, 66);   // ~15 fps
+        setInterval(render, 80);   // ~12 fps — the column is tall now
       }, { once: true });
 
       video.onerror = () => { face.textContent = ''; };
