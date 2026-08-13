@@ -272,7 +272,7 @@
       position: absolute;       /* lives in the page — scrolls with it and
                                    runs the full document height */
       top: 0;
-      right: 2vw;               /* pulled in from the edge, toward the centre */
+      right: 0.5vw;             /* near the edge — balances the wider column */
       width: auto;              /* shrink to the portrait column of glyphs */
       font-family: var(--mono);
       font-weight: 700;
@@ -372,11 +372,11 @@
           <div class="btns">
             <button type="button" class="btn body-btn" data-target="about">About</button>
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
-            <a class="btn" href="https://arxiv.org/abs/2605.19681">arXiv</a>
-            <a class="btn" href="https://arxiv.org/pdf/2605.19681">PDF</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19681">arXiv</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19681">PDF</a>
           </div>
           <p class="body about">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</p>
-          <p class="body abs">[Paste the real TombWriter abstract here.]</p>
+          <p class="body abs">The dominant paradigm for LLM interaction in AI co-writing uses disposable prompts that vanish after use. This may lead to imprecise results, cumbersome workflows, and diminished author agency and ownership. We propose LLM-based story archeology, where prompts serve as a hierarchical story instrument refined over time to extract the writer's intended story. Drawing on the fossil theory of story-telling, where stories exist as latent structures that writers excavate through their craft, this approach supports agency and ownership through high involvement and control. Writers work at the level of story beats rather than prose. They generate character actions in scenes to discover emergent possibilities, simulated by the LLM or directly nudged, then edit resulting beats to refine scenes iteratively. Prose is generated from beats based on style and genre, separating structure from style. We developed TombWriter, a web-based tool that visualizes stories as navigable cards — characters, scenes, and beats — through a five-stage narrative pipeline. We conducted a qualitative study with five experienced writers who used the system over three days. Through semi-structured interviews, we found that writers framed AI as a generation engine rather than collaborator, claimed ownership while reporting voice loss, and valued the system for structural discovery rather than prose production. We contribute the story archeology approach, the TombWriter system, and qualitative findings on beat-level human-AI co-writing.</p>
         </li>
 
       </ol>
@@ -391,11 +391,11 @@
           <div class="btns">
             <button type="button" class="btn body-btn" data-target="about">About</button>
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
-            <a class="btn" href="https://arxiv.org/abs/2605.19832">arXiv</a>
-            <a class="btn" href="https://arxiv.org/pdf/2605.19832">PDF</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19832">arXiv</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19832">PDF</a>
           </div>
           <p class="body about">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</p>
-          <p class="body abs">[Paste the real Material for Thought abstract here.]</p>
+          <p class="body abs">Human-AI collaboration research has largely positioned the human as a judge of AI output, centering effort on evaluating whether recommendations are reliable enough to accept. This decision-support framing leaves little room for the human as creator. We argue that for creative work, this framing misdirects human effort toward evaluating correctness rather than exploring and shaping the creative space. Drawing on Schön's theory of reflective practice, we propose an alternative: treating generative AI as an active creative medium. As a potter works with clay, humans Shape, Observe, Stir, and Select (SOSS) their medium through ongoing conversation. Where generative AI actively tends toward convergence and resolution, the human role of disruption and curation becomes essential for sustaining creative quality. We present a creative writing probe, Loom, in which users orchestrate simulated narrative agents. We also introduce the SOSS framework for this mode of engagement, and discuss design implications.</p>
         </li>
 
         <li data-paper="role">
@@ -405,11 +405,11 @@
           <div class="btns">
             <button type="button" class="btn body-btn" data-target="about">About</button>
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
-            <a class="btn" href="https://arxiv.org/abs/2605.19838">arXiv</a>
-            <a class="btn" href="https://arxiv.org/pdf/2605.19838">PDF</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19838">arXiv</a>
+            <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19838">PDF</a>
           </div>
           <p class="body about">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</p>
-          <p class="body abs">[Paste the real From Role to Person abstract here.]</p>
+          <p class="body abs">Agentic AI has taken on the role of assistant, collaborator, and decision-support tool. We argue the next role on that list is more personal: you. These are digital twins of each individual — twin agents — representing their knowledge, perspective, and communicative style to colleagues when they are unavailable. Drawing on early design work in an ongoing project in which agents represent knowledge workers in a professional setting, we identify a trust calibration problem specific to this approach. When a human colleague doubts a twin agent's output, they face three failure modes (a schema gap, an epistemic gap, and a model artifact) with no reliable attribution path between them. Cognitive forcing functions and related frameworks address overreliance effectively in contexts where there is a clear boundary between the AI and the human decision-maker. However, twin agents dissolve that boundary, raising a class of trust calibration challenge these frameworks were not designed to handle. We introduce the concept, distinguish it from digital twins, and outline the research questions this new class of agent demands.</p>
         </li>
 
       </ol>
@@ -517,7 +517,7 @@
       // grid — ROWS (one video tile) derived from the cropped aspect once
       // metadata loads; VROWS is the full rendered column, which mirror-tiles
       // the clip vertically into one long continuous strip
-      const COLS = 84;
+      const COLS = 96;
       let ROWS = 110;
       let VROWS = 110;
 
@@ -683,13 +683,13 @@
       video.src = 'thames.mp4';
 
       let cv = null, g = null;
-      let cropX = 0, cropW = 0, cropH = 0;
+      let cropX = 0, cropY = 0, cropW = 0, cropH = 0;
 
       let exposure = 1;
 
       function sampleVideo() {
         if (!g || video.readyState < 2) return;   // keep last frame if not ready
-        g.drawImage(video, cropX, 0, cropW, cropH, 0, 0, COLS, ROWS);   // crop + downscale
+        g.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, COLS, ROWS);   // crop + downscale
         const data = g.getImageData(0, 0, COLS, ROWS).data;
         const N = COLS * ROWS;
         // auto-exposure: the footage runs dark — track the frame mean and
@@ -723,7 +723,8 @@
         const pageH = document.documentElement.scrollHeight;
         VROWS = Math.max(48, Math.floor((pageH * 0.99) / (fs * 0.62)));
         ROWS = VROWS;                            // single tile = whole column
-        cropH = vh;
+        cropY = Math.round(vh * 0.12);           // skip the burned-in counter
+        cropH = vh - cropY;
         cropW = Math.min(vw, Math.max(8, Math.round(COLS * cropH * 0.97 / VROWS)));
         cropX = Math.round((vw - cropW) * 0.5);  // centre slice — 0.5 pans
         cv = document.createElement('canvas');
