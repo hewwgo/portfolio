@@ -272,7 +272,9 @@
       position: absolute;       /* part of the page — spans the full document
                                    height, so scrolling moves through it */
       top: 0;
-      right: 0.3vw;             /* hugging the right edge */
+      /* right edge pinned to the SCREEN edge, not the page frame — the
+         wide strip runs until the viewport cuts it off */
+      right: calc((min(100vw, 1400px) - 100vw) / 2);
       width: auto;              /* shrink to the portrait column of glyphs */
       font-family: var(--mono);
       font-weight: 700;
@@ -336,17 +338,21 @@
 
       <section class="intro">
         <p>
-          I'm a first-year PhD Fellow in Human-Centered Computing at Aarhus
+          I'm a PhD Fellow in Human-Centered Computing at Aarhus
           University, advised by Niklas Elmqvist. Background in cognitive
           science. Now working across HCI, AI, and design research.
         </p>
         <p>
-          So far my PhD has covered
+          My research is on human-AI interaction: how people work with
+          generative systems, and how those systems change what the work
+          becomes. I approach this by building interactive systems, studying
+          how people use them, and developing frameworks for what these
+          tools do. So far my PhD has covered, among other things,
           <span class="ref" data-papers="tombwriter,material">creativity tools</span>,
           <span class="ref" data-papers="tessera">collective knowledge systems</span>,
-          and <span class="ref" data-papers="role">agentic simulations</span>
-          — different entry points into the same question: what changes
-          when AI becomes part of how people think, create, and collaborate?
+          and <span class="ref" data-papers="role">agentic simulations</span>.
+          Different entry points, same question: what changes when AI
+          becomes part of how people think, create, and collaborate?
         </p>
       </section>
 
@@ -517,7 +523,7 @@
       // grid — ROWS (one video tile) derived from the cropped aspect once
       // metadata loads; VROWS is the full rendered column, which mirror-tiles
       // the clip vertically into one long continuous strip
-      const COLS = 108;
+      const COLS = 200;
       let ROWS = 110;
       let VROWS = 110;
 
@@ -763,14 +769,16 @@
         cropY = 0;
         cropH = vh - cropY;
         cropW = Math.min(vw, Math.max(8, Math.round(COLS * cropH * 0.97 / VROWS)));
-        cropX = Math.round((vw - cropW) * 0.38); // slice panned left of centre
+        cropX = Math.round((vw - cropW) * 0.5);  // same left edge as the old
+                                                 // narrow slice — the extra
+                                                 // width extends to the right
         cv = document.createElement('canvas');
         cv.width = COLS;
         cv.height = ROWS;
         g = cv.getContext('2d', { willReadFrequently: true });
         lumGrid = new Float32Array(COLS * ROWS).fill(1);   // start blank
         blendBuf = new Float32Array(COLS * ROWS);
-        setInterval(render, 80);   // ~12 fps — the column is tall now
+        setInterval(render, 90);   // ~11 fps — the grid is twice as wide now
       }, { once: true });
 
       vidA.onerror = () => { face.textContent = ''; };
