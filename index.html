@@ -269,10 +269,10 @@
 
     /* ---------- ASCII portrait — right side, cutoff, idle-animated ---------- */
     .face {
-      position: fixed;          /* pinned to the viewport — full screen
-                                   height, does not follow scroll */
+      position: absolute;       /* part of the page — spans the full document
+                                   height, so scrolling moves through it */
       top: 0;
-      right: 0.5vw;             /* near the edge — balances the wider column */
+      right: 0.3vw;             /* hugging the right edge */
       width: auto;              /* shrink to the portrait column of glyphs */
       font-family: var(--mono);
       font-weight: 700;
@@ -517,7 +517,7 @@
       // grid — ROWS (one video tile) derived from the cropped aspect once
       // metadata loads; VROWS is the full rendered column, which mirror-tiles
       // the clip vertically into one long continuous strip
-      const COLS = 96;
+      const COLS = 108;
       let ROWS = 110;
       let VROWS = 110;
 
@@ -600,7 +600,7 @@
           for (let x = 0; x < COLS; x++) {
             // dreamy edge dissolve — no hard frame border: a noisy feather
             // zone where glyphs thin out, fade, and tear away into the page
-            const exd = Math.min(x, COLS - 1 - x) / (COLS * 0.16);
+            const exd = Math.min(x, COLS - 1 - x) / (COLS * 0.22);
             const eyd = Math.min(y, VROWS - 1 - y) / (VROWS * 0.08);
             let edge = Math.min(exd, eyd, 1);
             edge = clamp01(edge + (noise2(x * 0.18 + t * 0.00006, y * 0.18 - t * 0.00005) - 0.5) * 0.55);
@@ -633,13 +633,15 @@
             // near-linear tone — keep the figures substantial and weighty
             let dens = 1 - lum;
 
-            // dense cells ARE the human figures — protect them, so rips and
-            // streaks nibble at their outlines without shredding the bodies
+            // dense cells ARE the human figures — protected in the interior
+            // so bodies stay coherent, but the protection dies off toward
+            // the slice edges: walkers reaching the boundary dissolve into
+            // grain instead of being cut by an invisible wall
             const protect = 1 - Math.min(1, dens * 1.3);
+            const vuln = 1 - (1 - (0.35 + 0.65 * protect)) * Math.pow(edge, 1.2);
 
             const streak = noise2(x * 0.05 + t * 0.00005, y * 0.9 + 3.7);
-            dens -= Math.max(0, streak - 0.55) * (0.5 + (1 - edge) * 1.1)
-                  * (0.35 + 0.65 * protect);
+            dens -= Math.max(0, streak - 0.55) * (0.5 + (1 - edge) * 1.1) * vuln;
 
             // the feather zone thins density smoothly toward the border
             dens *= Math.pow(edge, 0.65);
@@ -649,8 +651,8 @@
             const grain = hash(x * 12.9 + y * 78.233 + gseed);
             const erode = (rip * (0.85 + (1 - edge) * 1.2)
                         + Math.max(0, streak - 0.6) * (1.4 + (1 - edge) * 2.8))
-                        * (0.35 + 0.65 * protect)
-                        + (1 - edge) * 0.55;
+                        * vuln
+                        + (1 - edge) * 0.65;
             if (grain < erode || dens <= 0.02) { html += ' '; continue; }
 
             // very light temporal flicker — enough to feel "alive", not busy
@@ -677,33 +679,64 @@
         face.innerHTML = html;
       }
 
-      // ---- live video sampling: each tick, draw the playing video onto a
-      // tiny canvas and read it back as a luminance grid ----
-      const video = document.createElement('video');
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.preload = 'auto';
-      video.src = 'walk.mp4';
+      // ---- live video sampling with a crossfade loop: two players of the
+      // same clip — as one nears its end, the other starts from 0 and their
+      // frames dissolve into each other, so the loop never visibly hops ----
+      function mkVideo() {
+        const v = document.createElement('video');
+        v.muted = true;
+        v.playsInline = true;
+        v.preload = 'auto';
+        v.src = 'walk.mp4';
+        return v;
+      }
+      const vidA = mkVideo();
+      const vidB = mkVideo();
+      let active = vidA, standby = vidB;
+      const OVERLAP = 1.6;   // seconds of crossfade at the loop point
 
       let cv = null, g = null;
       let cropX = 0, cropY = 0, cropW = 0, cropH = 0;
+      let blendBuf = null;
 
       let exposure = 1;
 
-      function sampleVideo() {
-        if (!g || video.readyState < 2) return;   // keep last frame if not ready
-        g.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, COLS, ROWS);   // crop + downscale
+      function grab(v, out) {
+        g.drawImage(v, cropX, cropY, cropW, cropH, 0, 0, COLS, ROWS);   // crop + downscale
         const data = g.getImageData(0, 0, COLS, ROWS).data;
-        const N = COLS * ROWS;
-        // auto-exposure: the footage runs dark — track the frame mean and
-        // lift it smoothly toward mid grey so tones spread across the ramp
-        let sum = 0;
-        for (let i = 0; i < N; i++) {
-          const l = (0.2126 * data[i * 4] + 0.7152 * data[i * 4 + 1] + 0.0722 * data[i * 4 + 2]) / 255;
-          lumGrid[i] = l;
-          sum += l;
+        for (let i = 0; i < COLS * ROWS; i++) {
+          out[i] = (0.2126 * data[i * 4] + 0.7152 * data[i * 4 + 1] + 0.0722 * data[i * 4 + 2]) / 255;
         }
+      }
+
+      function sampleVideo() {
+        if (!g || active.readyState < 2) return;   // keep last frame if not ready
+        const N = COLS * ROWS;
+        grab(active, lumGrid);
+
+        const remain = (active.duration || 1e9) - active.currentTime;
+        if (remain < OVERLAP) {
+          if (standby.paused) {
+            try { standby.currentTime = 0; } catch (e) {}
+            standby.play().catch(() => {});
+          }
+          if (standby.readyState >= 2) {
+            const mix = 1 - Math.max(0, remain) / OVERLAP;
+            grab(standby, blendBuf);
+            for (let i = 0; i < N; i++) {
+              lumGrid[i] = lumGrid[i] * (1 - mix) + blendBuf[i] * mix;
+            }
+          }
+        }
+        if (active.ended || remain <= 0.06) {
+          const tmp = active; active = standby; standby = tmp;
+          standby.pause();
+        }
+
+        // auto-exposure: track the frame mean and lift it smoothly toward
+        // mid grey so tones spread across the ramp
+        let sum = 0;
+        for (let i = 0; i < N; i++) sum += lumGrid[i];
         let gain = 0.36 / (sum / N || 0.01);
         if (gain < 1) gain = 1;
         if (gain > 4.5) gain = 4.5;
@@ -717,31 +750,33 @@
         }
       }
 
-      video.addEventListener('loadedmetadata', () => {
+      vidA.addEventListener('loadedmetadata', () => {
         // ONE enlarged rendition: the frame's full height spans the whole
         // scrollable column, and we see only a narrow vertical slice of it —
         // heavily zoomed, cut off left and right to the column's width.
         // cells are ~0.6em wide on a 0.62em line-height → aspect × 0.97
-        const vw = video.videoWidth || 640, vh = video.videoHeight || 360;
+        const vw = vidA.videoWidth || 640, vh = vidA.videoHeight || 360;
         const fs = parseFloat(getComputedStyle(face).fontSize) || 11;
-        VROWS = Math.max(48, Math.floor((window.innerHeight * 0.99) / (fs * 0.62)));
+        const pageH = document.documentElement.scrollHeight;
+        VROWS = Math.max(48, Math.floor((pageH * 0.99) / (fs * 0.62)));
         ROWS = VROWS;                            // single tile = whole column
         cropY = 0;
         cropH = vh - cropY;
         cropW = Math.min(vw, Math.max(8, Math.round(COLS * cropH * 0.97 / VROWS)));
-        cropX = Math.round((vw - cropW) * 0.5);  // centre slice — 0.5 pans
+        cropX = Math.round((vw - cropW) * 0.38); // slice panned left of centre
         cv = document.createElement('canvas');
         cv.width = COLS;
         cv.height = ROWS;
         g = cv.getContext('2d', { willReadFrequently: true });
         lumGrid = new Float32Array(COLS * ROWS).fill(1);   // start blank
+        blendBuf = new Float32Array(COLS * ROWS);
         setInterval(render, 80);   // ~12 fps — the column is tall now
       }, { once: true });
 
-      video.onerror = () => { face.textContent = ''; };
-      video.play().catch(() => {});
+      vidA.onerror = () => { face.textContent = ''; };
+      vidA.play().catch(() => {});
       // muted autoplay is normally allowed; first interaction is the fallback
-      document.addEventListener('pointerdown', () => video.play().catch(() => {}), { once: true });
+      document.addEventListener('pointerdown', () => active.play().catch(() => {}), { once: true });
 
     })();
   </script>
