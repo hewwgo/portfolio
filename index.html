@@ -67,16 +67,13 @@
       min-height: 100vh;
     }
 
-    /* central narrow text column — pulled hard left on wide viewports so
-       the text and the face read as two side-by-side columns */
+    /* narrow text column anchored to the page's left edge — text and the
+       walkers read as two separate lanes, no overlap */
     .col {
       max-width: 580px;
-      margin: 0 auto;
+      margin: 0;
       position: relative;
       z-index: 2;
-    }
-    @media (min-width: 900px) {
-      .col { transform: translateX(-12vw); }
     }
 
     /* ---------- name + role ---------- */
@@ -521,10 +518,10 @@
       const ESC = Array.from(RAMP, c =>
         c === '&' ? '&amp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c);
 
-      // grid — ROWS (one video tile) derived from the cropped aspect once
-      // metadata loads; VROWS is the full rendered column, which mirror-tiles
-      // the clip vertically into one long continuous strip
-      const COLS = 200;
+      // grid — COLS is computed at load to fill exactly the lane between
+      // the text column's right edge and the screen edge; ROWS (one video
+      // tile) derived from the cropped aspect once metadata loads
+      let COLS = 200;
       let ROWS = 110;
       let VROWS = 110;
 
@@ -764,7 +761,17 @@
         // cells are ~0.6em wide on a 0.62em line-height → aspect × 0.97
         const vw = vidA.videoWidth || 640, vh = vidA.videoHeight || 360;
         const fs = parseFloat(getComputedStyle(face).fontSize) || 11;
-        const pageH = document.documentElement.scrollHeight;
+        // width: fill the lane from the text column's right edge to the
+        // screen edge — the walkers never pass under the text
+        const colEl = document.querySelector('.col');
+        const colRight = colEl ? colEl.getBoundingClientRect().right : 640;
+        const lane = Math.max(360, window.innerWidth - colRight - 28);
+        COLS = Math.max(60, Math.floor(lane / (fs * 0.6)));
+        // .page offsetHeight excludes absolutely-positioned children — the
+        // strip must never feed its own height back into this measurement
+        const pageEl = document.querySelector('.page');
+        const pageH = Math.max(window.innerHeight,
+          pageEl ? pageEl.offsetHeight : document.documentElement.scrollHeight);
         VROWS = Math.max(48, Math.floor((pageH * 0.99) / (fs * 0.62)));
         ROWS = VROWS;                            // single tile = whole column
         cropY = 0;
