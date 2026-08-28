@@ -118,6 +118,17 @@
       border-bottom-color: var(--accent);
     }
 
+    /* same dotted-ref treatment, but routes to the workboard instead of
+       dimming papers — an <a>, so it needs the global link style undone */
+    a.ref-board {
+      color: var(--ink);
+      border-bottom: 1px dotted var(--ink-dim);
+    }
+    a.ref-board:hover {
+      color: var(--accent-hi);
+      border-bottom-color: var(--accent);
+    }
+
     /* ---------- section labels (small caps + rule, like a chapter head) ---------- */
     .sec-label {
       margin-top: 56px;
@@ -324,6 +335,17 @@
     }
     .site-nav a:hover { color: var(--ink-hi); border-bottom-color: var(--ink-dim-2); }
     .site-nav a.active { color: var(--ink-hi); border-bottom-color: var(--accent); }
+    /* the workboard link is alive — one churning glyph from the ramp */
+    .site-nav .nav-glyph {
+      display: inline-block;
+      width: 1.2em;
+      text-align: center;
+      margin-right: 3px;
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--accent-hi);
+      text-shadow: 0 0 8px rgba(217, 74, 58, 0.35);
+    }
 
     /* ---------- ascii wipe — view swaps dissolve through the ramp ---------- */
     #wipe {
@@ -782,7 +804,7 @@
 
   <nav class="site-nav" aria-label="site">
     <a href="#" data-view="home" class="active">Index</a>
-    <a href="#board" data-view="board">Workboard</a>
+    <a href="#board" data-view="board"><span class="nav-glyph" aria-hidden="true">#</span>Workboard</a>
   </nav>
 
   <div class="page">
@@ -815,6 +837,8 @@
           and <span class="ref" data-papers="role">agentic simulations</span>.
           Different entry points, same question: what changes when AI
           becomes part of how people think, create, and collaborate?
+          What I'm circling right now is on the
+          <a class="ref-board" href="#board">workboard</a>.
         </p>
       </section>
 
@@ -2130,6 +2154,20 @@
 
       // initial view, no ceremony
       setView(location.hash === '#board' ? 'board' : 'home');
+    })();
+
+    // ===========================================================
+    // nav glyph — the workboard link carries one live character,
+    // churning in steps like the strip's grain
+    // ===========================================================
+    (function () {
+      const g = document.querySelector('.site-nav .nav-glyph');
+      if (!g) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const CHARS = '+=<>ltcvx*%#@&';
+      setInterval(() => {
+        g.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
+      }, 420);
     })();
   </script>
 
