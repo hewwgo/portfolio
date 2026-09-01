@@ -259,8 +259,22 @@
     }
     .pubs > li:last-child { border-bottom: 0; }
 
-    /* mini preview sheet — a stylised first page, no asset needed */
+    /* preview card — the paper's actual first page (rendered from the PDF);
+       papers without a public PDF fall back to the stylised .sheet below */
     .pubs .thumb { padding-top: 3px; }
+    .pubs .thumb a { display: block; border-bottom: 0; }
+    .pubs .thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #fff;
+      box-shadow: 0 10px 28px rgba(0, 12, 55, 0.4);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .pubs > li:hover .thumb img {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 12, 55, 0.5);
+    }
     .pubs .sheet {
       aspect-ratio: 8.5 / 11;
       background: var(--ink);
@@ -1008,13 +1022,11 @@
         </li>
 
         <li data-paper="tombwriter">
-          <div class="thumb" aria-hidden="true">
-            <div class="sheet">
-              <div class="s-title">TombWriter: Scaffolding Story Archeology</div>
-              <div class="s-rule"></div>
-              <div class="s-cols"><i></i><i></i></div>
-              <div class="s-meta">AVI ’26</div>
-            </div>
+          <div class="thumb">
+            <a href="https://arxiv.org/pdf/2605.19681" target="_blank" rel="noopener">
+              <img src="thumbs/thumb-tombwriter.png" loading="lazy"
+                   alt="First page of the TombWriter paper">
+            </a>
           </div>
           <div class="pub-main">
           <span class="venue">AVI 2026 · Venice</span>
@@ -1051,13 +1063,11 @@
       <ol class="pubs" id="workshops">
 
         <li data-paper="material">
-          <div class="thumb" aria-hidden="true">
-            <div class="sheet">
-              <div class="s-title">Material for Thought: AI as Creative Medium</div>
-              <div class="s-rule"></div>
-              <div class="s-cols"><i></i><i></i></div>
-              <div class="s-meta">CHI ’26 WS</div>
-            </div>
+          <div class="thumb">
+            <a href="https://arxiv.org/pdf/2605.19832" target="_blank" rel="noopener">
+              <img src="thumbs/thumb-material.png" loading="lazy"
+                   alt="First page of the Material for Thought paper">
+            </a>
           </div>
           <div class="pub-main">
           <span class="venue">CHI 2026 · Tools for Thought workshop</span>
@@ -1088,13 +1098,11 @@
         </li>
 
         <li data-paper="role">
-          <div class="thumb" aria-hidden="true">
-            <div class="sheet">
-              <div class="s-title">From Role to Person: Trust Calibration in Twin Agents</div>
-              <div class="s-rule"></div>
-              <div class="s-cols"><i></i><i></i></div>
-              <div class="s-meta">CHI ’26 WS</div>
-            </div>
+          <div class="thumb">
+            <a href="https://arxiv.org/pdf/2605.19838" target="_blank" rel="noopener">
+              <img src="thumbs/thumb-role.png" loading="lazy"
+                   alt="First page of the From Role to Person paper">
+            </a>
           </div>
           <div class="pub-main">
           <span class="venue">CHI 2026 · AutomationXP workshop</span>
