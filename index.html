@@ -61,7 +61,7 @@
     /* ---------- page frame: fixed sidebar lane + content lane ---------- */
     .page {
       position: relative;
-      margin-left: 300px;         /* the sidebar's lane */
+      margin-left: 344px;         /* the sidebar's lane */
       padding: 64px 0 96px;       /* no right padding — the glyph strip owns
                                      the space out to the screen edge */
       min-height: 100vh;
@@ -80,7 +80,7 @@
     .side {
       position: fixed;
       top: 0; left: 0; bottom: 0;
-      width: 300px;
+      width: 344px;
       padding: 56px 36px 34px clamp(24px, 3vw, 44px);
       display: flex;
       flex-direction: column;
@@ -89,25 +89,13 @@
     }
     body.on-board .side { display: none; }
 
-    .side-pic {
-      width: 116px;
-      height: auto;
-      display: block;
-      border: 1px solid var(--rule);
-    }
     .side-name {
-      margin-top: 22px;
       font-size: 31px;
       font-weight: 500;
       line-height: 1.08;
       letter-spacing: 0.01em;
       color: var(--ink-hi);
-    }
-    .side-name em {
-      display: block;
-      font-style: italic;
-      font-weight: 500;
-      color: var(--accent-hi);
+      white-space: nowrap;
     }
     .side-role {
       margin-top: 16px;
@@ -117,15 +105,6 @@
       color: var(--ink-dim);
     }
     .side-role strong { color: var(--ink); font-weight: 600; }
-    .side-desc {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--rule);
-      font-size: 14.5px;
-      font-style: italic;
-      line-height: 1.45;
-      color: var(--ink-dim);
-    }
 
     .side-nav {
       margin-top: 30px;
@@ -189,17 +168,6 @@
       transition: color 0.15s ease, border-color 0.15s ease;
     }
     .ref:hover {
-      color: var(--accent-hi);
-      border-bottom-color: var(--accent);
-    }
-
-    /* same dotted-ref treatment, but routes to the workboard instead of
-       dimming papers — an <a>, so it needs the global link style undone */
-    a.ref-board {
-      color: var(--ink);
-      border-bottom: 1px dotted var(--ink-dim);
-    }
-    a.ref-board:hover {
       color: var(--accent-hi);
       border-bottom-color: var(--accent);
     }
@@ -916,7 +884,6 @@
         padding: 32px 20px 0;
         overflow: visible;
       }
-      .side-pic { width: 88px; }
       .side-contact { margin-top: 26px; }
       .page { margin-left: 0; padding: 36px 20px 72px; }
     }
@@ -944,14 +911,12 @@
   </nav>
 
   <aside class="side">
-    <img class="side-pic" src="hugopicdraw.png" alt="Hugo Andersson — drawn portrait">
-    <h1 class="side-name">Hugo <em>Andersson</em></h1>
+    <h1 class="side-name">Hugo Andersson</h1>
     <p class="side-role">
       <strong>PhD Fellow</strong><br>
       Aarhus University<br>
       Human-Centered Computing
     </p>
-    <p class="side-desc">Human-AI Interaction and Creativity Support researcher</p>
     <nav class="side-nav" aria-label="site">
       <a href="#" data-view="home" class="active">Index</a>
       <a href="#board" data-view="board"><span class="nav-glyph" aria-hidden="true">#</span>Workboard</a>
@@ -991,8 +956,6 @@
           and <span class="ref" data-papers="role">agentic simulations</span>.
           Different entry points, same question: what changes when AI
           becomes part of how people think, create, and collaborate?
-          What I'm circling right now is on the
-          <a class="ref-board" href="#board">workboard</a>.
         </p>
       </section>
 
