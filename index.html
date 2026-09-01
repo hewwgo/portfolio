@@ -58,16 +58,16 @@
     }
     a:focus-visible { outline: 1px dotted var(--ink-hi); outline-offset: 3px; }
 
-    /* ---------- page frame ---------- */
+    /* ---------- page frame: fixed sidebar lane + content lane ---------- */
     .page {
       position: relative;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 56px clamp(20px, 5vw, 60px) 96px;
+      margin-left: 300px;         /* the sidebar's lane */
+      padding: 64px 0 96px;       /* no right padding — the glyph strip owns
+                                     the space out to the screen edge */
       min-height: 100vh;
     }
 
-    /* narrow text column anchored to the page's left edge — text and the
+    /* narrow text column anchored left of the strip — text and the
        walkers read as two separate lanes, no overlap */
     .col {
       max-width: 580px;
@@ -76,29 +76,104 @@
       z-index: 2;
     }
 
-    /* ---------- name + role ---------- */
-    .hd-name {
-      font-size: 24px;
-      font-weight: 600;
-      font-style: normal;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink-hi);
-      margin: 0;
+    /* ---------- sidebar: portrait, name, nav, contact bottom-left ---------- */
+    .side {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 300px;
+      padding: 56px 36px 34px clamp(24px, 3vw, 44px);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 40;
     }
-    .hd-sub {
-      margin-top: 6px;
+    body.on-board .side { display: none; }
+
+    .side-pic {
+      width: 116px;
+      height: auto;
+      display: block;
+      border: 1px solid var(--rule);
+    }
+    .side-name {
+      margin-top: 22px;
+      font-size: 31px;
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      color: var(--ink-hi);
+    }
+    .side-name em {
+      display: block;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--accent-hi);
+    }
+    .side-role {
+      margin-top: 16px;
+      font-family: var(--sans);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--ink-dim);
+    }
+    .side-role strong { color: var(--ink); font-weight: 600; }
+    .side-desc {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--rule);
+      font-size: 14.5px;
+      font-style: italic;
+      line-height: 1.45;
+      color: var(--ink-dim);
+    }
+
+    .side-nav {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .side-nav a {
+      align-self: flex-start;
+      font-size: 17px;
+      color: var(--ink-dim);
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+    }
+    .side-nav a:hover { color: var(--ink-hi); border-bottom-color: var(--ink-dim-2); }
+    .side-nav a.active { color: var(--ink-hi); border-bottom-color: var(--accent); }
+
+    .side-contact {
+      margin-top: auto;
+      padding-top: 24px;
       font-family: var(--sans);
       font-size: 11.5px;
+      line-height: 1.7;
       color: var(--ink-dim);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
     }
-    .hd-sub .sep { color: var(--ink-dim-2); margin: 0 8px; }
+    .side-contact a { color: var(--ink); border-bottom-color: var(--ink-dim-2); }
+    .side-contact a:hover { color: var(--ink-hi); }
+    .side-links { margin-top: 8px; display: flex; gap: 12px; }
+    .side-links a { color: var(--ink-dim); }
+
+    /* the workboard link is alive — one churning glyph from the ramp */
+    .nav-glyph {
+      display: inline-block;
+      width: 1.1em;
+      margin-right: 4px;
+      text-align: center;
+      font-family: var(--mono);
+      font-weight: 700;
+      font-size: 0.8em;
+      color: var(--accent-hi);
+      text-shadow: 0 0 8px rgba(217, 74, 58, 0.35);
+    }
 
     /* ---------- intro paragraphs ---------- */
     .intro {
-      margin-top: 32px;
+      margin-top: 0;
       font-size: 18px;
       line-height: 1.55;
       color: var(--ink);
@@ -142,6 +217,7 @@
       padding-bottom: 8px;
       border-bottom: 1px solid var(--rule);
     }
+    .col > .sec-label:first-child { margin-top: 0; }
 
     /* ---------- education list (year + title grid) ---------- */
     .entries { list-style: none; }
@@ -173,11 +249,60 @@
     /* ---------- publications list (papers, workshops) ---------- */
     .pubs { list-style: none; }
     .pubs > li {
-      padding: 18px 0;
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 0 20px;
+      align-items: start;
+      padding: 20px 0;
       border-bottom: 1px solid var(--rule);
       transition: opacity 0.18s ease;
     }
     .pubs > li:last-child { border-bottom: 0; }
+
+    /* mini preview sheet — a stylised first page, no asset needed */
+    .pubs .thumb { padding-top: 3px; }
+    .pubs .sheet {
+      aspect-ratio: 8.5 / 11;
+      background: var(--ink);
+      padding: 10px 9px 8px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 28px rgba(0, 12, 55, 0.4);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .pubs > li:hover .sheet {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 40px rgba(0, 12, 55, 0.5);
+    }
+    .pubs .sheet .s-title {
+      font-family: var(--serif);
+      font-size: 8px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: #1f1813;
+      overflow-wrap: break-word;
+    }
+    .pubs .sheet .s-rule { margin-top: 5px; width: 16px; border-top: 2px solid var(--accent); }
+    .pubs .sheet .s-cols {
+      flex: 1;
+      margin-top: 7px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .pubs .sheet .s-cols i {
+      /* fake two-column paper text */
+      background: repeating-linear-gradient(to bottom,
+        rgba(31, 24, 19, 0.32) 0 1px, transparent 1px 3.5px);
+    }
+    .pubs .sheet .s-meta {
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 5.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(31, 24, 19, 0.5);
+    }
 
     .pubs .venue {
       display: block;
@@ -253,37 +378,30 @@
     }
     .pubs .body.is-open { display: block; }
 
+    /* bibtex body: mono block + copy */
+    .pubs .bibtex {
+      font-family: var(--mono);
+      font-size: 11px;
+      line-height: 1.65;
+      white-space: pre;
+      overflow-x: auto;
+      color: var(--ink);
+      opacity: 0.9;
+    }
+    .pubs .bib-copy { margin-top: 10px; }
+
     /* dim non-matching entries when bio refs are hovered */
     .pubs.dimming > li { opacity: 0.28; }
     .pubs.dimming > li.matched { opacity: 1; }
-
-    /* ---------- contact block ---------- */
-    dl.contact {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 6px 12px;
-      font-size: 14px;
-    }
-    dl.contact dt {
-      color: var(--ink-dim);
-    }
-    dl.contact dd {
-      color: var(--ink);
-    }
-    dl.contact dd a {
-      color: var(--ink-hi);
-      border-bottom: 1px solid var(--ink-dim-2);
-    }
-    dl.contact dd a:hover { border-bottom-color: var(--ink-hi); }
 
     /* ---------- ASCII portrait — right side, cutoff, idle-animated ---------- */
     .face {
       position: absolute;       /* part of the page — spans the full document
                                    height, so scrolling moves through it */
       top: 0;
-      /* right edge pinned to the SCREEN edge, not the page frame — the
-         wide strip runs until the viewport cuts it off */
-      right: calc((min(100vw, 1400px) - 100vw) / 2);
+      /* the page lane now runs to the viewport edge, so the strip pins
+         straight to its right side — cut off by the screen */
+      right: 0;
       width: auto;              /* shrink to the portrait column of glyphs */
       font-family: var(--mono);
       font-weight: 700;
@@ -312,13 +430,14 @@
       letter-spacing: 0.02em;
     }
 
-    /* ---------- site nav (index ⇄ workboard) ---------- */
+    /* ---------- board-only nav (index ⇄ workboard, top right) — the
+       sidebar carries the nav on the index view and hides on the board */
     .site-nav {
       position: fixed;
       top: 30px;
       right: clamp(20px, 4vw, 56px);
       z-index: 60;
-      display: flex;
+      display: none;
       gap: 20px;
       font-family: var(--sans);
       font-size: 10.5px;
@@ -335,17 +454,7 @@
     }
     .site-nav a:hover { color: var(--ink-hi); border-bottom-color: var(--ink-dim-2); }
     .site-nav a.active { color: var(--ink-hi); border-bottom-color: var(--accent); }
-    /* the workboard link is alive — one churning glyph from the ramp */
-    .site-nav .nav-glyph {
-      display: inline-block;
-      width: 1.2em;
-      text-align: center;
-      margin-right: 3px;
-      font-family: var(--mono);
-      font-weight: 700;
-      color: var(--accent-hi);
-      text-shadow: 0 0 8px rgba(217, 74, 58, 0.35);
-    }
+    body.on-board .site-nav { display: flex; }
 
     /* ---------- ascii wipe — view swaps dissolve through the ramp ---------- */
     #wipe {
@@ -785,13 +894,26 @@
     /* ---------- responsive ---------- */
     @media (max-width: 900px) {
       .face { display: none; }
-      .page { padding-top: 32px; }
+      /* sidebar folds into the flow above the column */
+      .side {
+        position: static;
+        width: auto;
+        height: auto;
+        padding: 32px 20px 0;
+        overflow: visible;
+      }
+      .side-pic { width: 88px; }
+      .side-contact { margin-top: 26px; }
+      .page { margin-left: 0; padding: 36px 20px 72px; }
     }
     @media (max-width: 560px) {
       body { font-size: 14.5px; }
       .col { padding: 0 4px; }
       .entries > li { grid-template-columns: 64px 1fr; gap: 2px 10px; }
-      dl.contact { grid-template-columns: 64px 1fr; gap: 4px 10px; }
+      .pubs > li { grid-template-columns: 60px 1fr; gap: 0 14px; }
+      .pubs .sheet { padding: 7px 6px 6px; }
+      .pubs .sheet .s-title { font-size: 6.5px; }
+      .pubs .sheet .s-meta { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -807,19 +929,37 @@
     <a href="#board" data-view="board"><span class="nav-glyph" aria-hidden="true">#</span>Workboard</a>
   </nav>
 
+  <aside class="side">
+    <img class="side-pic" src="hugopicdraw.png" alt="Hugo Andersson — drawn portrait">
+    <h1 class="side-name">Hugo <em>Andersson</em></h1>
+    <p class="side-role">
+      <strong>PhD Fellow</strong><br>
+      Aarhus University<br>
+      Human-Centered Computing
+    </p>
+    <p class="side-desc">Human-AI Interaction and Creativity Support researcher</p>
+    <nav class="side-nav" aria-label="site">
+      <a href="#" data-view="home" class="active">Index</a>
+      <a href="#board" data-view="board"><span class="nav-glyph" aria-hidden="true">#</span>Workboard</a>
+    </nav>
+    <div class="side-contact">
+      Computer Science<br>
+      Åbogade 34<br>
+      8200 Aarhus, Denmark<br>
+      <a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a>
+      <div class="side-links">
+        <a href="https://www.linkedin.com/in/hugoanderssons/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </aside>
+
   <div class="page">
 
     <pre class="face" aria-hidden="true"></pre>
 
     <div class="col">
 
-      <header>
-        <h1 class="hd-name">Hugo Andersson</h1>
-        <p class="hd-sub">
-          PhD Fellow<span class="sep">·</span>Human-Centered Computing<span class="sep">·</span>Aarhus University
-        </p>
-      </header>
-
+      <h2 class="sec-label">About</h2>
       <section class="intro">
         <p>
           I'm a PhD Fellow in Human-Centered Computing at Aarhus
@@ -846,18 +986,37 @@
       <ol class="pubs" id="papers">
 
         <li data-paper="tessera">
-          <span class="venue">UIST 2026 · <span class="pending">Under review</span></span>
-          <span class="ttl">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</span>
-          <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
-          <div class="btns">
-            <button type="button" class="btn body-btn" data-target="about">About</button>
-            <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
+          <div class="thumb" aria-hidden="true">
+            <div class="sheet">
+              <div class="s-title">Tessera: Faceted Exploration of Collective Knowledge</div>
+              <div class="s-rule"></div>
+              <div class="s-cols"><i></i><i></i></div>
+              <div class="s-meta">UIST ’26</div>
+            </div>
           </div>
-          <p class="body about">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</p>
-          <p class="body abs">[Paste the real Tessera abstract here.]</p>
+          <div class="pub-main">
+            <span class="venue">UIST 2026 · <span class="pending">Under review</span></span>
+            <span class="ttl">Tessera: Faceted Exploration of Collective Knowledge for Collaborative Ideation</span>
+            <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
+            <div class="btns">
+              <button type="button" class="btn body-btn" data-target="about">About</button>
+              <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
+            </div>
+            <p class="body about">What if a research group could browse its own collective thinking? Tessera turns scattered notes and half-formed ideas into a visual map, and helps surface questions nobody could find alone.</p>
+            <p class="body abs">[Paste the real Tessera abstract here.]</p>
+          </div>
         </li>
 
         <li data-paper="tombwriter">
+          <div class="thumb" aria-hidden="true">
+            <div class="sheet">
+              <div class="s-title">TombWriter: Scaffolding Story Archeology</div>
+              <div class="s-rule"></div>
+              <div class="s-cols"><i></i><i></i></div>
+              <div class="s-meta">AVI ’26</div>
+            </div>
+          </div>
+          <div class="pub-main">
           <span class="venue">AVI 2026 · Venice</span>
           <span class="ttl">TombWriter: Scaffolding Story Archeology through Beat-Level Interaction in Human-AI Co-Writing</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
@@ -866,9 +1025,24 @@
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19681">arXiv</a>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19681">PDF</a>
+            <button type="button" class="btn body-btn" data-target="bib">Cite (BibTeX)</button>
           </div>
           <p class="body about">Most AI writing assistants forget the moment you walk away. TombWriter remembers — and lets you sculpt a story one beat at a time, not one sentence. Closer to directing actors than typing prose.</p>
+          <div class="body bib">
+<pre class="bibtex">@misc{andersson2026tombwriter,
+  title         = {TombWriter: Scaffolding Story Archeology through
+                   Beat-Level Interaction in Human-AI Co-Writing},
+  author        = {Andersson, Hugo and Elmqvist, Niklas},
+  year          = {2026},
+  eprint        = {2605.19681},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2605.19681}
+}</pre>
+            <button type="button" class="btn bib-copy">Copy BibTeX</button>
+          </div>
           <p class="body abs">The dominant paradigm for LLM interaction in AI co-writing uses disposable prompts that vanish after use. This may lead to imprecise results, cumbersome workflows, and diminished author agency and ownership. We propose LLM-based story archeology, where prompts serve as a hierarchical story instrument refined over time to extract the writer's intended story. Drawing on the fossil theory of story-telling, where stories exist as latent structures that writers excavate through their craft, this approach supports agency and ownership through high involvement and control. Writers work at the level of story beats rather than prose. They generate character actions in scenes to discover emergent possibilities, simulated by the LLM or directly nudged, then edit resulting beats to refine scenes iteratively. Prose is generated from beats based on style and genre, separating structure from style. We developed TombWriter, a web-based tool that visualizes stories as navigable cards — characters, scenes, and beats — through a five-stage narrative pipeline. We conducted a qualitative study with five experienced writers who used the system over three days. Through semi-structured interviews, we found that writers framed AI as a generation engine rather than collaborator, claimed ownership while reporting voice loss, and valued the system for structural discovery rather than prose production. We contribute the story archeology approach, the TombWriter system, and qualitative findings on beat-level human-AI co-writing.</p>
+          </div>
         </li>
 
       </ol>
@@ -877,6 +1051,15 @@
       <ol class="pubs" id="workshops">
 
         <li data-paper="material">
+          <div class="thumb" aria-hidden="true">
+            <div class="sheet">
+              <div class="s-title">Material for Thought: AI as Creative Medium</div>
+              <div class="s-rule"></div>
+              <div class="s-cols"><i></i><i></i></div>
+              <div class="s-meta">CHI ’26 WS</div>
+            </div>
+          </div>
+          <div class="pub-main">
           <span class="venue">CHI 2026 · Tools for Thought workshop</span>
           <span class="ttl">Material for Thought: AI as Creative Medium, Not Tool</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
@@ -885,12 +1068,35 @@
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19832">arXiv</a>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19832">PDF</a>
+            <button type="button" class="btn body-btn" data-target="bib">Cite (BibTeX)</button>
           </div>
           <p class="body about">AI usually gets pitched as a tool that does what you ask. This argues for the opposite: treat it as a material you wrestle with, like clay. What changes about how we build tools for thinking then?</p>
+          <div class="body bib">
+<pre class="bibtex">@misc{andersson2026material,
+  title         = {Material for Thought: AI as Creative Medium, Not Tool},
+  author        = {Andersson, Hugo and Elmqvist, Niklas},
+  year          = {2026},
+  eprint        = {2605.19832},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2605.19832}
+}</pre>
+            <button type="button" class="btn bib-copy">Copy BibTeX</button>
+          </div>
           <p class="body abs">Human-AI collaboration research has largely positioned the human as a judge of AI output, centering effort on evaluating whether recommendations are reliable enough to accept. This decision-support framing leaves little room for the human as creator. We argue that for creative work, this framing misdirects human effort toward evaluating correctness rather than exploring and shaping the creative space. Drawing on Schön's theory of reflective practice, we propose an alternative: treating generative AI as an active creative medium. As a potter works with clay, humans Shape, Observe, Stir, and Select (SOSS) their medium through ongoing conversation. Where generative AI actively tends toward convergence and resolution, the human role of disruption and curation becomes essential for sustaining creative quality. We present a creative writing probe, Loom, in which users orchestrate simulated narrative agents. We also introduce the SOSS framework for this mode of engagement, and discuss design implications.</p>
+          </div>
         </li>
 
         <li data-paper="role">
+          <div class="thumb" aria-hidden="true">
+            <div class="sheet">
+              <div class="s-title">From Role to Person: Trust Calibration in Twin Agents</div>
+              <div class="s-rule"></div>
+              <div class="s-cols"><i></i><i></i></div>
+              <div class="s-meta">CHI ’26 WS</div>
+            </div>
+          </div>
+          <div class="pub-main">
           <span class="venue">CHI 2026 · AutomationXP workshop</span>
           <span class="ttl">From Role to Person: Trust Calibration Challenges in Twin Agents</span>
           <span class="authors">Hugo Andersson, Niklas Elmqvist</span>
@@ -899,27 +1105,27 @@
             <button type="button" class="btn body-btn" data-target="abs">Abstract</button>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.19838">arXiv</a>
             <a class="btn" target="_blank" rel="noopener" href="https://arxiv.org/pdf/2605.19838">PDF</a>
+            <button type="button" class="btn body-btn" data-target="bib">Cite (BibTeX)</button>
           </div>
           <p class="body about">When you ask an AI agent to act like a specific person, how do you know it's actually getting them right? A look at the strange trust gaps that open when agents stop playing roles and start simulating people.</p>
+          <div class="body bib">
+<pre class="bibtex">@misc{andersson2026roletoperson,
+  title         = {From Role to Person: Trust Calibration Challenges
+                   in Twin Agents},
+  author        = {Andersson, Hugo and Elmqvist, Niklas},
+  year          = {2026},
+  eprint        = {2605.19838},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.HC},
+  url           = {https://arxiv.org/abs/2605.19838}
+}</pre>
+            <button type="button" class="btn bib-copy">Copy BibTeX</button>
+          </div>
           <p class="body abs">Agentic AI has taken on the role of assistant, collaborator, and decision-support tool. We argue the next role on that list is more personal: you. These are digital twins of each individual — twin agents — representing their knowledge, perspective, and communicative style to colleagues when they are unavailable. Drawing on early design work in an ongoing project in which agents represent knowledge workers in a professional setting, we identify a trust calibration problem specific to this approach. When a human colleague doubts a twin agent's output, they face three failure modes (a schema gap, an epistemic gap, and a model artifact) with no reliable attribution path between them. Cognitive forcing functions and related frameworks address overreliance effectively in contexts where there is a clear boundary between the AI and the human decision-maker. However, twin agents dissolve that boundary, raising a class of trust calibration challenge these frameworks were not designed to handle. We introduce the concept, distinguish it from digital twins, and outline the research questions this new class of agent demands.</p>
+          </div>
         </li>
 
       </ol>
-
-      <h2 class="sec-label">Contact</h2>
-      <dl class="contact">
-        <dt>email</dt>
-        <dd><a href="mailto:hugo@cs.au.dk">hugo@cs.au.dk</a></dd>
-
-        <dt>web</dt>
-        <dd><a href="https://www.linkedin.com/in/hugoanderssons/">LinkedIn</a></dd>
-
-        <dt>dept</dt>
-        <dd>Computer Science, Aarhus University</dd>
-
-        <dt>office</dt>
-        <dd>Åbogade 34, 8200 Aarhus, Denmark</dd>
-      </dl>
 
       <h2 class="sec-label">Education</h2>
       <ul class="entries">
@@ -944,10 +1150,6 @@
           <span class="meta">University of Gothenburg</span>
         </li>
       </ul>
-
-      <footer class="foot">
-        Aarhus, DK
-      </footer>
 
     </div>
 
@@ -1027,6 +1229,33 @@
             body.classList.add('is-open');
             btn.classList.add('is-open');
           }
+        });
+      });
+    })();
+
+    // Cite (BibTeX): copy the entry, flash confirmation on the button
+    (function () {
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) {}
+        ta.remove();
+        return ok;
+      }
+      document.querySelectorAll('.bib-copy').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const text = btn.closest('.bib').querySelector('.bibtex').textContent.trim();
+          const flash = () => {
+            btn.textContent = 'Copied';
+            setTimeout(() => { btn.textContent = 'Copy BibTeX'; }, 1400);
+          };
+          const p = navigator.clipboard && window.isSecureContext
+            ? navigator.clipboard.writeText(text) : Promise.reject();
+          p.then(flash).catch(() => { if (fallbackCopy(text)) flash(); });
         });
       });
     })();
@@ -2054,7 +2283,7 @@
     (function () {
       const wipe = document.getElementById('wipe');
       const boardEl = document.getElementById('board');
-      const navLinks = document.querySelectorAll('.site-nav a');
+      const navLinks = document.querySelectorAll('a[data-view]');
       const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const RAMP = " .`':;+=cox*%#@";   // short ramp — the wipe is a texture, not an image
       let current = null;
@@ -2161,12 +2390,13 @@
     // churning in steps like the strip's grain
     // ===========================================================
     (function () {
-      const g = document.querySelector('.site-nav .nav-glyph');
-      if (!g) return;
+      const gs = document.querySelectorAll('.nav-glyph');
+      if (!gs.length) return;
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const CHARS = '+=<>ltcvx*%#@&';
       setInterval(() => {
-        g.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
+        const c = CHARS[Math.floor(Math.random() * CHARS.length)];
+        gs.forEach(g => { g.textContent = c; });
       }, 420);
     })();
   </script>
